@@ -19,12 +19,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             BeerStackTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
+                BeerStack()
             }
         }
     }
@@ -33,6 +28,10 @@ class MainActivity : ComponentActivity() {
 @Preview
 @Composable
 fun BeerStack(){
-
+    Header()
 }
 
+@Composable
+fun Header(){
+
+}
