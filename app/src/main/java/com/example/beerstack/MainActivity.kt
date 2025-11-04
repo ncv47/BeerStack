@@ -6,13 +6,17 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.Image
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.ui.Alignment
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.unit.dp
 import androidx.compose.material3.Scaffold
+import androidx.compose.ui.res.painterResource
 import androidx.compose.material3.Text
+import androidx.compose.material3.Button
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -46,10 +50,23 @@ fun Header(modifier: Modifier = Modifier){
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
+        Image(
+            painter = painterResource(R.drawable.test),
+            contentDescription = "BeerStack Logo"
+        )
         Text(
-            text="test",
+            text="BeerStack",
             fontSize = 24.sp,
             modifier = Modifier.padding(top = 24.dp)
         )
+
+        Button(onClick = { /*TODO*/ }) {
+            Text(stringResource(R.string.add_beer))
+        }
+
+        Button(onClick = { /*TODO*/ }) {
+            Text(stringResource(R.string.collection_page))
+        }
     }
+
 }
