@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.Image
 import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.layout.wrapContentSize
@@ -24,6 +25,8 @@ import androidx.compose.ui.unit.sp
 import com.example.beerstack.ui.theme.BeerStackTheme
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.ui.graphics.Color
+import androidx.compose.foundation.background
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,19 +43,22 @@ class MainActivity : ComponentActivity() {
 @Preview
 @Composable
 fun BeerStack(){
-    Body(modifier = Modifier
-        .fillMaxSize()
-    )
+    Column(modifier = Modifier.fillMaxSize()) {
+        Header(modifier = Modifier.weight(0.15f))
+        Body(modifier = Modifier.weight(0.7f))
+        Footer(modifier = Modifier.weight(0.15f))
+    }
 }
 
 
-
 @Composable
-fun Body(modifier: Modifier = Modifier){
+fun Header(modifier: Modifier = Modifier){
     Column (
-        modifier = modifier,
+        modifier = modifier
+            .fillMaxWidth()
+            .background(Color.Yellow)
+            .padding(vertical = 8.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top
     ) {
         Image(
             painter = painterResource(R.drawable.test),
@@ -61,10 +67,36 @@ fun Body(modifier: Modifier = Modifier){
         Text(
             text="BeerStack",
             fontSize = 24.sp,
-            modifier = Modifier.padding(top = 24.dp)
         )
+    }
+}
+
+@Composable
+fun Body(modifier: Modifier = Modifier){
+    Column (
+        modifier = modifier
+            .fillMaxWidth()
+            .background(Color.White),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
 
         BeerList(beerList)
+
+    }
+
+}
+
+@Composable
+fun Footer(modifier: Modifier = Modifier){
+    Column (
+        modifier = modifier
+            .fillMaxWidth()
+            .background(Color.Green)
+            .padding(vertical = 12.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
 
         Button(onClick = { /*TODO*/ }) {
             Text(stringResource(R.string.add_beer))
