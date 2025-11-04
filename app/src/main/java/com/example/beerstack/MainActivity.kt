@@ -27,6 +27,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.background
+import android.content.Intent
+import androidx.compose.ui.platform.LocalContext
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -89,6 +91,8 @@ fun Body(modifier: Modifier = Modifier){
 
 @Composable
 fun Footer(modifier: Modifier = Modifier){
+    val context = LocalContext.current
+
     Column (
         modifier = modifier
             .fillMaxWidth()
@@ -102,7 +106,10 @@ fun Footer(modifier: Modifier = Modifier){
             Text(stringResource(R.string.add_beer))
         }
 
-        Button(onClick = { /*TODO*/ }) {
+        Button(onClick = {
+            val intent = Intent(context, SecondActivity::class.java)
+            context.startActivity(intent)
+        }) {
             Text(stringResource(R.string.collection_page))
         }
     }
