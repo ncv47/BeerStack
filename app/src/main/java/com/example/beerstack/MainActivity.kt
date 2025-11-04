@@ -22,6 +22,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import com.example.beerstack.ui.theme.BeerStackTheme
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,13 +40,15 @@ class MainActivity : ComponentActivity() {
 @Preview
 @Composable
 fun BeerStack(){
-    Header(modifier = Modifier
+    Body(modifier = Modifier
         .fillMaxSize()
     )
 }
 
+
+
 @Composable
-fun Header(modifier: Modifier = Modifier){
+fun Body(modifier: Modifier = Modifier){
     Column (
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -60,6 +64,8 @@ fun Header(modifier: Modifier = Modifier){
             modifier = Modifier.padding(top = 24.dp)
         )
 
+        BeerList(beerList)
+
         Button(onClick = { /*TODO*/ }) {
             Text(stringResource(R.string.add_beer))
         }
@@ -69,4 +75,22 @@ fun Header(modifier: Modifier = Modifier){
         }
     }
 
+}
+
+val beerList = listOf(
+    com.example.beerstack.model.BeerItem(1, "Test Beer"),
+    com.example.beerstack.model.BeerItem(2, "Another Beer")
+)
+
+@Composable
+fun BeerList(items: List<com.example.beerstack.model.BeerItem>) {
+    LazyColumn {
+        items(items) { beer ->
+            Text(
+                text = beer.beerName,
+                modifier = Modifier.padding(12.dp),
+                fontSize = 20.sp
+            )
+        }
+    }
 }
