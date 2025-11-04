@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">BeerStack</string>
+    <string name="add_beer">Add Own Beer</string>
+    <string name="collection_page">Collection</string>
 </resources>
