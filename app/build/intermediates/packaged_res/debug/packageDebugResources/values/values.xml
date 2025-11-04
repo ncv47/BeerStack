@@ -10,5 +10,6 @@
     <string name="add_beer">Add Own Beer</string>
     <string name="app_name">BeerStack</string>
     <string name="collection_page">Collection</string>
+    <string name="login_page">Login</string>
     <style name="Theme.BeerStack" parent="android:Theme.Material.Light.NoActionBar"/>
 </resources>

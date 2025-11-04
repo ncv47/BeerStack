@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.Image
@@ -26,6 +27,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.background
 import android.content.Intent
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.ui.platform.LocalContext
 
 class MainActivity : ComponentActivity() {
@@ -58,24 +60,44 @@ fun Main(){
 
 @Composable
 fun Header(modifier: Modifier = Modifier){
-    Column (
-        //Settings: max widt, backgroundcolor and padding
+    val context = LocalContext.current
+
+    Row(
         modifier = modifier
             .fillMaxWidth()
             .background(Color.Yellow)
-            .padding(vertical = 8.dp),
-        //Allign horizontally in the center
-        horizontalAlignment = Alignment.CenterHorizontally,
+            .padding(vertical = 8.dp, horizontal = 16.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Image(
-            //Get the image from the resources drawable
-            painter = painterResource(R.drawable.test),
-            contentDescription = "BeerStack Logo"
-        )
-        Text(
-            text="BeerStack",
-            fontSize = 24.sp,
-        )
+        // Add space to the left
+        Spacer(modifier = Modifier.weight(1f))
+
+        // Centered image and text, over the whole width of the page
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            //2f = twice as big
+            modifier = Modifier.weight(2f)
+        ) {
+            Image(
+                painter = painterResource(R.drawable.test),
+                contentDescription = "BeerStack Logo"
+            )
+            Text(
+                text = "BeerStack",
+                fontSize = 24.sp
+            )
+        }
+
+        // Login page button to the right
+        Button(
+            onClick = {
+                val intent = Intent(context, ThirdActivity::class.java)
+                context.startActivity(intent)
+            },
+            modifier = Modifier.weight(1f)
+        ) {
+            Text(stringResource(R.string.login_page))
+        }
     }
 }
 
@@ -85,7 +107,7 @@ fun Body(modifier: Modifier = Modifier){
         modifier = modifier
             .fillMaxWidth()
             .background(Color.White),
-        horizontalAlignment = Alignment.CenterHorizontally,
+        horizontalAlignment     = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
         //A scrollable list to read out the beer API

@@ -1,9 +1,9 @@
 -- Merging decision tree log ---
 manifest
-ADDED from C:\Users\vande\AndroidStudioProjects\BeerStack\app\src\main\AndroidManifest.xml:2:1-33:12
-INJECTED from C:\Users\vande\AndroidStudioProjects\BeerStack\app\src\main\AndroidManifest.xml:2:1-33:12
-INJECTED from C:\Users\vande\AndroidStudioProjects\BeerStack\app\src\main\AndroidManifest.xml:2:1-33:12
-INJECTED from C:\Users\vande\AndroidStudioProjects\BeerStack\app\src\main\AndroidManifest.xml:2:1-33:12
+ADDED from C:\Users\vande\AndroidStudioProjects\BeerStack\app\src\main\AndroidManifest.xml:2:1-38:12
+INJECTED from C:\Users\vande\AndroidStudioProjects\BeerStack\app\src\main\AndroidManifest.xml:2:1-38:12
+INJECTED from C:\Users\vande\AndroidStudioProjects\BeerStack\app\src\main\AndroidManifest.xml:2:1-38:12
+INJECTED from C:\Users\vande\AndroidStudioProjects\BeerStack\app\src\main\AndroidManifest.xml:2:1-38:12
 MERGED from [androidx.compose.material3:material3-android:1.3.0] C:\Users\vande\.gradle\caches\8.13\transforms\0bcb1f5a294d6a45678a49d139f6bc1b\transformed\material3-release\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.compose.material:material-android:1.7.0] C:\Users\vande\.gradle\caches\8.13\transforms\0666d73798518c2b7a14755efc9e5162\transformed\material-release\AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.compose.material:material-ripple-android:1.7.0] C:\Users\vande\.gradle\caches\8.13\transforms\a3328a3a6235220b7dcd1c89e94182ba\transformed\material-ripple-release\AndroidManifest.xml:2:1-7:12
@@ -64,8 +64,8 @@ MERGED from [androidx.arch.core:core-runtime:2.2.0] C:\Users\vande\.gradle\cache
 	xmlns:android
 		ADDED from C:\Users\vande\AndroidStudioProjects\BeerStack\app\src\main\AndroidManifest.xml:2:11-69
 application
-ADDED from C:\Users\vande\AndroidStudioProjects\BeerStack\app\src\main\AndroidManifest.xml:5:5-31:19
-INJECTED from C:\Users\vande\AndroidStudioProjects\BeerStack\app\src\main\AndroidManifest.xml:5:5-31:19
+ADDED from C:\Users\vande\AndroidStudioProjects\BeerStack\app\src\main\AndroidManifest.xml:5:5-36:19
+INJECTED from C:\Users\vande\AndroidStudioProjects\BeerStack\app\src\main\AndroidManifest.xml:5:5-36:19
 MERGED from [androidx.compose.ui:ui-tooling-android:1.7.0] C:\Users\vande\.gradle\caches\8.13\transforms\d3f1da9f317967dbb70776a179476555\transformed\ui-tooling-release\AndroidManifest.xml:22:5-26:19
 MERGED from [androidx.compose.ui:ui-tooling-android:1.7.0] C:\Users\vande\.gradle\caches\8.13\transforms\d3f1da9f317967dbb70776a179476555\transformed\ui-tooling-release\AndroidManifest.xml:22:5-26:19
 MERGED from [androidx.compose.ui:ui-test-manifest:1.7.0] C:\Users\vande\.gradle\caches\8.13\transforms\76dedbab19011f10d14cd28ed0cc6d52\transformed\ui-test-manifest-1.7.0\AndroidManifest.xml:22:5-26:19
@@ -110,26 +110,34 @@ ADDED from C:\Users\vande\AndroidStudioProjects\BeerStack\app\src\main\AndroidMa
 		ADDED from C:\Users\vande\AndroidStudioProjects\BeerStack\app\src\main\AndroidManifest.xml:18:13-51
 	android:name
 		ADDED from C:\Users\vande\AndroidStudioProjects\BeerStack\app\src\main\AndroidManifest.xml:16:13-43
-activity#com.example.beerstack.MainActivity
-ADDED from C:\Users\vande\AndroidStudioProjects\BeerStack\app\src\main\AndroidManifest.xml:20:9-30:20
-	android:label
-		ADDED from C:\Users\vande\AndroidStudioProjects\BeerStack\app\src\main\AndroidManifest.xml:23:13-45
+activity#com.example.beerstack.ThirdActivity
+ADDED from C:\Users\vande\AndroidStudioProjects\BeerStack\app\src\main\AndroidManifest.xml:20:9-23:53
 	android:exported
 		ADDED from C:\Users\vande\AndroidStudioProjects\BeerStack\app\src\main\AndroidManifest.xml:22:13-36
 	android:theme
-		ADDED from C:\Users\vande\AndroidStudioProjects\BeerStack\app\src\main\AndroidManifest.xml:24:13-51
+		ADDED from C:\Users\vande\AndroidStudioProjects\BeerStack\app\src\main\AndroidManifest.xml:23:13-51
 	android:name
-		ADDED from C:\Users\vande\AndroidStudioProjects\BeerStack\app\src\main\AndroidManifest.xml:21:13-41
+		ADDED from C:\Users\vande\AndroidStudioProjects\BeerStack\app\src\main\AndroidManifest.xml:21:13-42
+activity#com.example.beerstack.MainActivity
+ADDED from C:\Users\vande\AndroidStudioProjects\BeerStack\app\src\main\AndroidManifest.xml:25:9-35:20
+	android:label
+		ADDED from C:\Users\vande\AndroidStudioProjects\BeerStack\app\src\main\AndroidManifest.xml:28:13-45
+	android:exported
+		ADDED from C:\Users\vande\AndroidStudioProjects\BeerStack\app\src\main\AndroidManifest.xml:27:13-36
+	android:theme
+		ADDED from C:\Users\vande\AndroidStudioProjects\BeerStack\app\src\main\AndroidManifest.xml:29:13-51
+	android:name
+		ADDED from C:\Users\vande\AndroidStudioProjects\BeerStack\app\src\main\AndroidManifest.xml:26:13-41
 intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
-ADDED from C:\Users\vande\AndroidStudioProjects\BeerStack\app\src\main\AndroidManifest.xml:25:13-29:29
+ADDED from C:\Users\vande\AndroidStudioProjects\BeerStack\app\src\main\AndroidManifest.xml:30:13-34:29
 action#android.intent.action.MAIN
-ADDED from C:\Users\vande\AndroidStudioProjects\BeerStack\app\src\main\AndroidManifest.xml:26:17-69
+ADDED from C:\Users\vande\AndroidStudioProjects\BeerStack\app\src\main\AndroidManifest.xml:31:17-69
 	android:name
-		ADDED from C:\Users\vande\AndroidStudioProjects\BeerStack\app\src\main\AndroidManifest.xml:26:25-66
+		ADDED from C:\Users\vande\AndroidStudioProjects\BeerStack\app\src\main\AndroidManifest.xml:31:25-66
 category#android.intent.category.LAUNCHER
-ADDED from C:\Users\vande\AndroidStudioProjects\BeerStack\app\src\main\AndroidManifest.xml:28:17-77
+ADDED from C:\Users\vande\AndroidStudioProjects\BeerStack\app\src\main\AndroidManifest.xml:33:17-77
 	android:name
-		ADDED from C:\Users\vande\AndroidStudioProjects\BeerStack\app\src\main\AndroidManifest.xml:28:27-74
+		ADDED from C:\Users\vande\AndroidStudioProjects\BeerStack\app\src\main\AndroidManifest.xml:33:27-74
 uses-sdk
 INJECTED from C:\Users\vande\AndroidStudioProjects\BeerStack\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from C:\Users\vande\AndroidStudioProjects\BeerStack\app\src\main\AndroidManifest.xml
