@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "com.example.beerstack.app-mergeDebugResources-44:/values-v30/values-v30.xml",
+            "outputFile": "com.example.beerstack.app-mergeDebugResources-48:/values-v30/values-v30.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\vande\\.gradle\\caches\\8.13\\transforms\\0bcb1f5a294d6a45678a49d139f6bc1b\\transformed\\material3-release\\res\\values-v30\\values-v30.xml",
+                    "source": "C:\\Users\\haeck\\.gradle\\caches\\8.13\\transforms\\26248cf68f48d5e5b955d6ee3e45860d\\transformed\\material3-release\\res\\values-v30\\values-v30.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",
