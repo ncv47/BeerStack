@@ -15,6 +15,7 @@ mipmap ic_launcher_round
 string add_beer
 string app_name
 string collection_page
+string login_page
 style Theme.BeerStack
 xml backup_rules
 xml data_extraction_rules

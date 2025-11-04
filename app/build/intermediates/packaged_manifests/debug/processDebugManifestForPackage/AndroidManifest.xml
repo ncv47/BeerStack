@@ -32,6 +32,10 @@
             android:exported="true"
             android:theme="@style/Theme.BeerStack" />
         <activity
+            android:name="com.example.beerstack.ThirdActivity"
+            android:exported="true"
+            android:theme="@style/Theme.BeerStack" />
+        <activity
             android:name="com.example.beerstack.MainActivity"
             android:exported="true"
             android:label="@string/app_name"

@@ -198,6 +198,7 @@ string default_popup_window_title
 string dropdown_menu
 string in_progress
 string indeterminate
+string login_page
 string m3c_bottom_sheet_collapse_description
 string m3c_bottom_sheet_dismiss_description
 string m3c_bottom_sheet_drag_handle_description
