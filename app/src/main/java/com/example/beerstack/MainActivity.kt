@@ -31,12 +31,15 @@ import android.content.Intent
 import androidx.compose.ui.platform.LocalContext
 
 class MainActivity : ComponentActivity() {
+    //OVerite onCreate, when the activity is start/page is launced
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+            //UI THeme
             BeerStackTheme {
-                BeerStack()
+                //Call the main function
+                Main()
             }
         }
     }
@@ -44,8 +47,10 @@ class MainActivity : ComponentActivity() {
 
 @Preview
 @Composable
-fun BeerStack(){
+fun Main(){
+    //Header body and footer sections underneath each other
     Column(modifier = Modifier.fillMaxSize()) {
+        //Each Section with its height size
         Header(modifier = Modifier.weight(0.15f))
         Body(modifier = Modifier.weight(0.7f))
         Footer(modifier = Modifier.weight(0.15f))
@@ -56,13 +61,16 @@ fun BeerStack(){
 @Composable
 fun Header(modifier: Modifier = Modifier){
     Column (
+        //Settings: max widt, backgroundcolor and padding
         modifier = modifier
             .fillMaxWidth()
             .background(Color.Yellow)
             .padding(vertical = 8.dp),
+        //Allign horizontally in the center
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Image(
+            //Get the image from the resources drawable
             painter = painterResource(R.drawable.test),
             contentDescription = "BeerStack Logo"
         )
@@ -82,7 +90,7 @@ fun Body(modifier: Modifier = Modifier){
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-
+        //A scrollable list to read out the beer API
         BeerList(beerList)
 
     }
@@ -101,11 +109,12 @@ fun Footer(modifier: Modifier = Modifier){
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
+        //Button to add a own, new beer that ist in the API
         Button(onClick = { /*TODO*/ }) {
             Text(stringResource(R.string.add_beer))
         }
 
+        //BUtton to the second page with the database of beer collection
         Button(onClick = {
             val intent = Intent(context, SecondActivity::class.java)
             context.startActivity(intent)
@@ -116,14 +125,17 @@ fun Footer(modifier: Modifier = Modifier){
 
 }
 
+//Test Example data for the srollable list
 val beerList = listOf(
     com.example.beerstack.model.BeerItem(1, "Test Beer"),
     com.example.beerstack.model.BeerItem(2, "Another Beer")
 )
 
+//Show from the API the beers (now temporary the test data) in a scrolling list, using LazyColumn
 @Composable
 fun BeerList(items: List<com.example.beerstack.model.BeerItem>) {
     LazyColumn {
+        //For each beer, give parameters with it
         items(items) { beer ->
             Text(
                 text = beer.beerName,
