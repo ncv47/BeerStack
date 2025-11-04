@@ -1,0 +1,8 @@
+# Android/Gradle
+/build/
+/app/build/
+/*.iml
+/.gradle/
+/local.properties
+/.idea/caches/
+/*.apk
