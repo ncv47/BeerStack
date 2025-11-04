@@ -1,6 +1,6 @@
 package com.example.beerstack.data
 import kotlinx.coroutines.flow.Flow
-
+//werk
 class OfflineItemsRepository(private val itemDao: ItemDao) : ItemsRepository {
     override fun getAllItemsStream(): Flow<List<Item>> = itemDao.getAllItems()
 

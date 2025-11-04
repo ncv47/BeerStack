@@ -23,3 +23,4 @@ interface ItemDao {
     @Query("SELECT * from items ORDER BY beername ASC")
     fun getAllItems(): Flow<List<Item>>
 }
+//werk
