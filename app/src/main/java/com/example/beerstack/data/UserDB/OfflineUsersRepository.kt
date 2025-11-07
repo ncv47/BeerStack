@@ -12,4 +12,8 @@ class OfflineUsersRepository(private val itemDao: UserDao) : UsersRepository {
     override suspend fun deleteItem(item: com.example.beerstack.data.UserDB.User) = itemDao.delete(item)
 
     override suspend fun updateItem(item: User) = itemDao.update(item)
+
+    override suspend fun login(username: String, password: String): User? =
+        itemDao.login(username, password)
+
 }
