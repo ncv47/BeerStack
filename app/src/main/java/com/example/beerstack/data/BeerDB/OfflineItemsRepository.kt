@@ -1,4 +1,4 @@
-package com.example.beerstack.data
+package com.example.beerstack.data.BeerDB
 import kotlinx.coroutines.flow.Flow
 //werk
 class OfflineItemsRepository(private val itemDao: ItemDao) : ItemsRepository {

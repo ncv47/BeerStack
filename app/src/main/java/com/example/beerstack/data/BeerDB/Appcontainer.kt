@@ -1,4 +1,4 @@
-package com.example.beerstack.data
+package com.example.beerstack.data.BeerDB
 import android.content.Context
 
 /**

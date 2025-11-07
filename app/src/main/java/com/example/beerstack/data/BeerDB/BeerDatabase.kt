@@ -1,4 +1,4 @@
-package com.example.beerstack.data
+package com.example.beerstack.data.BeerDB
 //werk
 import android.content.Context
 import androidx.room.Database
