@@ -6,20 +6,28 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 import com.example.beerstack.model.Beer
 
+//The used API
 private const val BASE_URL = "https://api.sampleapis.com/"
 
+//Retrofit instance with given arguments: URL for API request, Gson converter to parse JSON into data classes
 private val retrofit = Retrofit.Builder()
     .baseUrl(BASE_URL)
     .addConverterFactory(GsonConverterFactory.create())
     .build()
 
 interface SampleBeersApiService {
+    //HTTP Get request from beers/ale of the API
     @GET("beers/ale")
+    //Asynchronously fetch a list of Beer objects
     suspend fun getBeers(): List<Beer>
 }
 
+//Object, Single Instance
 object SampleApi {
+    //Use the lazy delegation
     val retrofitService: SampleBeersApiService by lazy {
+        //Create helpr object form api interface
+        //whenever call its methods, Retrofit automatically sends the actual HTTP request
         retrofit.create(SampleBeersApiService::class.java)
     }
 }

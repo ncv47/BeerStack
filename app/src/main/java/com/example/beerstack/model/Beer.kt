@@ -4,9 +4,6 @@ package com.example.beerstack.model
 data class Beer(
     val id: Int,
     val name: String,
-    val brewery: String?,
-    val abv: String?,
-    val style: String?,
-    val ibu: Int?,
-    val ounces: Int?
+    val price: String?,
+    val image: String?
 )

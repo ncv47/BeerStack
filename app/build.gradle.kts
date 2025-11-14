@@ -53,6 +53,8 @@ dependencies {
 
     //For import ...compose...
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.0")
+    //For ...coil...
+    implementation("io.coil-kt:coil-compose:2.4.0")
 
     //For API Retrofit
     implementation("com.squareup.retrofit2:retrofit:2.9.0")

@@ -32,6 +32,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.beerstack.ui.BeerViewModel
 import com.example.beerstack.model.Beer
+import com.example.beerstack.components.BeerItemCard
 
 class MainActivity : ComponentActivity() {
     //OVerite onCreate, when the activity is start/page is launced
@@ -59,6 +60,7 @@ fun Main(beerViewModel: BeerViewModel = viewModel()){
         Header(modifier = Modifier.weight(0.15f))
         Body(
             modifier = Modifier.weight(0.7f),
+            //Pass the viewmodel data down to the body composable
             beerViewModel = beerViewModel,
             beers = beerViewModel.beerList,
             error = beerViewModel.error
@@ -112,6 +114,7 @@ fun Header(modifier: Modifier = Modifier){
 
 @Composable
 fun Body(
+    // Body displays  beer data or info messages
     modifier: Modifier = Modifier,
     beerViewModel: BeerViewModel,
     beers: List<Beer>,
@@ -125,9 +128,9 @@ fun Body(
         verticalArrangement = Arrangement.Center
     ) {
         when {
-            error != null -> Text(text = error, color = Color.Red)
-            beers.isNotEmpty() -> BeerList(beers)
-            else -> Text(text = "Loading...")
+            error != null -> Text(text = error, color = Color.Red) // Show error if loading failed
+            beers.isNotEmpty() -> BeerList(beers) // Show beer list if data is ready
+            else -> Text(text = "Loading...") // Otherwise show loading message
         }
     }
 }
@@ -165,11 +168,7 @@ fun Footer(modifier: Modifier = Modifier){
 fun BeerList(items: List<Beer>) {
     LazyColumn {
         items(items) { beer ->
-            Text(
-                text = beer.name,
-                modifier = Modifier.padding(12.dp),
-                fontSize = 20.sp
-            )
+            BeerItemCard(beer)
         }
     }
 }
