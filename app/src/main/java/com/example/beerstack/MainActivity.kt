@@ -29,6 +29,10 @@ import androidx.compose.foundation.background
 import android.content.Intent
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.beerstack.ui.BeerViewModel
+import com.example.beerstack.model.Beer
+import com.example.beerstack.components.BeerItemCard
 
 class MainActivity : ComponentActivity() {
     //OVerite onCreate, when the activity is start/page is launced
@@ -47,16 +51,23 @@ class MainActivity : ComponentActivity() {
 
 @Preview
 @Composable
-fun Main(){
-    //Header body and footer sections underneath each other
+fun Main(beerViewModel: BeerViewModel = viewModel()){
+    // Request the API when main() is loaded
+    androidx.compose.runtime.LaunchedEffect(Unit) {
+        beerViewModel.getBeers()
+    }
     Column(modifier = Modifier.fillMaxSize()) {
-        //Each Section with its height size
         Header(modifier = Modifier.weight(0.15f))
-        Body(modifier = Modifier.weight(0.7f))
+        Body(
+            modifier = Modifier.weight(0.7f),
+            //Pass the viewmodel data down to the body composable
+            beerViewModel = beerViewModel,
+            beers = beerViewModel.beerList,
+            error = beerViewModel.error
+        )
         Footer(modifier = Modifier.weight(0.15f))
     }
 }
-
 
 @Composable
 fun Header(modifier: Modifier = Modifier){
@@ -102,19 +113,26 @@ fun Header(modifier: Modifier = Modifier){
 }
 
 @Composable
-fun Body(modifier: Modifier = Modifier){
-    Column (
+fun Body(
+    // Body displays  beer data or info messages
+    modifier: Modifier = Modifier,
+    beerViewModel: BeerViewModel,
+    beers: List<Beer>,
+    error: String?
+) {
+    Column(
         modifier = modifier
             .fillMaxWidth()
             .background(Color.White),
-        horizontalAlignment     = Alignment.CenterHorizontally,
+        horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        //A scrollable list to read out the beer API
-        BeerList(beerList)
-
+        when {
+            error != null -> Text(text = error, color = Color.Red) // Show error if loading failed
+            beers.isNotEmpty() -> BeerList(beers) // Show beer list if data is ready
+            else -> Text(text = "Loading...") // Otherwise show loading message
+        }
     }
-
 }
 
 @Composable
@@ -145,23 +163,12 @@ fun Footer(modifier: Modifier = Modifier){
 
 }
 
-//Test Example data for the srollable list
-val beerList = listOf(
-    com.example.beerstack.model.BeerItem(1, "Test Beer"),
-    com.example.beerstack.model.BeerItem(2, "Another Beer")
-)
-
 //Show from the API the beers (now temporary the test data) in a scrolling list, using LazyColumn
 @Composable
-fun BeerList(items: List<com.example.beerstack.model.BeerItem>) {
+fun BeerList(items: List<Beer>) {
     LazyColumn {
-        //For each beer, give parameters with it
         items(items) { beer ->
-            Text(
-                text = beer.beerName,
-                modifier = Modifier.padding(12.dp),
-                fontSize = 20.sp
-            )
+            BeerItemCard(beer)
         }
     }
 }
