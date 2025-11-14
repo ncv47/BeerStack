@@ -3,7 +3,6 @@ package com.example.beerstack.network
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
-import retrofit2.http.Query
 import com.example.beerstack.model.Beer
 
 //The used API
