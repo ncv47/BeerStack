@@ -163,12 +163,6 @@ fun Footer(modifier: Modifier = Modifier){
 
 }
 
-//Test Example data for the srollable list
-val beerList = listOf(
-    com.example.beerstack.model.BeerItem(1, "Test Beer"),
-    com.example.beerstack.model.BeerItem(2, "Another Beer")
-)
-
 //Show from the API the beers (now temporary the test data) in a scrolling list, using LazyColumn
 @Composable
 fun BeerList(items: List<Beer>) {
