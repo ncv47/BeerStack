@@ -51,9 +51,11 @@ class MainActivity : ComponentActivity() {
 @Preview
 @Composable
 fun Main(beerViewModel: BeerViewModel = viewModel()){
-    //Header body and footer sections underneath each other
+    // Request the API when main() is loaded
+    androidx.compose.runtime.LaunchedEffect(Unit) {
+        beerViewModel.getBeers()
+    }
     Column(modifier = Modifier.fillMaxSize()) {
-        //Each Section with its height size
         Header(modifier = Modifier.weight(0.15f))
         Body(
             modifier = Modifier.weight(0.7f),
@@ -63,9 +65,7 @@ fun Main(beerViewModel: BeerViewModel = viewModel()){
         )
         Footer(modifier = Modifier.weight(0.15f))
     }
-
 }
-
 
 @Composable
 fun Header(modifier: Modifier = Modifier){
@@ -124,13 +124,10 @@ fun Body(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Button(onClick = { beerViewModel.getBeers() }) {
-            Text("Test API Connection")
-        }
         when {
             error != null -> Text(text = error, color = Color.Red)
             beers.isNotEmpty() -> BeerList(beers)
-            else -> Text(text = "No data loaded yet.")
+            else -> Text(text = "Loading...")
         }
     }
 }
