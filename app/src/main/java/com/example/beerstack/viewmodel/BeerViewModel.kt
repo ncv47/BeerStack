@@ -17,17 +17,31 @@ class BeerViewModel : ViewModel() {
     var error by mutableStateOf<String?>(null)
 
     //Try request the beers from the api
-    fun getBeers() {
+    fun getBeers(query: String = "") {
         viewModelScope.launch {
             try {
                 //If ok, update beer list and clear any error
-                beerList = SampleApi.retrofitService.getBeers()
+                val fetchedBeers = SampleApi.retrofitService.getBeers()
+                beerList = filterValidBeers(fetchedBeers)
+                    .filter { it.name.contains(query, ignoreCase = true) } //To filter out for the search function
                 error = null
-            } catch (e: Exception) {
-                // if not ok, rest list and show error
+            } catch (e: Exception) { //Catch the error
+                // if not ok, reset list and show error
                 beerList = emptyList()
                 error = "Failed to load beers: ${e.message}"
             }
         }
     }
+
+    // Filter out test data or invalid beers
+    private fun filterValidBeers(beers: List<Beer>): List<Beer> =
+        // THere is some test/invalid date in the API, to not show this filter them like so
+        // ALso filter out beers with no price and beer names shouldn't have { in there name
+        beers.filter { beer ->
+            !beer.name.contains("{") &&
+                    !beer.name.contains("random") &&
+                    beer.price != null &&
+                    beer.price != "{{price}}" &&
+                    !beer.name.equals("Hi", ignoreCase = true)
+        }
 }

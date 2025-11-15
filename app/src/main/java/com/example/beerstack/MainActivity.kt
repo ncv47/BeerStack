@@ -8,11 +8,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.Image
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.Alignment
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.painterResource
 import androidx.compose.material3.Text
@@ -27,9 +30,13 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.background
 import android.content.Intent
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.text.input.ImeAction
 import com.example.beerstack.ui.BeerViewModel
 import com.example.beerstack.model.Beer
 import com.example.beerstack.components.BeerItemCard
@@ -52,18 +59,35 @@ class MainActivity : ComponentActivity() {
 @Preview
 @Composable
 fun Main(beerViewModel: BeerViewModel = viewModel()){
-    // Request the API when main() is loaded
-    androidx.compose.runtime.LaunchedEffect(Unit) {
-        beerViewModel.getBeers()
+    //For the Sort Function of the scrollable List
+    var selectedSort by remember { mutableStateOf(SortOption.NAME) }
+    //For the search function
+    var searchText by remember { mutableStateOf("") }
+
+    // Request the API when main() is loaded or search changes
+    LaunchedEffect(searchText) {
+        beerViewModel.getBeers(searchText)
     }
+
+    // Make sure beers are sorted reactively when sort option changes
+    val sortedBeers by remember(selectedSort, beerViewModel.beerList) {
+        mutableStateOf(sortBeers(beerViewModel.beerList, selectedSort))
+    }
+
     Column(modifier = Modifier.fillMaxSize()) {
         Header(modifier = Modifier.weight(0.15f))
         Body(
             modifier = Modifier.weight(0.7f),
             //Pass the viewmodel data down to the body composable
             beerViewModel = beerViewModel,
-            beers = beerViewModel.beerList,
-            error = beerViewModel.error
+            beers = sortedBeers,
+            error = beerViewModel.error,
+            //For te sort functionalities
+            selectedSort = selectedSort,
+            onSortChange = { selectedSort = it },
+            //For the search functionalities
+            searchText = searchText,
+            onSearchTextChange = { searchText = it }
         )
         Footer(modifier = Modifier.weight(0.15f))
     }
@@ -118,19 +142,34 @@ fun Body(
     modifier: Modifier = Modifier,
     beerViewModel: BeerViewModel,
     beers: List<Beer>,
-    error: String?
+    error: String?,
+    //Sort
+    selectedSort: SortOption,
+    onSortChange: (SortOption) -> Unit,
+    //Search
+    searchText: String,
+    onSearchTextChange: (String) -> Unit
 ) {
     Column(
         modifier = modifier
             .fillMaxWidth()
             .background(Color.White),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Top
     ) {
+        SearchBar(
+            value = searchText,
+            onValueChange = onSearchTextChange,
+            onSearch = { beerViewModel.getBeers(searchText) }
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        SortDropdown(selectedSort = selectedSort, onSortChange = onSortChange)
+        Spacer(modifier = Modifier.padding(8.dp))
         when {
             error != null -> Text(text = error, color = Color.Red) // Show error if loading failed
             beers.isNotEmpty() -> BeerList(beers) // Show beer list if data is ready
-            else -> Text(text = "Loading...") // Otherwise show loading message
+            searchText.isNotBlank() -> Text("No beers found") // If there are no beers and the searchbar has something in it, no beers are found under this filter
+            else -> Text(text = "Loading...") // Else the beers are still loading fromt the API/Database
         }
     }
 }
@@ -171,4 +210,75 @@ fun BeerList(items: List<Beer>) {
             BeerItemCard(beer)
         }
     }
+}
+
+
+//Options for the sort function
+enum class SortOption(val label: String) {
+    NAME("A-Z"),
+    NAME_REVERSE("Z-A"),
+    PRICE("Price ↑"),
+    PRICE_REVERSE("Price ↓"),
+    RATING("Rating ↑"),
+    RATING_REVERSE("Rating ↓")
+}
+
+//The sort functionality in a dropdown menu
+@Composable
+fun SortDropdown(
+    selectedSort: SortOption,
+    onSortChange: (SortOption) -> Unit
+) {
+    var expanded by remember { mutableStateOf(false) }
+    Box {
+        Button(onClick = { expanded = true }) {
+            Text("Sort: ${selectedSort.label}")
+        }
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
+        ) {
+            SortOption.entries.forEach { option ->
+                DropdownMenuItem(
+                    text = { Text(option.label) },
+                    onClick = {
+                        onSortChange(option)
+                        expanded = false
+                    }
+                )
+            }
+        }
+    }
+}
+
+//The sort dropdown functionality
+fun sortBeers(beers: List<Beer>, sortOption: SortOption): List<Beer> {
+    return when (sortOption) {
+        SortOption.NAME -> beers.sortedBy { it.name }
+        SortOption.NAME_REVERSE -> beers.sortedByDescending { it.name }
+        SortOption.PRICE -> beers.sortedBy { it.price?.replace("$", "")?.toDoubleOrNull() ?: Double.MAX_VALUE }
+        SortOption.PRICE_REVERSE -> beers.sortedByDescending { it.price?.replace("$", "")?.toDoubleOrNull() ?: Double.MIN_VALUE }
+        SortOption.RATING -> beers.sortedBy { it.rating?.average ?: Double.MIN_VALUE }
+        SortOption.RATING_REVERSE -> beers.sortedByDescending { it.rating?.average ?: Double.MAX_VALUE }
+    }
+}
+
+//Searchbar functionality
+@Composable
+fun SearchBar(
+    value: String,
+    onValueChange: (String) -> Unit,
+    onSearch: () -> Unit
+) {
+    TextField(
+        value = value,
+        onValueChange = onValueChange,
+        placeholder = { Text("Search beers...") },
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp),
+        singleLine = true,
+        keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Search),
+        keyboardActions = KeyboardActions(onSearch = { onSearch() })
+    )
 }
