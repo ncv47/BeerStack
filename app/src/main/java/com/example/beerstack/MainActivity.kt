@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.Image
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.Alignment
@@ -30,6 +31,8 @@ import android.content.Intent
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import com.example.beerstack.ui.BeerViewModel
 import com.example.beerstack.model.Beer
 import com.example.beerstack.components.BeerItemCard
@@ -52,6 +55,8 @@ class MainActivity : ComponentActivity() {
 @Preview
 @Composable
 fun Main(beerViewModel: BeerViewModel = viewModel()){
+    //For the Sort Function of the scrollable List
+    var selectedSort by remember { mutableStateOf(SortOption.NAME) }
     // Request the API when main() is loaded
     androidx.compose.runtime.LaunchedEffect(Unit) {
         beerViewModel.getBeers()
@@ -63,7 +68,10 @@ fun Main(beerViewModel: BeerViewModel = viewModel()){
             //Pass the viewmodel data down to the body composable
             beerViewModel = beerViewModel,
             beers = beerViewModel.beerList,
-            error = beerViewModel.error
+            error = beerViewModel.error,
+            //For te sort functionalities
+            selectedSort = selectedSort,
+            onSortChange = { selectedSort = it }
         )
         Footer(modifier = Modifier.weight(0.15f))
     }
@@ -118,7 +126,9 @@ fun Body(
     modifier: Modifier = Modifier,
     beerViewModel: BeerViewModel,
     beers: List<Beer>,
-    error: String?
+    error: String?,
+    selectedSort: SortOption,
+    onSortChange: (SortOption) -> Unit
 ) {
     Column(
         modifier = modifier
@@ -127,6 +137,8 @@ fun Body(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
+        SortDropdown(selectedSort = selectedSort, onSortChange = onSortChange)
+        Spacer(modifier = Modifier.padding(8.dp))
         when {
             error != null -> Text(text = error, color = Color.Red) // Show error if loading failed
             beers.isNotEmpty() -> BeerList(beers) // Show beer list if data is ready
@@ -170,5 +182,55 @@ fun BeerList(items: List<Beer>) {
         items(items) { beer ->
             BeerItemCard(beer)
         }
+    }
+}
+
+
+//Options for the sort function
+enum class SortOption(val label: String) {
+    NAME("A-Z"),
+    NAME_REVERSE("Z-A"),
+    PRICE("Price ↑"),
+    PRICE_REVERSE("Price ↓"),
+    RATING("Rating ↑"),
+    RATING_REVERSE("Rating ↓")
+}
+
+//The sort functionality in a dropdown menu
+@Composable
+fun SortDropdown(
+    selectedSort: SortOption,
+    onSortChange: (SortOption) -> Unit
+) {
+    var expanded by remember { mutableStateOf(false) }
+    Box {
+        Button(onClick = { expanded = true }) {
+            Text("Sort: ${selectedSort.label}")
+        }
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
+        ) {
+            SortOption.values().forEach { option ->
+                DropdownMenuItem(
+                    text = { Text(option.label) },
+                    onClick = {
+                        onSortChange(option)
+                        expanded = false
+                    }
+                )
+            }
+        }
+    }
+}
+
+fun sortBeers(beers: List<Beer>, sortOption: SortOption): List<Beer> {
+    return when (sortOption) {
+        SortOption.NAME -> beers.sortedBy { it.name }
+        SortOption.NAME_REVERSE -> beers.sortedByDescending { it.name }
+        SortOption.PRICE -> beers.sortedBy { it.price?.replace("$", "")?.toDoubleOrNull() ?: Double.MAX_VALUE }
+        SortOption.PRICE_REVERSE -> beers.sortedByDescending { it.price?.replace("$", "")?.toDoubleOrNull() ?: Double.MIN_VALUE }
+        SortOption.RATING -> beers.sortedBy { it.rating?.average ?: Double.MIN_VALUE }
+        SortOption.RATING_REVERSE -> beers.sortedByDescending { it.rating?.average ?: Double.MAX_VALUE }
     }
 }
