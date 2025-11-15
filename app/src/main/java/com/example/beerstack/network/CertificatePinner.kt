@@ -4,7 +4,7 @@ import okhttp3.CertificatePinner
 import okhttp3.OkHttpClient
 
 val certificatePinner = CertificatePinner.Builder()
-    .add("api.sampleapis.com", "sha256/ZxEAGkQnK2SFieL8wKsYIuQE6ruj82isoDykb/EmcXY=")
+    .add("api.sampleapis.com", "sha256/HsbawayQYhB8+cX46fHlLgTgcKsw9Vyb0BeRjJ2LVfY7E=")
     .build()
 
 val okHttpClient = OkHttpClient.Builder()
