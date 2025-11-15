@@ -9,6 +9,7 @@ import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.*
 
 //all the values for the api (punk)
+@Serializable
 data class Beer(
     val id: Int,
     val name: String,
