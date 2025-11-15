@@ -70,6 +70,9 @@ dependencies {
     implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:1.0.0")
     implementation("com.squareup.okhttp3:okhttp:4.11.0")
 
+    //For Secure Sockets Layer (via OpenSSL/with OKHttp)
+    implementation("com.squareup.okhttp3:okhttp:4.11.0")
+
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

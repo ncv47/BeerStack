@@ -5,6 +5,8 @@ import retrofit2.http.GET
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.CertificatePinner
+import okhttp3.OkHttpClient
 import com.example.beerstack.model.Beer
 
 //The used API (sampleAPIs)
