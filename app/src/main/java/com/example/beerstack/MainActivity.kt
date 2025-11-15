@@ -57,17 +57,24 @@ class MainActivity : ComponentActivity() {
 fun Main(beerViewModel: BeerViewModel = viewModel()){
     //For the Sort Function of the scrollable List
     var selectedSort by remember { mutableStateOf(SortOption.NAME) }
+
     // Request the API when main() is loaded
     androidx.compose.runtime.LaunchedEffect(Unit) {
         beerViewModel.getBeers()
     }
+
+    // Make sure beers are sorted reactively when sort option changes
+    val sortedBeers by remember(selectedSort, beerViewModel.beerList) {
+        mutableStateOf(sortBeers(beerViewModel.beerList, selectedSort))
+    }
+
     Column(modifier = Modifier.fillMaxSize()) {
         Header(modifier = Modifier.weight(0.15f))
         Body(
             modifier = Modifier.weight(0.7f),
             //Pass the viewmodel data down to the body composable
             beerViewModel = beerViewModel,
-            beers = beerViewModel.beerList,
+            beers = sortedBeers,
             error = beerViewModel.error,
             //For te sort functionalities
             selectedSort = selectedSort,

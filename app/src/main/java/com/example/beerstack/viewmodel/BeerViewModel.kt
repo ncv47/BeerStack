@@ -21,7 +21,8 @@ class BeerViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 //If ok, update beer list and clear any error
-                beerList = SampleApi.retrofitService.getBeers()
+                val fetchedBeers = SampleApi.retrofitService.getBeers()
+                beerList = filterValidBeers(fetchedBeers)
                 error = null
             } catch (e: Exception) {
                 // if not ok, rest list and show error
@@ -30,4 +31,14 @@ class BeerViewModel : ViewModel() {
             }
         }
     }
+
+    // Filter out test data or invalid beers
+    private fun filterValidBeers(beers: List<Beer>): List<Beer> =
+        beers.filter { beer ->
+            !beer.name.contains("{") &&
+                    !beer.name.contains("random") &&
+                    beer.price != null &&
+                    beer.price != "{{price}}" &&
+                    !beer.name.equals("Hi", ignoreCase = true)
+        }
 }
