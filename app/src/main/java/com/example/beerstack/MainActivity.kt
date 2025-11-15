@@ -143,8 +143,10 @@ fun Body(
     beerViewModel: BeerViewModel,
     beers: List<Beer>,
     error: String?,
+    //Sort
     selectedSort: SortOption,
     onSortChange: (SortOption) -> Unit,
+    //Search
     searchText: String,
     onSearchTextChange: (String) -> Unit
 ) {
@@ -166,7 +168,8 @@ fun Body(
         when {
             error != null -> Text(text = error, color = Color.Red) // Show error if loading failed
             beers.isNotEmpty() -> BeerList(beers) // Show beer list if data is ready
-            else -> Text(text = "Loading...") // Otherwise show loading message
+            searchText.isNotBlank() -> Text("No beers found") // If there are no beers and the searchbar has something in it, no beers are found under this filter
+            else -> Text(text = "Loading...") // Else the beers are still loading fromt the API/Database
         }
     }
 }

@@ -28,24 +28,32 @@ data class Rating(
 )
 
 // Custom serializer to handle rating as object or string
+// handle the 'rating' field when it's either a JSON object (with average and reviews), or just a string like "".
 object RatingOrStringSerializer : KSerializer<Rating?> {
     override val descriptor: SerialDescriptor = buildClassSerialDescriptor("Rating")
 
+    //Convert JSON data into Rating objects
     override fun deserialize(decoder: Decoder): Rating? {
+        // Make sure we are working with JSON
         val input = decoder as? JsonDecoder
             ?: throw IllegalStateException("Only works with Json format.")
+        // get the JSON element for the 'rating' field
         val element = input.decodeJsonElement()
+        // If the element is a JSON object, extract fields
         return when (element) {
             is JsonObject -> {
                 val avg = element["average"]?.jsonPrimitive?.doubleOrNull ?: 0.0
                 val rev = element["reviews"]?.jsonPrimitive?.intOrNull ?: 0
-                Rating(avg, rev)
+                Rating(avg, rev) // Build Rating instance
             }
-            is JsonPrimitive -> null // Covers "" or other primitive types
-            else -> null
+            is JsonPrimitive -> null // If it's just a string (like "") -> missing
+            else -> null //Anything else is ignored (shouldnt be the case)
         }
     }
+    // Deserialize: fetch, split up and READ!
+    // Serialize: convert object to JSON, wich we dont need in this case
     override fun serialize(encoder: Encoder, value: Rating?) {
+        //So just to tell that we dont do anything anymore with the object (to JSON)
         throw NotImplementedError()
     }
 }

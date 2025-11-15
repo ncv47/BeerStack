@@ -35,6 +35,8 @@ class BeerViewModel : ViewModel() {
 
     // Filter out test data or invalid beers
     private fun filterValidBeers(beers: List<Beer>): List<Beer> =
+        // THere is some test/invalid date in the API, to not show this filter them like so
+        // ALso filter out beers with no price and beer names shouldn't have { in there name
         beers.filter { beer ->
             !beer.name.contains("{") &&
                     !beer.name.contains("random") &&

@@ -7,7 +7,7 @@ import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import com.example.beerstack.model.Beer
 
-//The used API
+//The used API (sampleAPIs)
 private const val BASE_URL = "https://api.sampleapis.com/"
 
 //Retrofit instance with given arguments: URL for API request, Gson converter to parse JSON into data classes
@@ -17,7 +17,7 @@ private val retrofit = Retrofit.Builder()
     .build()
 
 interface SampleBeersApiService {
-    //HTTP Get request from beers/ale of the API
+    //HTTP Get request from beers/ale of the API (https://api.sampleapis.com/beers/ale)
     @GET("beers/ale")
     //Asynchronously fetch a list of Beer objects
     suspend fun getBeers(): List<Beer>
