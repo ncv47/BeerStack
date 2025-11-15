@@ -238,7 +238,7 @@ fun SortDropdown(
             expanded = expanded,
             onDismissRequest = { expanded = false }
         ) {
-            SortOption.values().forEach { option ->
+            SortOption.entries.forEach { option ->
                 DropdownMenuItem(
                     text = { Text(option.label) },
                     onClick = {
