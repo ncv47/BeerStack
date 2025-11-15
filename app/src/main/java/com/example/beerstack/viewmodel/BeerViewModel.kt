@@ -17,15 +17,16 @@ class BeerViewModel : ViewModel() {
     var error by mutableStateOf<String?>(null)
 
     //Try request the beers from the api
-    fun getBeers() {
+    fun getBeers(query: String = "") {
         viewModelScope.launch {
             try {
                 //If ok, update beer list and clear any error
                 val fetchedBeers = SampleApi.retrofitService.getBeers()
                 beerList = filterValidBeers(fetchedBeers)
+                    .filter { it.name.contains(query, ignoreCase = true) } //To filter out for the search function
                 error = null
-            } catch (e: Exception) {
-                // if not ok, rest list and show error
+            } catch (e: Exception) { //Catch the error
+                // if not ok, reset list and show error
                 beerList = emptyList()
                 error = "Failed to load beers: ${e.message}"
             }
