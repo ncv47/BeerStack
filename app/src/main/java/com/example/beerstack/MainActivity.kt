@@ -114,7 +114,7 @@ fun Header(modifier: Modifier = Modifier){
             modifier = Modifier.weight(2f)
         ) {
             Image(
-                painter = painterResource(R.drawable.test),
+                painter = painterResource(R.drawable.beerstacklogo),
                 contentDescription = "BeerStack Logo"
             )
             Text(
