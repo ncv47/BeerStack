@@ -1,7 +1,6 @@
 package com.example.beerstack.components
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -47,6 +46,11 @@ fun BeerItemCard(beer: Beer) {
                 beer.price?.let { Text("Price: $it", fontSize = 14.sp, color = Color.DarkGray) }
                 //Always show the ID
                 Text("ID: ${beer.id}", fontSize = 10.sp, color = Color.LightGray)
+                //For the JSON (2 seperate values)
+                beer.rating?.let {
+                    Text("Rating: %.2f".format(it.average), fontSize = 14.sp, color = Color.DarkGray)
+                    Text("Reviews: ${it.reviews}", fontSize = 12.sp, color = Color.Gray)
+                }
             }
         }
     }

@@ -3,6 +3,9 @@ package com.example.beerstack.network
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
+import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
+import kotlinx.serialization.json.Json
+import okhttp3.MediaType.Companion.toMediaType
 import com.example.beerstack.model.Beer
 
 //The used API
@@ -11,7 +14,7 @@ private const val BASE_URL = "https://api.sampleapis.com/"
 //Retrofit instance with given arguments: URL for API request, Gson converter to parse JSON into data classes
 private val retrofit = Retrofit.Builder()
     .baseUrl(BASE_URL)
-    .addConverterFactory(GsonConverterFactory.create())
+    .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
     .build()
 
 interface SampleBeersApiService {
