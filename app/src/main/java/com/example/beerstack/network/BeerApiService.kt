@@ -13,8 +13,11 @@ private const val BASE_URL = "https://api.sampleapis.com/"
 //Retrofit instance with given arguments: URL for API request, Gson converter to parse JSON into data classes
 private val retrofit = Retrofit.Builder()
     .baseUrl(BASE_URL)
+    //Client from CertificatePinner.kt (import not necessary bcs same dir)
+    .client(okHttpClient) // enables SSL pinning
     .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
     .build()
+
 
 interface SampleBeersApiService {
     //HTTP Get request from beers/ale of the API (https://api.sampleapis.com/beers/ale)
