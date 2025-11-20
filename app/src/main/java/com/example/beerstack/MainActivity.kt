@@ -167,9 +167,40 @@ fun Body(
         Spacer(modifier = Modifier.padding(8.dp))
         when {
             error != null -> Text(text = error, color = Color.Red) // Show error if loading failed
-            beers.isNotEmpty() -> BeerList(beers) // Show beer list if data is ready
+            beers.isNotEmpty() -> BeerList(beers, onGetBeerById = { beerId -> beerViewModel.getBeerById(beerId) }) // beerId = Show beer list if data is ready
+            //getBeerById = connects the button’s click event to the API-fetching logic in the ViewModel
             searchText.isNotBlank() -> Text("No beers found") // If there are no beers and the searchbar has something in it, no beers are found under this filter
             else -> Text(text = "Loading...") // Else the beers are still loading fromt the API/Database
+        }
+
+        //Get last succussfull fetched beer & last error message
+        val lastAddedBeerName = beerViewModel.lastAddedBeerName
+        val lastAddedBeerError = beerViewModel.lastAddedBeerError
+
+        // If a beer was fetched successfully
+        if (lastAddedBeerName != null) {
+            // Dismiss clears the notification state
+            Snackbar( //snackbar= brief pop up, type of notification
+                action = {
+                    Button(onClick = { beerViewModel.clearLastBeerInfo() }) {
+                        Text("Dismiss")
+                    }
+                },
+                modifier = Modifier.padding(8.dp)
+            ) {
+                Text("Beer '${lastAddedBeerName}' fetched and processed!")
+            }
+        } else if (lastAddedBeerError != null) { // If there was an error fetching a beer
+            Snackbar(
+                action = {
+                    Button(onClick = { beerViewModel.clearLastBeerInfo() }) {
+                        Text("Dismiss")
+                    }
+                },
+                modifier = Modifier.padding(8.dp)
+            ) {
+                Text(lastAddedBeerError) //show error
+            }
         }
     }
 }
@@ -203,11 +234,13 @@ fun Footer(modifier: Modifier = Modifier){
 }
 
 //Show from the API the beers (now temporary the test data) in a scrolling list, using LazyColumn
+// beer = for scrollabe list
+// OnGetBeerByID = for the collection specific fetch
 @Composable
-fun BeerList(items: List<Beer>) {
+fun BeerList(items: List<Beer>, onGetBeerById: (Int) -> Unit) {
     LazyColumn {
         items(items) { beer ->
-            BeerItemCard(beer)
+            BeerItemCard(beer, onGetBeerById)
         }
     }
 }
