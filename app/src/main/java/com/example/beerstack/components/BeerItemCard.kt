@@ -58,7 +58,7 @@ fun BeerItemCard(
                 }
                 // Button
                 Button(onClick = { onGetBeerById(beer.id) }) {
-                    Text("Add or Check Beer")
+                    Text("Drink Beer(s)")
                 }
             }
         }
