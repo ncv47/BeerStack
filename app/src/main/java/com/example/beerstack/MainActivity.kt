@@ -169,7 +169,7 @@ fun Body(
         Spacer(modifier = Modifier.padding(8.dp))
         when {
             error != null -> Text(text = error, color = Color.Red) // Show error if loading failed
-            beers.isNotEmpty() -> BeerList(beers, onGetBeerById = { beerId, quantity -> beerViewModel.getBeerById(beerId) })
+            beers.isNotEmpty() -> BeerList(beers, onGetBeerById = { beerId, quantity -> beerViewModel.getBeerById(beerId, quantity) })
             //getBeerById = connects the button’s click event to the API-fetching logic in the ViewModel
             //Quantity -> = how many times it should be done, loop
             searchText.isNotBlank() -> Text("No beers found") // If there are no beers and the searchbar has something in it, no beers are found under this filter
@@ -179,6 +179,7 @@ fun Body(
         //Get last succussfull fetched beer & last error message
         val lastAddedBeerName = beerViewModel.lastAddedBeerName
         val lastAddedBeerError = beerViewModel.lastAddedBeerError
+        val lastAddedQuantity = beerViewModel.lastAddedQuantity
 
         if (lastAddedBeerName != null || lastAddedBeerError != null) {
             Dialog(onDismissRequest = { beerViewModel.clearLastBeerInfo() }) { //Dialog = pop up
@@ -192,7 +193,9 @@ fun Body(
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(
                             //Show message on message depedning on suces or error
-                            text = lastAddedBeerName?.let { "Beer '$it' added to collection!" } ?: lastAddedBeerError.orEmpty(),
+                            text = lastAddedBeerName?.let {
+                                "Added $lastAddedQuantity Beer(s) of '$it' to collection!"
+                            } ?: lastAddedBeerError.orEmpty(),
                             color = if (lastAddedBeerError != null) Color.Red else Color.Black,
                             modifier = Modifier.padding(20.dp)
                         )
