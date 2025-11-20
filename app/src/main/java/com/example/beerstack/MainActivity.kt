@@ -37,6 +37,8 @@ import androidx.compose.runtime.*
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.window.Dialog
+import androidx.compose.foundation.shape.RoundedCornerShape
 import com.example.beerstack.ui.BeerViewModel
 import com.example.beerstack.model.Beer
 import com.example.beerstack.components.BeerItemCard
@@ -167,9 +169,46 @@ fun Body(
         Spacer(modifier = Modifier.padding(8.dp))
         when {
             error != null -> Text(text = error, color = Color.Red) // Show error if loading failed
-            beers.isNotEmpty() -> BeerList(beers) // Show beer list if data is ready
+            beers.isNotEmpty() -> BeerList(beers, onGetBeerById = { beerId, quantity -> beerViewModel.getBeerById(beerId, quantity) })
+            //getBeerById = connects the button’s click event to the API-fetching logic in the ViewModel
+            //Quantity -> = how many times it should be done, loop
             searchText.isNotBlank() -> Text("No beers found") // If there are no beers and the searchbar has something in it, no beers are found under this filter
             else -> Text(text = "Loading...") // Else the beers are still loading fromt the API/Database
+        }
+
+        //Get last succussfull fetched beer & last error message
+        val lastAddedBeerName = beerViewModel.lastAddedBeerName
+        val lastAddedBeerError = beerViewModel.lastAddedBeerError
+        val lastAddedQuantity = beerViewModel.lastAddedQuantity
+
+        if (lastAddedBeerName != null || lastAddedBeerError != null) {
+            Dialog(onDismissRequest = { beerViewModel.clearLastBeerInfo() }) { //Dialog = pop up
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(0.85f)
+                        .padding(24.dp)
+                        .background(Color.White, shape = RoundedCornerShape(18.dp)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(
+                            //Show message on message depedning on suces or error
+                            text = lastAddedBeerName?.let {
+                                "Added $lastAddedQuantity Beer(s) of '$it' to collection!"
+                            } ?: lastAddedBeerError.orEmpty(),
+                            color = if (lastAddedBeerError != null) Color.Red else Color.Black,
+                            modifier = Modifier.padding(20.dp)
+                        )
+                        Button(
+                            onClick = { beerViewModel.clearLastBeerInfo() },
+                            shape = RoundedCornerShape(14.dp),
+                            modifier = Modifier.padding(bottom = 8.dp)
+                        ) {
+                            Text("OK")
+                        }
+                    }
+                }
+            }
         }
     }
 }
@@ -203,11 +242,16 @@ fun Footer(modifier: Modifier = Modifier){
 }
 
 //Show from the API the beers (now temporary the test data) in a scrolling list, using LazyColumn
+// beer = for scrollabe list
+// OnGetBeerByID = for the collection specific fetch
 @Composable
-fun BeerList(items: List<Beer>) {
+fun BeerList(
+    items: List<Beer>,
+    onGetBeerById: (Int, Int) -> Unit // beerId and quantity
+) {
     LazyColumn {
         items(items) { beer ->
-            BeerItemCard(beer)
+            BeerItemCard(beer, onGetBeerById) // now expects (id, quantity)
         }
     }
 }
