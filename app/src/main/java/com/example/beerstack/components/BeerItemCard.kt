@@ -5,6 +5,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.Button
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -16,7 +17,11 @@ import coil.compose.AsyncImage
 import com.example.beerstack.model.Beer
 
 @Composable
-fun BeerItemCard(beer: Beer) {
+fun BeerItemCard(
+    beer: Beer,
+    onGetBeerById: (Int) -> Unit = {},  // New callback for button
+    modifier: Modifier = Modifier
+) {
     Card(
         //Spacing
         modifier = Modifier
@@ -50,6 +55,10 @@ fun BeerItemCard(beer: Beer) {
                 beer.rating?.let {
                     Text("Rating: %.2f".format(it.average), fontSize = 14.sp, color = Color.DarkGray)
                     Text("Reviews: ${it.reviews}", fontSize = 12.sp, color = Color.Gray)
+                }
+                // Button
+                Button(onClick = { onGetBeerById(beer.id) }) {
+                    Text("Add or Check Beer")
                 }
             }
         }
