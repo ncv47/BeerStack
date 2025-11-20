@@ -37,6 +37,8 @@ import androidx.compose.runtime.*
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.window.Dialog
+import androidx.compose.foundation.shape.RoundedCornerShape
 import com.example.beerstack.ui.BeerViewModel
 import com.example.beerstack.model.Beer
 import com.example.beerstack.components.BeerItemCard
@@ -177,29 +179,31 @@ fun Body(
         val lastAddedBeerName = beerViewModel.lastAddedBeerName
         val lastAddedBeerError = beerViewModel.lastAddedBeerError
 
-        // If a beer was fetched successfully
-        if (lastAddedBeerName != null) {
-            // Dismiss clears the notification state
-            Snackbar( //snackbar= brief pop up, type of notification
-                action = {
-                    Button(onClick = { beerViewModel.clearLastBeerInfo() }) {
-                        Text("Dismiss")
+        if (lastAddedBeerName != null || lastAddedBeerError != null) {
+            Dialog(onDismissRequest = { beerViewModel.clearLastBeerInfo() }) { //Dialog = pop up
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(0.85f)
+                        .padding(24.dp)
+                        .background(Color.White, shape = RoundedCornerShape(18.dp)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(
+                            //Show message on message depedning on suces or error
+                            text = lastAddedBeerName?.let { "Beer '$it' added to collection!" } ?: lastAddedBeerError.orEmpty(),
+                            color = if (lastAddedBeerError != null) Color.Red else Color.Black,
+                            modifier = Modifier.padding(20.dp)
+                        )
+                        Button(
+                            onClick = { beerViewModel.clearLastBeerInfo() },
+                            shape = RoundedCornerShape(14.dp),
+                            modifier = Modifier.padding(bottom = 8.dp)
+                        ) {
+                            Text("OK")
+                        }
                     }
-                },
-                modifier = Modifier.padding(8.dp)
-            ) {
-                Text("Beer '${lastAddedBeerName}' fetched and processed!")
-            }
-        } else if (lastAddedBeerError != null) { // If there was an error fetching a beer
-            Snackbar(
-                action = {
-                    Button(onClick = { beerViewModel.clearLastBeerInfo() }) {
-                        Text("Dismiss")
-                    }
-                },
-                modifier = Modifier.padding(8.dp)
-            ) {
-                Text(lastAddedBeerError) //show error
+                }
             }
         }
     }
