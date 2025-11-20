@@ -44,4 +44,27 @@ class BeerViewModel : ViewModel() {
                     beer.price != "{{price}}" &&
                     !beer.name.equals("Hi", ignoreCase = true)
         }
+
+    //All this is for the collectoin, specific beer fetch from api (2nd request)
+    var lastAddedBeerName by mutableStateOf<String?>(null)
+    var lastAddedBeerError by mutableStateOf<String?>(null)
+
+    fun getBeerById(id: Int) {
+        viewModelScope.launch {
+            try {
+                val beer = SampleApi.retrofitService.getBeerById(id)
+                lastAddedBeerName = beer.name // For notification
+                lastAddedBeerError = null
+            } catch (e: Exception) {
+                lastAddedBeerName = null
+                lastAddedBeerError = "Failed to fetch beer: ${e.message}"
+            }
+        }
+    }
+
+    // Call this to clear popup after dismiss
+    fun clearLastBeerInfo() {
+        lastAddedBeerName = null
+        lastAddedBeerError = null
+    }
 }
