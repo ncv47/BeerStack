@@ -14,12 +14,16 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.Alignment
 import coil.compose.AsyncImage
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import com.example.beerstack.model.Beer
 
 @Composable
 fun BeerItemCard(
     beer: Beer,
-    onGetBeerById: (Int) -> Unit = {},  // New callback for button
+    onGetBeerById: (Int, Int) -> Unit = { _, _ -> }, // New callback for buttonµ
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -56,11 +60,31 @@ fun BeerItemCard(
                     Text("Rating: %.2f".format(it.average), fontSize = 14.sp, color = Color.DarkGray)
                     Text("Reviews: ${it.reviews}", fontSize = 12.sp, color = Color.Gray)
                 }
-                // Button
-                Button(onClick = { onGetBeerById(beer.id) }) {
-                    Text("Drink Beer(s)")
+                var quantity by remember { mutableStateOf(1) } // how many beers
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Button(
+                        onClick = { if (quantity > 1) quantity-- },
+                        contentPadding = PaddingValues(0.dp),
+                        modifier = Modifier.size(32.dp)
+                    ) { Text("-") }
+                    Text(
+                        quantity.toString(),
+                        modifier = Modifier.padding(horizontal = 8.dp)
+                    )
+                    Button(
+                        onClick = { quantity++ },
+                        contentPadding = PaddingValues(0.dp),
+                        modifier = Modifier.size(32.dp)
+                    ) { Text("+") }
+                    Spacer(modifier = Modifier.width(16.dp))
+                    // Button to add
+                    Button(onClick = { onGetBeerById(beer.id, quantity) }) {
+                        Text("Drink Beer(s)")
+                    }
                 }
             }
+
+
         }
     }
 }

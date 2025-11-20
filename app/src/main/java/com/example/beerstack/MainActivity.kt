@@ -169,8 +169,9 @@ fun Body(
         Spacer(modifier = Modifier.padding(8.dp))
         when {
             error != null -> Text(text = error, color = Color.Red) // Show error if loading failed
-            beers.isNotEmpty() -> BeerList(beers, onGetBeerById = { beerId -> beerViewModel.getBeerById(beerId) }) // beerId = Show beer list if data is ready
+            beers.isNotEmpty() -> BeerList(beers, onGetBeerById = { beerId, quantity -> beerViewModel.getBeerById(beerId) })
             //getBeerById = connects the button’s click event to the API-fetching logic in the ViewModel
+            //Quantity -> = how many times it should be done, loop
             searchText.isNotBlank() -> Text("No beers found") // If there are no beers and the searchbar has something in it, no beers are found under this filter
             else -> Text(text = "Loading...") // Else the beers are still loading fromt the API/Database
         }
@@ -241,10 +242,13 @@ fun Footer(modifier: Modifier = Modifier){
 // beer = for scrollabe list
 // OnGetBeerByID = for the collection specific fetch
 @Composable
-fun BeerList(items: List<Beer>, onGetBeerById: (Int) -> Unit) {
+fun BeerList(
+    items: List<Beer>,
+    onGetBeerById: (Int, Int) -> Unit // beerId and quantity
+) {
     LazyColumn {
         items(items) { beer ->
-            BeerItemCard(beer, onGetBeerById)
+            BeerItemCard(beer, onGetBeerById) // now expects (id, quantity)
         }
     }
 }
