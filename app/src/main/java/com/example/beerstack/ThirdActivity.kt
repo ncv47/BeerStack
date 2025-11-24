@@ -6,7 +6,6 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.Toast
-import androidx.activity.ComponentActivity
 import com.example.beerstack.data.UserDB.User
 import com.example.beerstack.data.UserDB.AppDataContainer
 import kotlinx.coroutines.CoroutineScope
@@ -14,7 +13,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 
-class ThirdActivity : ComponentActivity() {
+class ThirdActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val repository = AppDataContainer(this).usersRepository
