@@ -56,6 +56,7 @@ class SecondActivity : ComponentActivity() {
                                 Text(text = "Name: ${beer.beername}")
                                 Text(text = "Price: ${beer.beerprice}")
                                 Text(text = "Rating: ${beer.beerrating}")
+                                Text(text = "Average: ${beer.beeraverage}")
                             }
                         }
                     }
@@ -67,21 +68,11 @@ class SecondActivity : ComponentActivity() {
             val currentItems = repository.getAllItemsStream().firstOrNull() ?: emptyList()
             if (currentItems.isEmpty()) {
                 val beers = listOf(
-                    Item(beername = "Sample Beer", beerprice = 8, beerrating = 4),
-                    Item(beername = "Sample Beer", beerprice = 8, beerrating = 4),
-                    Item(beername = "Sample Beer", beerprice = 8, beerrating = 4),
-                    Item(beername = "Sample Beer", beerprice = 8, beerrating = 4),
-                    Item(beername = "Sample Beer", beerprice = 8, beerrating = 4),
-                    Item(beername = "Sample Beer", beerprice = 8, beerrating = 4),
-                    Item(beername = "Sample Beer", beerprice = 8, beerrating = 4),
-                    Item(beername = "Sample Beer", beerprice = 8, beerrating = 4),
-                    Item(beername = "Sample Beer", beerprice = 8, beerrating = 4),
-                    Item(beername = "Sample Beer", beerprice = 8, beerrating = 4),
-                    Item(beername = "Sample Beer", beerprice = 8, beerrating = 4),
-                    Item(beername = "Sample Beer", beerprice = 8, beerrating = 4),
-                    Item(beername = "Sample Beer", beerprice = 8, beerrating = 4),
-                    Item(beername = "Sample Beer", beerprice = 8, beerrating = 4),
-                    Item(beername = "Sample Beer", beerprice = 8, beerrating = 4),
+                    Item(beername = "Sample Beer", beerprice = 8, beerimage = "",beerrating = 4, beeraverage = 3.4),
+                    Item(beername = "Sample Beer", beerprice = 8, beerimage = "",beerrating = 4, beeraverage = 3.4),
+                    Item(beername = "Sample Beer", beerprice = 8, beerimage = "",beerrating = 4, beeraverage = 3.4),
+                    Item(beername = "Sample Beer", beerprice = 8, beerimage = "",beerrating = 4, beeraverage = 3.4),
+
                 )
                 beers.forEach { repository.insertItem(it) }
             }

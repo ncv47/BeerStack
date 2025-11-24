@@ -61,8 +61,10 @@ class ThirdActivity : ComponentActivity() {
             val currentItems = repository.getAllItemsStream().firstOrNull() ?: emptyList()
             if (currentItems.isEmpty()) {
                 val users = listOf(
-                    User(userName = "Marco", userPassword = "password"),
-                    User(userName = "George", userPassword = "password")
+                    User(userName = "Kenzo", userPassword = "password"),
+                    User(userName = "Noah", userPassword = "password"),
+                    User(userName = "CHANG", userPassword = "password"),
+                    User(userName = "Lancelot", userPassword = "password")
                 )
                 users.forEach { repository.insertItem(it) }
             }
