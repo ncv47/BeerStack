@@ -17,6 +17,22 @@ abstract class BaseActivity : ComponentActivity() {
     }
 
     private fun isRooted(): Boolean {
-        return true
+        return checkSuPath()
+    }
+
+    private fun checkSuPath(): Boolean {
+        //Checks for su binaries
+        val paths = arrayOf(
+            "/sbin/su",
+            "/system/app/Superuser.apk",
+            "/system/bin/failsafe/su",
+            "/system/bin/su",
+            "/system/xbin/su",
+            "/system/sd/xbin/su",
+            "/data/local/xbin/su",
+            "/data/local/bin/su",
+            "/data/local/su"
+        )
+        return paths.any { java.io.File(it).exists() }
     }
 }
