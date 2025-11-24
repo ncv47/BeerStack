@@ -1,7 +1,6 @@
 package com.example.beerstack
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Column
@@ -43,7 +42,7 @@ import com.example.beerstack.ui.BeerViewModel
 import com.example.beerstack.model.Beer
 import com.example.beerstack.components.BeerItemCard
 
-class MainActivity : ComponentActivity() {
+class MainActivity : BaseActivity() {
     //OVerite onCreate, when the activity is start/page is launced
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
