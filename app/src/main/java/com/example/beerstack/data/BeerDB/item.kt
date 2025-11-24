@@ -9,5 +9,7 @@ data class Item(
     val beerid: Int = 0,
     val beername: String,
     val beerprice: Int,
-    val beerrating: Int
+    val beerimage: String? = null,
+    val beerrating: Int,
+    val beeraverage: Double = 0.0
 )
