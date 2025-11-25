@@ -168,7 +168,7 @@ fun Body(
         Spacer(modifier = Modifier.padding(8.dp))
         when {
             error != null -> Text(text = error, color = Color.Red) // Show error if loading failed
-            beers.isNotEmpty() -> BeerList(beers, onGetBeerById = { beerId, quantity -> beerViewModel.getBeerById(beerId, quantity) })
+            beers.isNotEmpty() -> BeerList(beers, onGetBeerById = { beerId -> beerViewModel.getBeerById(beerId) })
             //getBeerById = connects the button’s click event to the API-fetching logic in the ViewModel
             //Quantity -> = how many times it should be done, loop
             searchText.isNotBlank() -> Text("No beers found") // If there are no beers and the searchbar has something in it, no beers are found under this filter
@@ -178,7 +178,6 @@ fun Body(
         //Get last succussfull fetched beer & last error message
         val lastAddedBeerName = beerViewModel.lastAddedBeerName
         val lastAddedBeerError = beerViewModel.lastAddedBeerError
-        val lastAddedQuantity = beerViewModel.lastAddedQuantity
 
         if (lastAddedBeerName != null || lastAddedBeerError != null) {
             Dialog(onDismissRequest = { beerViewModel.clearLastBeerInfo() }) { //Dialog = pop up
@@ -193,7 +192,7 @@ fun Body(
                         Text(
                             //Show message on message depedning on suces or error
                             text = lastAddedBeerName?.let {
-                                "Added $lastAddedQuantity Beer(s) of '$it' to collection!"
+                                "Added '$it' to collection!"
                             } ?: lastAddedBeerError.orEmpty(),
                             color = if (lastAddedBeerError != null) Color.Red else Color.Black,
                             modifier = Modifier.padding(20.dp)
@@ -246,11 +245,11 @@ fun Footer(modifier: Modifier = Modifier){
 @Composable
 fun BeerList(
     items: List<Beer>,
-    onGetBeerById: (Int, Int) -> Unit // beerId and quantity
+    onGetBeerById: (Int) -> Unit
 ) {
     LazyColumn {
         items(items) { beer ->
-            BeerItemCard(beer, onGetBeerById) // now expects (id, quantity)
+            BeerItemCard(beer, onGetBeerById)
         }
     }
 }

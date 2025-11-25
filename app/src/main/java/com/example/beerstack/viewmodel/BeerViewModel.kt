@@ -48,19 +48,16 @@ class BeerViewModel : ViewModel() {
     //All this is for the collectoin, specific beer fetch from api (2nd request)
     var lastAddedBeerName by mutableStateOf<String?>(null)
     var lastAddedBeerError by mutableStateOf<String?>(null)
-    var lastAddedQuantity by mutableStateOf<Int?>(null)
 
-    fun getBeerById(id: Int, quantity: Int) {
+    fun getBeerById(id: Int) {
         viewModelScope.launch {
             try {
                 val beer = SampleApi.retrofitService.getBeerById(id)
                 lastAddedBeerName = beer.name
                 lastAddedBeerError = null
-                lastAddedQuantity = quantity // store how many were added
             } catch (e: Exception) {
                 lastAddedBeerName = null
                 lastAddedBeerError = "Failed to fetch beer: ${e.message}"
-                lastAddedQuantity = null
             }
         }
     }
@@ -69,6 +66,5 @@ class BeerViewModel : ViewModel() {
     fun clearLastBeerInfo() {
         lastAddedBeerName = null
         lastAddedBeerError = null
-        lastAddedQuantity = null
     }
 }
