@@ -19,6 +19,6 @@ val certificatePinner = CertificatePinner.Builder()
     .build()
 
 val okHttpClient = OkHttpClient.Builder()
-    .certificatePinner(certificatePinner)
-    //.certificatePinner(CertificatePinner.DEFAULT) //If you dont want to use SSL Pinning
+    //.certificatePinner(certificatePinner)
+    .certificatePinner(CertificatePinner.DEFAULT) //If you dont want to use SSL Pinning
     .build()

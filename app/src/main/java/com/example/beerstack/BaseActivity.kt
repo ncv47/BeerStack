@@ -11,7 +11,7 @@ abstract class BaseActivity : ComponentActivity() {
 
         if (isRooted()) {
             //Closes the app
-            finish()
+            //finish()
             return
         }
     }
