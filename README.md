@@ -174,12 +174,30 @@ abstract class BaseActivity : ComponentActivity() {
 ### Secure Sockets Layer
 
 Secures the request so its cant be intercepted without the certificate, TLS handshake
+See res/xml/network_security_config.xml
+and this line in AndroidManifest.xml: android:networkSecurityConfig="@xml/network_security_config"
 
-See network/CertificatePinner.kt
+if burpsuite intercepting on the network get this error:
 
-```kotlin
-PLACE HERE THE FINISHED CODE
+![image.png](readme-resources/image8.png)
+
+#### Get The Correct Certificate SHA-256 Hash
+
+Go to the website, click on the lock > connection is secure > certificate is valid
+Then in the new window details > export > .crt file
+
+![image.png](readme-resources/image9.png)
+
+Then for the hash do these commands with openssl:
+
+```powershell
+openssl x509 -in koenkoreman-be.pem -pubkey -noout | openssl pkey
+-pubin -outform der | openssl dgst -sha256 -binary | openssl enc -
+base64
 ```
+
+Result is this:
+> HsbawayQYhB8+cXA6fHLgTgcXsw9vVb8eRIJ2LVfY7E=
 
 ### The Intercept & Modify Exploit
 
