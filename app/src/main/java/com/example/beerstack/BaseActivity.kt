@@ -9,16 +9,16 @@ abstract class BaseActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        //if (isRooted()) {
+        if (isRooted()) {
             //Closes the app
-        //    finish()
-        //    return
-        //}
+            //finish()
+            return
+        }
     }
 
-    //private fun isRooted(): Boolean {
-    //    return checkSuPath() || checkWhichSu()
-    //}
+    private fun isRooted(): Boolean {
+        return checkSuPath() || checkWhichSu()
+    }
 
     private fun checkSuPath(): Boolean {
         //Checks for su binaries
