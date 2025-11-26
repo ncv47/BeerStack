@@ -14,11 +14,11 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.Alignment
 import coil.compose.AsyncImage
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import com.example.beerstack.model.Beer
+import androidx.compose.ui.res.painterResource
+import com.example.beerstack.R
+
+
 
 @Composable
 fun BeerItemCard(
@@ -44,8 +44,13 @@ fun BeerItemCard(
                 AsyncImage(
                     model = url,
                     contentDescription = "Beer photo",
-                    modifier = Modifier.size(70.dp).padding(end = 8.dp),
-                    contentScale = ContentScale.Crop
+                    modifier = Modifier
+                        .size(70.dp)
+                        .padding(end = 8.dp),
+                    contentScale = ContentScale.Crop,
+                    //Placeholder if there is an error for the picture
+                    placeholder = painterResource(R.drawable.beerpicture_placeholder),
+                    error = painterResource(R.drawable.beerpicture_placeholder)
                 )
             }
             //Show beer details to the right of the image
