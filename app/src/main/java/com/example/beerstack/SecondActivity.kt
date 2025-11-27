@@ -1,6 +1,7 @@
 package com.example.beerstack
 
 import android.os.Bundle
+import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -9,7 +10,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import com.example.beerstack.data.BeerDB.AppDataContainer
 import com.example.beerstack.data.BeerDB.Item
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.firstOrNull
@@ -21,24 +21,26 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.lifecycleScope
 
 
 // Second page for database testing
-class SecondActivity : BaseActivity() {
+class SecondActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         // Initialize your repository
         val repository = AppDataContainer(this).itemsRepository
+
         setContent {
             MaterialTheme {
                 var items by remember { mutableStateOf<List<Item>>(emptyList()) }
 
                 // Collect the Flow from Room
                 LaunchedEffect(Unit) {
-                    repository.getAllItemsStream().collectLatest {
-                        items = it
+                    repository.getAllUsersWithBeer().collectLatest { userWithBeersList ->
+                        items = userWithBeersList.flatMap { it.library }
                     }
                 }
                 Scaffold(
@@ -63,15 +65,14 @@ class SecondActivity : BaseActivity() {
             }
         }
         // Insert a sample item so the database is created
-        CoroutineScope(Dispatchers.IO).launch {
-            val currentItems = repository.getAllItemsStream().firstOrNull() ?: emptyList()
+        lifecycleScope.launch(Dispatchers.IO) {
+            val currentItems = repository.getAllUsersWithBeer().firstOrNull() ?: emptyList()
             if (currentItems.isEmpty()) {
                 val beers = listOf(
-                    Item(beername = "Sample Beer", beerprice = 8, beerimage = "",beerrating = 4, beeraverage = 3.4),
-                    Item(beername = "Sample Beer", beerprice = 8, beerimage = "",beerrating = 4, beeraverage = 3.4),
-                    Item(beername = "Sample Beer", beerprice = 8, beerimage = "",beerrating = 4, beeraverage = 3.4),
-                    Item(beername = "Sample Beer", beerprice = 8, beerimage = "",beerrating = 4, beeraverage = 3.4),
-
+                    Item(beername = "Sample Beer", beerprice = 8, beerimage = "",beerrating = 4, beeraverage = 3.4, ownerId = 1),
+                    Item(beername = "Sample Beer", beerprice = 8, beerimage = "",beerrating = 4, beeraverage = 3.4, ownerId = 1),
+                    Item(beername = "Sample Beer", beerprice = 8, beerimage = "",beerrating = 4, beeraverage = 3.4, ownerId = 1),
+                    Item(beername = "Sample Beer", beerprice = 8, beerimage = "",beerrating = 4, beeraverage = 3.4, ownerId = 1),
                 )
                 beers.forEach { repository.insertItem(it) }
             }
