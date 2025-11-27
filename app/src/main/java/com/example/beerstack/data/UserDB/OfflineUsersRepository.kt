@@ -2,18 +2,18 @@ package com.example.beerstack.data.UserDB
 
 import kotlinx.coroutines.flow.Flow
 
-class OfflineUsersRepository(private val itemDao: UserDao) : UsersRepository {
-    override fun getAllItemsStream(): Flow<List<com.example.beerstack.data.UserDB.User>> = itemDao.getAllItems()
+class OfflineUsersRepository(private val userDao: UserDao) : UsersRepository {
 
-    override fun getItemStream(id: Int): Flow<com.example.beerstack.data.UserDB.User?> = itemDao.getItem(id)
+    override fun getAllUsers(): Flow<List<User>> = userDao.getAllItems()
 
-    override suspend fun insertItem(item: com.example.beerstack.data.UserDB.User) = itemDao.insert(item)
+    override fun getUserById(id: Int): Flow<User?> = userDao.getItem(id)
 
-    override suspend fun deleteItem(item: com.example.beerstack.data.UserDB.User) = itemDao.delete(item)
+    override suspend fun insert(user: User) = userDao.insert(user)
 
-    override suspend fun updateItem(item: User) = itemDao.update(item)
+    override suspend fun delete(user: User) = userDao.delete(user)
+
+    override suspend fun update(user: User) = userDao.update(user)
 
     override suspend fun login(username: String, password: String): User? =
-        itemDao.login(username, password)
-
+        userDao.login(username, password)
 }

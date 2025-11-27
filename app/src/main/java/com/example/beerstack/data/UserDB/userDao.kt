@@ -28,4 +28,3 @@ interface UserDao {
     suspend fun login(username: String, password: String): User?
 
 }
-

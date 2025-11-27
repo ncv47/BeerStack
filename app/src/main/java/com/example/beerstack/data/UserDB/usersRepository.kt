@@ -6,11 +6,11 @@ import kotlinx.coroutines.flow.Flow
  * Repository that provides insert, update, delete, and retrieve of [User] from a given data source.
  */
 interface UsersRepository {
-    fun getAllItemsStream(): Flow<List<User>>
-    fun getItemStream(id: Int): Flow<User?>
-    suspend fun insertItem(item: User)
-    suspend fun deleteItem(item: User)
-    suspend fun updateItem(item: User)
-
+    fun getAllUsers(): Flow<List<User>>
+    fun getUserById(id: Int): Flow<User?>
+    suspend fun insert(user: User)
+    suspend fun delete(user: User)
+    suspend fun update(user: User)
     suspend fun login(username: String, password: String): User?
-}//werk
+}
+
