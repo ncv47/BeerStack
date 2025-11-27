@@ -1,21 +1,19 @@
 package com.example.beerstack.data.BeerDB
-import android.content.Context
 
-/**
- * App container for Dependency injection.
- */
-interface AppContainer {
-    val itemsRepository: ItemsRepository
-}
-//werk
-/**
- * [AppContainer] implementation that provides instance of [OfflineItemsRepository]
- */
-class AppDataContainer(private val context: Context) : AppContainer {
-    /**
-     * Implementation for [ItemsRepository]
-     */
-    override val itemsRepository: ItemsRepository by lazy {
-        OfflineItemsRepository(BeerDatabase.getDatabase(context).itemDao())
-    }
+import android.content.Context
+import com.example.beerstack.data.AppDatabase
+import com.example.beerstack.data.UserDB.UsersRepository
+import com.example.beerstack.data.UserDB.OfflineUsersRepository
+
+
+class AppDataContainer(context: Context) {
+
+    // Access your Room database
+    private val db = AppDatabase.getDatabase(context)
+
+    // Beer repository
+    val itemsRepository: ItemsRepository = OfflineItemsRepository(db.itemDao())
+
+    // User repository
+    val usersRepository: UsersRepository = OfflineUsersRepository(db.userDao())
 }
