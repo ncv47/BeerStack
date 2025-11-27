@@ -4,6 +4,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 @Dao
@@ -20,7 +21,8 @@ interface ItemDao {
     @Query("SELECT * from items WHERE beerid = :id")
     fun getItem(id: Int): Flow<Item>
 
-    @Query("SELECT * from items ORDER BY beername ASC")
-    fun getAllItems(): Flow<List<Item>>
+    @Transaction
+    @Query("SELECT * FROM users ORDER BY userName ASC")
+    fun getAllUsersWithBeer(): Flow<List<UserwithBeer>>
+
 }
-//werk
