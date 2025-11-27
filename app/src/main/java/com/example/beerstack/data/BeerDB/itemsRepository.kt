@@ -9,7 +9,7 @@ interface ItemsRepository {
     /**
      * Retrieve all the items from the the given data source.
      */
-    fun getAllItemsStream(): Flow<List<Item>>
+    fun getAllUsersWithBeer(): Flow<List<UserwithBeer>>
 
     /**
      * Retrieve an item from the given data source that matches with the [id].
