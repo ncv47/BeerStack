@@ -199,6 +199,14 @@ base64
 Result is this:
 > HsbawayQYhB8+cXA6fHLgTgcXsw9vVb8eRIJ2LVfY7E=
 
+or get directly from the api url, in linux (what i personally did):
+
+![image.png](readme-resources/image10.png)
+
+windows variant in cmd!!! (has to be cmd or cmd /c in powershell because some things don’t work in powershell):
+
+![image.png](readme-resources/image11.png)
+
 ### The Intercept & Modify Exploit
 
 When app is started or something changes in the search bar, the API is (re)fetched. When this happens and both SSL/Root block is disabled/bypassed you can intercept the request with burpsuite
