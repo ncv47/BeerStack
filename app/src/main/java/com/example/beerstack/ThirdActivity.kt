@@ -6,14 +6,16 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.activity.ComponentActivity
+import androidx.lifecycle.lifecycleScope
 import com.example.beerstack.data.UserDB.User
-import com.example.beerstack.data.UserDB.AppDataContainer
+import com.example.beerstack.data.BeerDB.AppDataContainer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 
-class ThirdActivity : BaseActivity() {
+class ThirdActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val repository = AppDataContainer(this).usersRepository
@@ -56,17 +58,18 @@ class ThirdActivity : BaseActivity() {
         setContentView(layout)
 
         // Populate users
-        CoroutineScope(Dispatchers.IO).launch {
-            val currentItems = repository.getAllItemsStream().firstOrNull() ?: emptyList()
-            if (currentItems.isEmpty()) {
+        lifecycleScope.launch {
+            val currentUsers = repository.getAllUsers().firstOrNull() ?: emptyList()
+            if (currentUsers.isEmpty()) {
                 val users = listOf(
                     User(userName = "Kenzo", userPassword = "password"),
                     User(userName = "Noah", userPassword = "password"),
                     User(userName = "CHANG", userPassword = "password"),
                     User(userName = "Lancelot", userPassword = "password")
                 )
-                users.forEach { repository.insertItem(it) }
+                users.forEach { repository.insert(it) }
             }
         }
+
     }
 }
