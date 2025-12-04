@@ -23,7 +23,7 @@ import com.example.beerstack.R
 @Composable
 fun BeerItemCard(
     beer: Beer,
-    onGetBeerById: (Int) -> Unit,
+    onAddToCollection: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -31,7 +31,7 @@ fun BeerItemCard(
         modifier = Modifier
             .padding(8.dp)
             .fillMaxWidth(),
-        //SHadown for the boxes and round corners
+        //Shadow for the boxes and round corners
         elevation = CardDefaults.elevatedCardElevation(defaultElevation = 4.dp),
         shape = RoundedCornerShape(12.dp)
     ) {
@@ -60,17 +60,15 @@ fun BeerItemCard(
                 beer.price?.let { Text("Price: $it", fontSize = 14.sp, color = Color.DarkGray) }
                 //Always show the ID
                 Text("ID: ${beer.id}", fontSize = 10.sp, color = Color.LightGray)
-                //For the JSON (2 seperate values)
+                //For the JSON (2 different values)
                 beer.rating?.let {
                     Text("Rating: %.2f".format(it.average), fontSize = 14.sp, color = Color.DarkGray)
                     Text("Reviews: ${it.reviews}", fontSize = 12.sp, color = Color.Gray)
                 }
-                Button(onClick = { onGetBeerById(beer.id) }) {
+                Button(onClick = onAddToCollection) {
                     Text("Add Beer To Collection")
                 }
             }
-
-
         }
     }
 }
