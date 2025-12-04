@@ -43,7 +43,7 @@ import com.example.beerstack.model.Beer
 import com.example.beerstack.components.BeerItemCard
 
 class MainActivity : BaseActivity() {
-    //OVerite onCreate, when the activity is start/page is launced
+    //OVerite onCreate, when the activity is start/page is launched
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -151,6 +151,7 @@ fun Body(
     searchText: String,
     onSearchTextChange: (String) -> Unit
 ) {
+    val context = LocalContext.current
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -168,14 +169,21 @@ fun Body(
         Spacer(modifier = Modifier.padding(8.dp))
         when {
             error != null -> Text(text = error, color = Color.Red) // Show error if loading failed
-            beers.isNotEmpty() -> BeerList(beers, onGetBeerById = { beerId -> beerViewModel.getBeerById(beerId) })
-            //getBeerById = connects the button’s click event to the API-fetching logic in the ViewModel
-            //Quantity -> = how many times it should be done, loop
-            searchText.isNotBlank() -> Text("No beers found") // If there are no beers and the searchbar has something in it, no beers are found under this filter
-            else -> Text(text = "Loading...") // Else the beers are still loading fromt the API/Database
+            beers.isNotEmpty() -> BeerList(
+                items = beers,
+                onAddBeerClick = { beer ->
+                    val intent = Intent(context, FourthActivity::class.java)
+                    intent.putExtra("beer_extra", beer) //must be parcelable
+
+                    context.startActivity(intent)
+                }
+            )
+
+            searchText.isNotBlank() -> Text("No beers found")
+            else -> Text(text = "Loading...")
         }
 
-        //Get last succussfull fetched beer & last error message
+        //Get last successful fetched beer & last error message
         val lastAddedBeerName = beerViewModel.lastAddedBeerName
         val lastAddedBeerError = beerViewModel.lastAddedBeerError
 
@@ -190,7 +198,7 @@ fun Body(
                 ) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(
-                            //Show message on message depedning on suces or error
+                            //Show message on message depending on success or error
                             text = lastAddedBeerName?.let {
                                 "Added '$it' to collection!"
                             } ?: lastAddedBeerError.orEmpty(),
@@ -228,7 +236,7 @@ fun Footer(modifier: Modifier = Modifier){
             Text(stringResource(R.string.add_beer))
         }
 
-        //BUtton to the second page with the database of beer collection
+        //Button to the second page with the database of beer collection
         Button(onClick = {
             val intent = Intent(context, SecondActivity::class.java)
             context.startActivity(intent)
@@ -240,16 +248,19 @@ fun Footer(modifier: Modifier = Modifier){
 }
 
 //Show from the API the beers (now temporary the test data) in a scrolling list, using LazyColumn
-// beer = for scrollabe list
+// beer = for scrollable list
 // OnGetBeerByID = for the collection specific fetch
 @Composable
 fun BeerList(
     items: List<Beer>,
-    onGetBeerById: (Int) -> Unit
+    onAddBeerClick: (Beer) -> Unit
 ) {
     LazyColumn {
         items(items) { beer ->
-            BeerItemCard(beer, onGetBeerById)
+            BeerItemCard(
+                beer = beer,
+                onAddToCollection = { onAddBeerClick(beer) }
+            )
         }
     }
 }
