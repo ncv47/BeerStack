@@ -1,26 +1,51 @@
-# BeerStack
-info about the app blablabla
+# Mobile Security project -  documentation
 
-## Functionalities
-API request 1/2...
-Collection Database...
+## Group Members
+1. Noah Chang Vandewalle
+2. Lancelot Boden
+3. Kenzo Haeck
+4. Noah Defruyt
 
-## How To Use
+## Project summary
+Use this app to keep track of what beers you have already drunk in your life with a personal rating given to it
+
+### How To Use
 ZUIPPPEN
 
-# Required Assignments Explained
-- Intercept & Modify Request (Secure)
-- IDOR (Insecure)
-- Frida Exploit
-- Malware
+## Requirements
+### ℹ️ Legend
+- :heavy_check_mark: = Implemented
+- :x: = Not implemented
+- :hourglass: = Work in progress
+ 
+| Status             | Description                         | Details                     |     |
+| ------------------ | ----------------------------------- | --------------------------- | --- |
+|                    | **Application**                     |                             |     |
+| :heavy_check_mark: | 2 UI screens                        | Just need to make it pretty |     |
+| :heavy_check_mark: | Secure API request                  |                             |     |
+| :hourglass:        | API request with IDOR               |                             |     |
+| :heavy_check_mark: | Connection to room database         |                             |     |
+| :heavy_check_mark: | Secure storage                      |                             |     |
+|                    |                                     |                             |     |
+|                    | **Security**                        |                             |     |
+| :heavy_check_mark: | Unsafe storage                      |                             |     |
+| :hourglass:        | Malware                             |                             |     |
+| :heavy_check_mark: | Frida functionality                 |                             |     |
+| :heavy_check_mark: | Detect root and block functionality |                             |     |
 
-# Intercept & Modify Request (Secure)
+# Overview app
+Describe the implementation of the following topics.
 
-## Setup
+### ![](readme-resources/Screenshot.png) Screenshots
+Give screenshots for every screen in the application. Give each screen an unique name.
 
-### Network
+## ![](readme-resources/API.png) Secure API request/Intercept & Modify Request (Secure)
 
-#### Edit Wifi
+### Setup
+
+#### Network
+
+##### Edit Wifi
 
 In your Android device, go to Settings > Network & internet
 
@@ -32,13 +57,13 @@ From the Advanced options menu, select Proxy > Manual.
 
 ---
 
-### Burp Certificate
+#### Burp Certificate
 
 get cacert.der from [http://brup](http://brup) in the burpsuite browser or google it and download from the site
 
 [cacert.der](readme-resources/cacert.der)
 
-#### Set Certificate in Windows
+##### Set Certificate in Windows
 
 Press Win+R > type `certmgr.msc` > Enter to open Certificate Manager.
 
@@ -46,11 +71,11 @@ Press Win+R > type `certmgr.msc` > Enter to open Certificate Manager.
 
 ![image.png](readme-resources/image2.png)
 
-#### Set Certificate in Emulator
+##### Set Certificate in Emulator
 
 if command not added to system variables: `cd …\OpenSSL-Win64\bin>` and use `./` before openssl
 
-move te .der to the same folder as openssl if neccesary
+move the .der to the same folder as openssl if necessary
 
 `openssl x509 -inform DER -in cacert.der -out cacert.pem`
 
@@ -62,10 +87,10 @@ move te .der to the same folder as openssl if neccesary
 
 `cd \android_sdk\platform-tools`
 
-move the cacert.pem to the same folder as adb if neccesary
+move the cacert.pem to the same folder as adb if necessary
 
 normally would but it in /system/etc/security/cacertsbut  by default the /system directory is not
-writable.
+writeable.
 
 `mkdir -p /data/adb/modules/playstore/system/etc/security/cacerts/`
 
@@ -73,15 +98,15 @@ writable.
 
 ---
 
-### AlwaysTrustUserCerts Magisk Module
+#### AlwaysTrustUserCerts Magisk Module
 
-#### If no magisk Installed
+##### If no magisk Installed
 
 Download the latest [**Magisk APK**](https://github.com/topjohnwu/Magisk/releases).
 
 `adb install Magisk-29.apk`
 
-Work arround via Magisk, also bypass ssl pinning:
+Workarround via Magisk, also bypass ssl pinning:
 
 [AlwaysTrustUserCerts_v1.3.zip](readme-resources/AlwaysTrustUserCerts_v1.3.zip)
 
@@ -94,7 +119,7 @@ Work arround via Magisk, also bypass ssl pinning:
 - Wait for installation to complete
 - Reboot
 
-#### **Install Burp CA as User Certificate**
+##### **Install Burp CA as User Certificate**
 
 `./adb push cacert.der /sdcard/Download/`
 
@@ -107,11 +132,137 @@ Work arround via Magisk, also bypass ssl pinning:
 
 ---
 
-## Intercept & Modify 1st Request (Secure)
+### Intercept & Modify 1st Request (Secure)
 
 There are 2 functionalities preventing the user from doing this intercept & modify. For the demo its disabled temporary to show it works. With the functionalities enabled it would block this ‘exploit’.
 
-### Blocked Root
+#### Blocked Root
+
+If the attacker uses magisk AlwaysTrustUserCerts this will be blocked because super user is needed
+See Blocked root code in header "Root"
+
+#### Secure Sockets Layer
+
+Secures the request so its cant be intercepted without the certificate, TLS handshake
+See res/xml/network_security_config.xml
+and this line in AndroidManifest.xml: android:networkSecurityConfig="@xml/network_security_config"
+
+if burpsuite intercepting on the network get this error:
+
+![image.png](readme-resources/image8.png)
+
+##### Get The Correct Certificate SHA-256 Hash
+
+Go to the website, click on the lock > connection is secure > certificate is valid
+Then in the new window details > export > .crt file
+
+![image.png](readme-resources/image9.png)
+
+Then for the hash do these commands with openssl:
+
+```powershell
+openssl x509 -in koenkoreman-be.pem -pubkey -noout | openssl pkey
+-pubin -outform der | openssl dgst -sha256 -binary | openssl enc -
+base64
+```
+
+Result is this:
+> HsbawayQYhB8+cXA6fHLgTgcXsw9vVb8eRIJ2LVfY7E=
+
+#### The Intercept & Modify Exploit
+
+When app is started or something changes in the search bar, the API is (re)fetched. When this happens and both SSL/Root block is disabled/bypassed you can intercept the request with burpsuite
+
+![image.png](readme-resources/image4.png)
+
+when you change the path of the api in the inspector (bottom left corner)
+
+![image.png](readme-resources/image5.png)
+
+You’ll be able to see another endpoint of the API (Filtered with ‘g’ in this case)
+
+![image.png](readme-resources/image6.png)
+
+![image.png](readme-resources/image7.png)
+
+So the main API request to [https://api.sampleapis.com/beers/ale](https://api.sampleapis.com/beers/ale) is intercepted and modified to another endpoint: [https://api.sampleapis.com/beers/stouts](https://api.sampleapis.com/beers/stouts)
+
+#### ![](readme-resources/API.png) API request with IDOR
+Request to server x retrieving JSON in the following format displayed in screen x.
+
+Need the collection page/database to be finished:
+
+you will intercept the insecure request to add a beer to the collection and edit it into a colleciton of another user/delete…
+
+Or just modify the ID of the beer to make another beer go into the collection
+
+## ![](readme-resources/Database.png) Room database
+Type of data stored in the database used in screen x and displayed in screen y.
+
+## ![](readme-resources/Database.png) Secure storage
+Type of data stored used in screen x and displayed in screen y.
+
+## ![](readme-resources/Database.png) Unsecure storage
+Type of data stored used in screen x and displayed in screen y.
+
+## ![](readme-resources/Notifications.png) Malware
+Implementation of malware.
+
+## ![](readme-resources/Frida.png) Frida
+Detail implementation of Frida
+### What to do
+![image.png](readme-resources/image12.png)
+We will be bypassing this function that checks if the phone is rooted or not so that we will still be able to run the app even though we have a rooted device.
+
+### Starting point
+![image.png](readme-resources/11.png)
+I started of with the code from the slides and tested just this but with some tweaks so it fits our app and not the one from the slides
+
+```Javascript
+Java.perform(function () {
+
+     var BaseActivity = Java.use("com.example.beerstack.BaseActivity");
+
+     BaseActivity.isRooted.implementation = function () {
+
+          console.log("[*] isRooted() got called!");
+
+          this.isRooted();
+
+     };
+
+});
+```
+
+![image.png](readme-resources/image13.png)
+
+This was the result of the first test where we see that we called the isRooted() functionality and were able to do something with it so for now just a console.log() and do what it was supposed to do with the this.isRooted()
+
+### Final changes
+
+```Javascript
+Java.perform(function () {
+
+     var BaseActivity = Java.use("com.example.beerstack.BaseActivity");
+
+     BaseActivity.isRooted.implementation = function () {
+
+         console.log("[*] isRooted() got called!");
+
+        return false;
+
+     };
+
+});
+```
+
+We changed the this.isRooted(); to return false;
+so now we don't just call the normal isRooted() function but we just always return a false so that it always looks like the device is not rooted.
+![image.png](readme-resources/image12.png)
+Now we see it got called and there are no more errors and the app just starts up even though we have a rooted device
+
+## ![](readme-resources/Root.png) Root
+Implementation of the detecting root and block functionality.
 
 If the attacker uses magisk alwaystrustusercerts this will be blocked because super user is needed
 
@@ -171,56 +322,12 @@ abstract class BaseActivity : ComponentActivity() {
 }
 ```
 
-### Secure Sockets Layer
 
-Secures the request so its cant be intercepted without the certificate, TLS handshake
-See res/xml/network_security_config.xml
-and this line in AndroidManifest.xml: android:networkSecurityConfig="@xml/network_security_config"
+## Link to Panopto video
+https://
 
-if burpsuite intercepting on the network get this error:
-
-![image.png](readme-resources/image8.png)
-
-#### Get The Correct Certificate SHA-256 Hash
-
-Go to the website, click on the lock > connection is secure > certificate is valid
-Then in the new window details > export > .crt file
-
-![image.png](readme-resources/image9.png)
-
-Then for the hash do these commands with openssl:
-
-```powershell
-openssl x509 -in koenkoreman-be.pem -pubkey -noout | openssl pkey
--pubin -outform der | openssl dgst -sha256 -binary | openssl enc -
-base64
-```
-
-Result is this:
-> HsbawayQYhB8+cXA6fHLgTgcXsw9vVb8eRIJ2LVfY7E=
-
-### The Intercept & Modify Exploit
-
-When app is started or something changes in the search bar, the API is (re)fetched. When this happens and both SSL/Root block is disabled/bypassed you can intercept the request with burpsuite
-
-![image.png](readme-resources/image4.png)
-
-when you change the path of the api in the inspector (bottom left corner)
-
-![image.png](readme-resources/image5.png)
-
-You’ll be able to see another endpoint of the API (Filtered with ‘g’ in this case)
-
-![image.png](readme-resources/image6.png)
-
-![image.png](readme-resources/image7.png)
-
-So the main API request to [https://api.sampleapis.com/beers/ale](https://api.sampleapis.com/beers/ale) is intercepted and modified to another endpoint: [https://api.sampleapis.com/beers/stouts](https://api.sampleapis.com/beers/stouts)
-
-## IDOR 2nd Request (Insecure)
-
-Need the collection page/database to be finished:
-
-you will intercept the insecure request to add a beer to the collection and edit it into a colleciton of another user/delete…
-
-Or just modify the ID of the beer to make another beer go into the collection
+## Repositories
+- Code
+  - [Link to repository]
+- APK
+  - [Link to repository]
