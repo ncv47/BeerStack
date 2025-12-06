@@ -49,6 +49,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.automirrored.filled.List
 import com.example.beerstack.ui.BeerViewModel
 import com.example.beerstack.model.Beer
+import com.example.beerstack.model.Currency
 import com.example.beerstack.components.BeerItemCard
 
 
@@ -80,6 +81,11 @@ fun Main(beerViewModel: BeerViewModel = viewModel()){
         beerViewModel.getBeers(searchText)
     }
 
+    //Refresh conversion Rate on load
+    LaunchedEffect(Unit) {
+        beerViewModel.refreshRate()
+    }
+
     // Make sure beers are sorted reactively when sort option changes
     val sortedBeers by remember(selectedSort, beerViewModel.beerList) {
         mutableStateOf(sortBeers(beerViewModel.beerList, selectedSort))
@@ -107,7 +113,10 @@ fun Main(beerViewModel: BeerViewModel = viewModel()){
             onSortChange = { selectedSort = it },
             //For the search functionalities
             searchText = searchText,
-            onSearchTextChange = { searchText = it }
+            onSearchTextChange = { searchText = it },
+            //For Currency Conversion
+            currency = beerViewModel.currency,
+            eurPerUsd = beerViewModel.eurPerUsd
         )
     }
 }
@@ -177,7 +186,10 @@ fun Body(
     onSortChange: (SortOption) -> Unit,
     //Search
     searchText: String,
-    onSearchTextChange: (String) -> Unit
+    onSearchTextChange: (String) -> Unit,
+    //Currency COnversion
+    currency: Currency,
+    eurPerUsd: Double
 ) {
     val context = LocalContext.current
     Column(
@@ -187,8 +199,7 @@ fun Body(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
-        // Search on the left, sort button on the right
-        // Search on the left, sort button on the right
+        // TOP: Search on the left, sort currency converter & sort dropdownmenu on the right
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -203,7 +214,18 @@ fun Body(
                 modifier = Modifier.weight(1f)
             )
 
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.width(6.dp))
+
+            //Button to convert dollar to euro and vise versa
+            CurrencyToggle(
+                currency = currency,
+                onToggleAndRefresh = {
+                    beerViewModel.toggleCurrency()
+                    beerViewModel.refreshRate()
+                }
+            )
+
+            Spacer(modifier = Modifier.width(6.dp))
 
             // Sort dropdown takes the place of the old Sort button
             SortDropdown(
@@ -223,7 +245,9 @@ fun Body(
                     intent.putExtra("beer_extra", beer) //must be parcelable
 
                     context.startActivity(intent)
-                }
+                },
+                currency = currency,
+                eurPerUsd = eurPerUsd
             )
 
             searchText.isNotBlank() -> Text("No beers found")
@@ -327,13 +351,17 @@ fun BottomBar(modifier: Modifier = Modifier){
 @Composable
 fun BeerList(
     items: List<Beer>,
-    onAddBeerClick: (Beer) -> Unit
+    onAddBeerClick: (Beer) -> Unit,
+    currency: Currency,
+    eurPerUsd: Double
 ) {
     LazyColumn {
         items(items) { beer ->
             BeerItemCard(
                 beer = beer,
-                onAddToCollection = { onAddBeerClick(beer) }
+                onAddToCollection = { onAddBeerClick(beer) },
+                currency = currency,
+                eurPerUsd = eurPerUsd
             )
         }
     }
@@ -425,3 +453,42 @@ fun SearchBar(
         keyboardActions = KeyboardActions(onSearch = { onSearch() })
     )
 }
+
+//For the DOLLAR to EURO conversion with API
+@Composable
+fun CurrencyToggle(
+    currency: Currency,
+    onToggleAndRefresh: () -> Unit
+) {
+    FilledTonalButton(
+        onClick = onToggleAndRefresh,
+        shape = RoundedCornerShape(50),
+        contentPadding = PaddingValues(horizontal = 10.dp, vertical = 4.dp),
+        modifier = Modifier
+            .height(40.dp)
+            .width(28.dp)
+    ) {
+        Text(if (currency == Currency.USD) "$" else "€")
+    }
+}
+
+//Temp Helper for Currency Converter (to be optimized or put in new helper directory)
+fun formatBeerPrice(
+    rawPrice: String?,
+    currency: Currency,
+    eurPerUsd: Double
+): String {
+    val valueUsd = rawPrice
+        ?.replace("$", "")
+        ?.replace("€", "")
+        ?.toDoubleOrNull() ?: return "N/A"
+
+    val value = when (currency) {
+        Currency.USD -> valueUsd
+        Currency.EUR -> valueUsd * eurPerUsd
+    }
+
+    val symbol = if (currency == Currency.USD) "$" else "€"
+    return "%s%.2f".format(symbol, value)
+}
+
