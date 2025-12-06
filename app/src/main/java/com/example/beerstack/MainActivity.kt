@@ -32,12 +32,20 @@ import android.content.Intent
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.material3.*
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.Icon
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.*
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.window.Dialog
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.automirrored.filled.List
 import com.example.beerstack.ui.BeerViewModel
 import com.example.beerstack.model.Beer
 import com.example.beerstack.components.BeerItemCard
@@ -75,13 +83,13 @@ fun Main(beerViewModel: BeerViewModel = viewModel()){
         mutableStateOf(sortBeers(beerViewModel.beerList, selectedSort))
     }
 
-    // use Scaffold for top and bottom bars
+    // use Scaffold for top and bottom bars (Handles weight on its own)
     Scaffold(
         topBar = {
-            TopBar() //no weight anymore, Scaffold handles sizing
+            TopBar()
         },
         bottomBar = {
-            BottomBar() //no weight here either
+            BottomBar()
         }
     ) { innerPadding ->
         Body(
@@ -162,8 +170,7 @@ fun Body(
     val context = LocalContext.current
     Column(
         modifier = modifier
-            .fillMaxWidth()
-            .background(Color.White),
+            .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
@@ -231,28 +238,49 @@ fun Body(
 fun BottomBar(modifier: Modifier = Modifier){
     val context = LocalContext.current
 
-    Column (
+    //keep state which item is selected
+    var selectedItem by remember { mutableIntStateOf(0) }
+
+    NavigationBar(
         modifier = modifier
             .fillMaxWidth()
-            .background(Color.Green)
-            .padding(vertical = 12.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        // background color comes from MaterialTheme by default
     ) {
         //Button to add a own, new beer that ist in the API
-        Button(onClick = { /*TODO*/ }) {
-            Text(stringResource(R.string.add_beer))
-        }
+        NavigationBarItem(
+            selected = selectedItem == 0,
+            onClick = {
+                selectedItem = 0
+                //TODO: navigate to "add own beer" screen
+            },
+            icon = {
+                // Button as image/icon that you can click on
+                Icon(
+                    imageVector = Icons.Filled.Add,
+                    contentDescription = stringResource(R.string.add_beer)
+                )
+            },
+            label = { Text(stringResource(R.string.add_beer)) }
+        )
 
         //Button to the second page with the database of beer collection
-        Button(onClick = {
-            val intent = Intent(context, SecondActivity::class.java)
-            context.startActivity(intent)
-        }) {
-            Text(stringResource(R.string.collection_page))
-        }
+        NavigationBarItem(
+            selected = selectedItem == 1,
+            onClick = {
+                selectedItem = 1
+                val intent = Intent(context, SecondActivity::class.java)
+                context.startActivity(intent)
+            },
+            icon = {
+                // Button as image/icon that you can click on
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.List,   // or Icons.Filled.List
+                    contentDescription = stringResource(R.string.collection_page)
+                )
+            },
+            label = { Text(stringResource(R.string.collection_page)) }
+        )
     }
-
 }
 
 //Show from the API the beers (now temporary the test data) in a scrolling list, using LazyColumn
