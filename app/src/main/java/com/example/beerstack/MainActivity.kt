@@ -75,10 +75,19 @@ fun Main(beerViewModel: BeerViewModel = viewModel()){
         mutableStateOf(sortBeers(beerViewModel.beerList, selectedSort))
     }
 
-    Column(modifier = Modifier.fillMaxSize()) {
-        Header(modifier = Modifier.weight(0.15f))
+    // use Scaffold for top and bottom bars
+    Scaffold(
+        topBar = {
+            Header() //no weight anymore, Scaffold handles sizing
+        },
+        bottomBar = {
+            Footer() //no weight here either
+        }
+    ) { innerPadding ->
         Body(
-            modifier = Modifier.weight(0.7f),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding),
             //Pass the viewmodel data down to the body composable
             beerViewModel = beerViewModel,
             beers = sortedBeers,
@@ -90,7 +99,6 @@ fun Main(beerViewModel: BeerViewModel = viewModel()){
             searchText = searchText,
             onSearchTextChange = { searchText = it }
         )
-        Footer(modifier = Modifier.weight(0.15f))
     }
 }
 
