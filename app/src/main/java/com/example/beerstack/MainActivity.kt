@@ -28,6 +28,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.background
 import android.content.Intent
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.material3.*
@@ -49,6 +50,7 @@ import androidx.compose.material.icons.automirrored.filled.List
 import com.example.beerstack.ui.BeerViewModel
 import com.example.beerstack.model.Beer
 import com.example.beerstack.components.BeerItemCard
+
 
 class MainActivity : BaseActivity() {
     //OVerite onCreate, when the activity is start/page is launched
@@ -181,36 +183,31 @@ fun Body(
         verticalArrangement = Arrangement.Top
     ) {
         // Search on the left, sort button on the right
+        // Search on the left, sort button on the right
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 8.dp, vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Large search box
+            // Large search box on the left
             SearchBar(
                 value = searchText,
                 onValueChange = onSearchTextChange,
                 onSearch = { beerViewModel.getBeers(searchText) },
+                modifier = Modifier.weight(1f)
             )
 
             Spacer(modifier = Modifier.width(8.dp))
 
-            // Sort button (same visual weight as login)
-            FilledTonalButton(
-                onClick = { /* open dropdown via state below */ },
-                shape = RoundedCornerShape(50),
-                modifier = Modifier.height(48.dp)
-            ) {
-                Text("Sort")
-            }
+            // Sort dropdown takes the place of the old Sort button
+            SortDropdown(
+                selectedSort = selectedSort,
+                onSortChange = onSortChange
+            )
         }
 
-        // Actual dropdown for sort options
-        SortDropdown(
-            selectedSort = selectedSort,
-            onSortChange = onSortChange
-        )
+        Spacer(modifier = Modifier.padding(8.dp))
 
         Spacer(modifier = Modifier.padding(8.dp))
         when {
@@ -350,10 +347,18 @@ fun SortDropdown(
     onSortChange: (SortOption) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
+
     Box {
-        Button(onClick = { expanded = true }) {
+        // Small pill-shaped button showing current sort
+        FilledTonalButton(
+            onClick = { expanded = true },
+            shape = RoundedCornerShape(50),
+            contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
+            modifier = Modifier.height(40.dp) // close to searchbar height but smaller
+        ) {
             Text("Sort: ${selectedSort.label}")
         }
+
         DropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false }
@@ -396,7 +401,8 @@ fun SearchBar(
         onValueChange = onValueChange,
         placeholder = { Text("Search beers...") },
         modifier = modifier
-            .height(48.dp),
+            .height(56.dp)
+            .padding(end = 0.dp),
         singleLine = true,
         shape = RoundedCornerShape(50),
         colors = OutlinedTextFieldDefaults.colors(
