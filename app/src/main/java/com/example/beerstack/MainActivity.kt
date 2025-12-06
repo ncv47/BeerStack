@@ -22,25 +22,35 @@ import androidx.compose.material3.Button
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.sp
 import com.example.beerstack.ui.theme.BeerStackTheme
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.background
 import android.content.Intent
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.material3.*
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.foundation.layout.width
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.runtime.*
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.window.Dialog
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.automirrored.filled.List
 import com.example.beerstack.ui.BeerViewModel
 import com.example.beerstack.model.Beer
 import com.example.beerstack.components.BeerItemCard
+
 
 class MainActivity : BaseActivity() {
     //OVerite onCreate, when the activity is start/page is launched
@@ -49,7 +59,7 @@ class MainActivity : BaseActivity() {
         enableEdgeToEdge()
         setContent {
             //UI THeme
-            BeerStackTheme {
+            BeerStackTheme(dynamicColor = false) { //To prevent automatic coloring {
                 //Call the main function
                 Main()
             }
@@ -75,10 +85,19 @@ fun Main(beerViewModel: BeerViewModel = viewModel()){
         mutableStateOf(sortBeers(beerViewModel.beerList, selectedSort))
     }
 
-    Column(modifier = Modifier.fillMaxSize()) {
-        Header(modifier = Modifier.weight(0.15f))
+    // use Scaffold for top and bottom bars (Handles weight on its own)
+    Scaffold(
+        topBar = {
+            TopBar()
+        },
+        bottomBar = {
+            BottomBar()
+        }
+    ) { innerPadding ->
         Body(
-            modifier = Modifier.weight(0.7f),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding),
             //Pass the viewmodel data down to the body composable
             beerViewModel = beerViewModel,
             beers = sortedBeers,
@@ -90,49 +109,58 @@ fun Main(beerViewModel: BeerViewModel = viewModel()){
             searchText = searchText,
             onSearchTextChange = { searchText = it }
         )
-        Footer(modifier = Modifier.weight(0.15f))
     }
 }
 
 @Composable
-fun Header(modifier: Modifier = Modifier){
+fun TopBar(modifier: Modifier = Modifier){
     val context = LocalContext.current
 
-    Row(
+    Box(
         modifier = modifier
             .fillMaxWidth()
-            .background(Color.Yellow)
-            .padding(vertical = 8.dp, horizontal = 16.dp),
-        verticalAlignment = Alignment.CenterVertically
+            .background(MaterialTheme.colorScheme.primary)
+            //Increase overall top bar height
+            .height(100.dp)
+            .padding(
+                top = 32.dp, //More Padding than the rest for the icons above
+                bottom = 16.dp,
+                start = 16.dp,
+                end = 16.dp
+            )
     ) {
-        // Add space to the left
-        Spacer(modifier = Modifier.weight(1f))
-
-        // Centered image and text, over the whole width of the page
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            //2f = twice as big
-            modifier = Modifier.weight(2f)
+        Row(
+            modifier = Modifier
+                .fillMaxSize(),
+            verticalAlignment = Alignment.CenterVertically
         ) {
+            // App logo on the left, bigger and centered vertically
             Image(
                 painter = painterResource(R.drawable.beerstacklogo),
-                contentDescription = "BeerStack Logo"
+                contentDescription = "BeerStack Logo",
+                modifier = Modifier
+                    .height(48.dp)
             )
-            Text(
-                text = "BeerStack",
-                fontSize = 24.sp
-            )
-        }
 
-        // Login page button to the right
-        Button(
-            onClick = {
-                val intent = Intent(context, ThirdActivity::class.java)
-                context.startActivity(intent)
-            },
-            modifier = Modifier.weight(1f)
-        ) {
-            Text(stringResource(R.string.login_page))
+            // Take up remaining space between logo and button
+            Spacer(modifier = Modifier.weight(1f))
+
+            // Login page button to the right
+            FilledTonalButton(
+                onClick = {
+                    val intent = Intent(context, ThirdActivity::class.java)
+                    context.startActivity(intent)
+                },
+                // Round pill-shaped button
+                shape = RoundedCornerShape(50)
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.AccountCircle,
+                    contentDescription = stringResource(R.string.login_page)
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+                Text(stringResource(R.string.login_page))
+            }
         }
     }
 }
@@ -155,18 +183,37 @@ fun Body(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .background(Color.White),
+            .background(MaterialTheme.colorScheme.surfaceVariant), // Slightly darker background so cards pop more
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
-        SearchBar(
-            value = searchText,
-            onValueChange = onSearchTextChange,
-            onSearch = { beerViewModel.getBeers(searchText) }
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        SortDropdown(selectedSort = selectedSort, onSortChange = onSortChange)
-        Spacer(modifier = Modifier.padding(8.dp))
+        // Search on the left, sort button on the right
+        // Search on the left, sort button on the right
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp, vertical = 8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            // Large search box on the left
+            SearchBar(
+                value = searchText,
+                onValueChange = onSearchTextChange,
+                onSearch = { beerViewModel.getBeers(searchText) },
+                modifier = Modifier.weight(1f)
+            )
+
+            Spacer(modifier = Modifier.width(8.dp))
+
+            // Sort dropdown takes the place of the old Sort button
+            SortDropdown(
+                selectedSort = selectedSort,
+                onSortChange = onSortChange
+            )
+        }
+
+        Spacer(modifier = Modifier.padding(4.dp))
+
         when {
             error != null -> Text(text = error, color = Color.Red) // Show error if loading failed
             beers.isNotEmpty() -> BeerList(
@@ -220,31 +267,58 @@ fun Body(
 }
 
 @Composable
-fun Footer(modifier: Modifier = Modifier){
+fun BottomBar(modifier: Modifier = Modifier){
     val context = LocalContext.current
 
-    Column (
+    //keep state which item is selected
+    var selectedItem by remember { mutableIntStateOf(0) }
+
+    NavigationBar(
         modifier = modifier
             .fillMaxWidth()
-            .background(Color.Green)
-            .padding(vertical = 12.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        // background color comes from MaterialTheme by default
     ) {
         //Button to add a own, new beer that ist in the API
-        Button(onClick = { /*TODO*/ }) {
-            Text(stringResource(R.string.add_beer))
-        }
+        NavigationBarItem(
+            selected = selectedItem == 0,
+            onClick = {
+                selectedItem = 0
+                //TODO: navigate to "add own beer" screen
+            },
+            icon = {
+                // Button as image/icon that you can click on
+                Icon(
+                    imageVector = Icons.Filled.Add,
+                    contentDescription = stringResource(R.string.add_beer)
+                )
+            },
+            label = { Text(stringResource(R.string.add_beer)) },
+            colors = NavigationBarItemDefaults.colors(
+            indicatorColor = Color.Transparent  // no blue background when selected
+            )
+        )
 
         //Button to the second page with the database of beer collection
-        Button(onClick = {
-            val intent = Intent(context, SecondActivity::class.java)
-            context.startActivity(intent)
-        }) {
-            Text(stringResource(R.string.collection_page))
-        }
+        NavigationBarItem(
+            selected = selectedItem == 1,
+            onClick = {
+                selectedItem = 1
+                val intent = Intent(context, SecondActivity::class.java)
+                context.startActivity(intent)
+            },
+            icon = {
+                // Button as image/icon that you can click on
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.List,   // or Icons.Filled.List
+                    contentDescription = stringResource(R.string.collection_page)
+                )
+            },
+            label = { Text(stringResource(R.string.collection_page)) },
+            colors = NavigationBarItemDefaults.colors(
+            indicatorColor = Color.Transparent  // no blue background when selected
+            )
+        )
     }
-
 }
 
 //Show from the API the beers (now temporary the test data) in a scrolling list, using LazyColumn
@@ -283,10 +357,18 @@ fun SortDropdown(
     onSortChange: (SortOption) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
+
     Box {
-        Button(onClick = { expanded = true }) {
+        // Small pill-shaped button showing current sort
+        FilledTonalButton(
+            onClick = { expanded = true },
+            shape = RoundedCornerShape(50),
+            contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
+            modifier = Modifier.height(40.dp) // close to searchbar height but smaller
+        ) {
             Text("Sort: ${selectedSort.label}")
         }
+
         DropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false }
@@ -321,16 +403,24 @@ fun sortBeers(beers: List<Beer>, sortOption: SortOption): List<Beer> {
 fun SearchBar(
     value: String,
     onValueChange: (String) -> Unit,
-    onSearch: () -> Unit
+    onSearch: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    TextField(
+    OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
         placeholder = { Text("Search beers...") },
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp),
+        modifier = modifier
+            .height(56.dp)
+            .padding(end = 0.dp),
         singleLine = true,
+        shape = RoundedCornerShape(50),
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedContainerColor = MaterialTheme.colorScheme.surface,
+            unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+            focusedBorderColor = MaterialTheme.colorScheme.primary,
+            unfocusedBorderColor = MaterialTheme.colorScheme.outline
+        ),
         keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Search),
         keyboardActions = KeyboardActions(onSearch = { onSearch() })
     )

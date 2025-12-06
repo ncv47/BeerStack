@@ -5,7 +5,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.Button
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -28,45 +28,106 @@ fun BeerItemCard(
 ) {
     Card(
         //Spacing
-        modifier = Modifier
-            .padding(8.dp)
+        modifier = modifier
+            .padding(horizontal = 10.dp, vertical = 10.dp)
             .fillMaxWidth(),
-        //Shadow for the boxes and round corners
-        elevation = CardDefaults.elevatedCardElevation(defaultElevation = 4.dp),
-        shape = RoundedCornerShape(12.dp)
+        //Shadow for the boxes and more round corners
+        elevation = CardDefaults.elevatedCardElevation(defaultElevation = 6.dp),
+        shape = RoundedCornerShape(20.dp)
     ) {
         Row(
-            modifier = Modifier.padding(12.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // If there is an image given with the API (not always the case), show it
-            beer.image?.let { url ->
-                AsyncImage(
-                    model = url,
-                    contentDescription = "Beer photo",
+            // Left side: ID above image in the same column, stuck to top-left
+            Column(
+                horizontalAlignment = Alignment.Start
+            ) {
+                Text(
+                    text = "ID: ${beer.id}",
+                    fontSize = 10.sp,
+                    color = Color.LightGray,
                     modifier = Modifier
-                        .size(70.dp)
-                        .padding(end = 8.dp),
-                    contentScale = ContentScale.Crop,
-                    //Placeholder if there is an error for the picture
-                    placeholder = painterResource(R.drawable.beerpicture_placeholder),
-                    error = painterResource(R.drawable.beerpicture_placeholder)
+                        .padding(bottom = 4.dp)
                 )
-            }
-            //Show beer details to the right of the image
-            Column(modifier = Modifier.weight(1f)) {
-                Text(beer.name, fontSize = 20.sp, color = Color.Black)
-                //show price if there is one given
-                beer.price?.let { Text("Price: $it", fontSize = 14.sp, color = Color.DarkGray) }
-                //Always show the ID
-                Text("ID: ${beer.id}", fontSize = 10.sp, color = Color.LightGray)
-                //For the JSON (2 different values)
-                beer.rating?.let {
-                    Text("Rating: %.2f".format(it.average), fontSize = 14.sp, color = Color.DarkGray)
-                    Text("Reviews: ${it.reviews}", fontSize = 12.sp, color = Color.Gray)
+
+                // If there is an image given with the API (not always the case), show it
+                beer.image?.let { url ->
+                    AsyncImage(
+                        model = url,
+                        contentDescription = "Beer photo",
+                        modifier = Modifier
+                            .size(80.dp)
+                            .padding(end = 12.dp),
+                        contentScale = ContentScale.Crop,
+                        //Placeholder if there is an error for the picture
+                        placeholder = painterResource(R.drawable.beerpicture_placeholder),
+                        error = painterResource(R.drawable.beerpicture_placeholder)
+                    )
                 }
-                Button(onClick = onAddToCollection) {
-                    Text("Add Beer To Collection")
+            }
+
+            Spacer(modifier = Modifier.width(12.dp))
+
+            // Right side: text + button
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(6.dp)
+            ) {
+                // Top row: title at same vertical level as ID
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = beer.name,
+                        fontSize = 18.sp,
+                        color = Color.Black
+                    )
+                }
+
+                // Stats column + button row
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    // Price, rating, reviews under each other
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(2.dp)
+                    ) {
+                        beer.price?.let {
+                            Text(
+                                text = "Price: $it",
+                                fontSize = 14.sp,
+                                color = Color.DarkGray
+                            )
+                        }
+                        beer.rating?.let {
+                            Text(
+                                text = "Rating: %.2f".format(it.average),
+                                fontSize = 14.sp,
+                                color = Color.DarkGray
+                            )
+                            Text(
+                                text = "Reviews: ${it.reviews}",
+                                fontSize = 12.sp,
+                                color = Color.Gray
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.weight(1f))
+
+                    // Button to the right of the stats
+                    FilledTonalButton(
+                        onClick = onAddToCollection,
+                        shape = RoundedCornerShape(50),
+                        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+                        modifier = Modifier.height(36.dp)
+                    ) {
+                        Text("Add To Collection", fontSize = 12.sp)
+                    }
                 }
             }
         }
