@@ -15,8 +15,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.Alignment
 import coil.compose.AsyncImage
 import com.example.beerstack.model.Beer
+import com.example.beerstack.model.Currency
 import androidx.compose.ui.res.painterResource
 import com.example.beerstack.R
+import com.example.beerstack.MainActivity.* //For formatbeerprice function, later put in helper function
 
 
 
@@ -24,6 +26,8 @@ import com.example.beerstack.R
 fun BeerItemCard(
     beer: Beer,
     onAddToCollection: () -> Unit,
+    currency: Currency,
+    eurPerUsd: Double,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -98,7 +102,11 @@ fun BeerItemCard(
                     ) {
                         beer.price?.let {
                             Text(
-                                text = "Price: $it",
+                                text = "Price: " + formatBeerPrice(
+                                    rawPrice = it,
+                                    currency = currency,
+                                    eurPerUsd = eurPerUsd
+                                ),
                                 fontSize = 14.sp,
                                 color = Color.DarkGray
                             )

@@ -81,6 +81,11 @@ fun Main(beerViewModel: BeerViewModel = viewModel()){
         beerViewModel.getBeers(searchText)
     }
 
+    //Refresh conversion Rate on load
+    LaunchedEffect(Unit) {
+        beerViewModel.refreshRate()
+    }
+
     // Make sure beers are sorted reactively when sort option changes
     val sortedBeers by remember(selectedSort, beerViewModel.beerList) {
         mutableStateOf(sortBeers(beerViewModel.beerList, selectedSort))
@@ -238,7 +243,9 @@ fun Body(
                     intent.putExtra("beer_extra", beer) //must be parcelable
 
                     context.startActivity(intent)
-                }
+                },
+                currency = currency,
+                eurPerUsd = eurPerUsd
             )
 
             searchText.isNotBlank() -> Text("No beers found")
@@ -342,13 +349,17 @@ fun BottomBar(modifier: Modifier = Modifier){
 @Composable
 fun BeerList(
     items: List<Beer>,
-    onAddBeerClick: (Beer) -> Unit
+    onAddBeerClick: (Beer) -> Unit,
+    currency: Currency,
+    eurPerUsd: Double
 ) {
     LazyColumn {
         items(items) { beer ->
             BeerItemCard(
                 beer = beer,
-                onAddToCollection = { onAddBeerClick(beer) }
+                onAddToCollection = { onAddBeerClick(beer) },
+                currency = currency,
+                eurPerUsd = eurPerUsd
             )
         }
     }
