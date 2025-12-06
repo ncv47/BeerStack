@@ -119,11 +119,15 @@ fun TopBar(modifier: Modifier = Modifier){
     Box(
         modifier = modifier
             .fillMaxWidth()
-            //Use theme color instead of hardcoded yellow background
             .background(MaterialTheme.colorScheme.primary)
             //Increase overall top bar height
-            .height(72.dp)
-            .padding(horizontal = 16.dp)
+            .height(100.dp)
+            .padding(
+                top = 32.dp, //More Padding than the rest for the icons above
+                bottom = 16.dp,
+                start = 16.dp,
+                end = 16.dp
+            )
     ) {
         Row(
             modifier = Modifier
@@ -178,7 +182,8 @@ fun Body(
     val context = LocalContext.current
     Column(
         modifier = modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.surfaceVariant), // Slightly darker background so cards pop more
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
@@ -287,7 +292,10 @@ fun BottomBar(modifier: Modifier = Modifier){
                     contentDescription = stringResource(R.string.add_beer)
                 )
             },
-            label = { Text(stringResource(R.string.add_beer)) }
+            label = { Text(stringResource(R.string.add_beer)) },
+            colors = NavigationBarItemDefaults.colors(
+            indicatorColor = Color.Transparent  // no blue background when selected
+            )
         )
 
         //Button to the second page with the database of beer collection
@@ -305,7 +313,10 @@ fun BottomBar(modifier: Modifier = Modifier){
                     contentDescription = stringResource(R.string.collection_page)
                 )
             },
-            label = { Text(stringResource(R.string.collection_page)) }
+            label = { Text(stringResource(R.string.collection_page)) },
+            colors = NavigationBarItemDefaults.colors(
+            indicatorColor = Color.Transparent  // no blue background when selected
+            )
         )
     }
 }
