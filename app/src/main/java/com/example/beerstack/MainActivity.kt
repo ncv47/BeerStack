@@ -207,9 +207,8 @@ fun Body(
             )
         }
 
-        Spacer(modifier = Modifier.padding(8.dp))
+        Spacer(modifier = Modifier.padding(4.dp))
 
-        Spacer(modifier = Modifier.padding(8.dp))
         when {
             error != null -> Text(text = error, color = Color.Red) // Show error if loading failed
             beers.isNotEmpty() -> BeerList(
