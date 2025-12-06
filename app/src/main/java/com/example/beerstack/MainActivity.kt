@@ -199,8 +199,7 @@ fun Body(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
-        // Search on the left, sort button on the right
-        // Search on the left, sort button on the right
+        // TOP: Search on the left, sort currency converter & sort dropdownmenu on the right
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -215,7 +214,18 @@ fun Body(
                 modifier = Modifier.weight(1f)
             )
 
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.width(6.dp))
+
+            //Button to convert dollar to euro and vise versa
+            CurrencyToggle(
+                currency = currency,
+                onToggleAndRefresh = {
+                    beerViewModel.toggleCurrency()
+                    beerViewModel.refreshRate()
+                }
+            )
+
+            Spacer(modifier = Modifier.width(6.dp))
 
             // Sort dropdown takes the place of the old Sort button
             SortDropdown(
@@ -225,14 +235,6 @@ fun Body(
         }
 
         Spacer(modifier = Modifier.padding(4.dp))
-
-        CurrencyToggle(
-            currency = currency,
-            onToggleAndRefresh = {
-                beerViewModel.toggleCurrency()
-                beerViewModel.refreshRate()
-            }
-        )
 
         when {
             error != null -> Text(text = error, color = Color.Red) // Show error if loading failed
@@ -462,7 +464,9 @@ fun CurrencyToggle(
         onClick = onToggleAndRefresh,
         shape = RoundedCornerShape(50),
         contentPadding = PaddingValues(horizontal = 10.dp, vertical = 4.dp),
-        modifier = Modifier.height(40.dp)
+        modifier = Modifier
+            .height(40.dp)
+            .width(28.dp)
     ) {
         Text(if (currency == Currency.USD) "$" else "€")
     }
