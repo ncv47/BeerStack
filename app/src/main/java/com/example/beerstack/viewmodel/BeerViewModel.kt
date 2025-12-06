@@ -41,7 +41,20 @@ class BeerViewModel : ViewModel() {
                 error = "Failed to load beers: ${e.message}"
             }
         }
+        fun toggleCurrency() {
+            currency = if (currency == Currency.USD) Currency.EUR else Currency.USD
+        }
 
+        fun refreshRate() {
+            viewModelScope.launch {
+                try {
+                    eurPerUsd = fetchEurPerUsd()
+                } catch (e: Exception) {
+                    // Optional: reuse error state, or ignore silently
+                    // error = "Failed to load FX rate: ${e.message}"
+                }
+            }
+        }
     }
 
     // Filter out test data or invalid beers
