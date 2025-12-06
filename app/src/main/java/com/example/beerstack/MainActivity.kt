@@ -59,7 +59,7 @@ class MainActivity : BaseActivity() {
         enableEdgeToEdge()
         setContent {
             //UI THeme
-            BeerStackTheme {
+            BeerStackTheme(dynamicColor = false) { //To prevent automatic coloring {
                 //Call the main function
                 Main()
             }

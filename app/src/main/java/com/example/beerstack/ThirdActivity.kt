@@ -2,60 +2,63 @@ package com.example.beerstack
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
-import android.widget.EditText
-import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.beerstack.data.UserDB.User
 import com.example.beerstack.data.BeerDB.AppDataContainer
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.withContext
 
 class ThirdActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val repository = AppDataContainer(this).usersRepository
 
-        val layout = LinearLayout(this).apply {
-            orientation = LinearLayout.VERTICAL
-            setPadding(60, 200, 60, 60)
-        }
+        // Compose UI for nicer, centered login screen
+        setContent {
+            LoginScreen(
+                onLogin = { username, password ->
+                    lifecycleScope.launch {
+                        // Switch to IO for DB call, then back to Main automatically
+                        val user = withContext(Dispatchers.IO) {
+                            repository.login(username, password)
+                        }
 
-        val etUsername = EditText(this).apply {
-            hint = "Username"
-        }
-        val etPassword = EditText(this).apply {
-            hint = "Password"
-        }
-        val btnLogin = Button(this).apply {
-            text = "Login"
-        }
-
-        btnLogin.setOnClickListener {
-            val username = etUsername.text.toString()
-            val password = etPassword.text.toString()
-
-            CoroutineScope(Dispatchers.IO).launch {
-                val user = repository.login(username, password)
-                runOnUiThread {
-                    if (user != null) {
-                        Toast.makeText(applicationContext, "Welcome ${user.userName}", Toast.LENGTH_SHORT).show()
-                        startActivity(Intent(this@ThirdActivity, MainActivity::class.java))
-                    } else {
-                        Toast.makeText(applicationContext, "Invalid credentials", Toast.LENGTH_SHORT).show()
+                        if (user != null) {
+                            Toast.makeText(
+                                applicationContext,
+                                "Welcome ${user.userName}",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            startActivity(
+                                Intent(this@ThirdActivity, MainActivity::class.java)
+                            )
+                        } else {
+                            Toast.makeText(
+                                applicationContext,
+                                "Invalid credentials",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
                     }
                 }
-            }
+            )
         }
-
-        layout.addView(etUsername)
-        layout.addView(etPassword)
-        layout.addView(btnLogin)
-        setContentView(layout)
 
         // Populate users
         lifecycleScope.launch {
@@ -71,5 +74,76 @@ class ThirdActivity : ComponentActivity() {
             }
         }
 
+    }
+}
+
+@Composable
+fun LoginScreen(
+    onLogin: (String, String) -> Unit
+) {
+    var username by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.surfaceVariant),
+        contentAlignment = Alignment.Center
+    ) {
+        Card(
+            shape = RoundedCornerShape(24.dp),
+            elevation = CardDefaults.elevatedCardElevation(defaultElevation = 8.dp),
+            modifier = Modifier
+                .padding(24.dp)
+                .fillMaxWidth()
+        ) {
+            Column(
+                modifier = Modifier
+                    .padding(24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                // Big logo at the top
+                Image(
+                    painter = painterResource(R.drawable.beerstacklogo),
+                    contentDescription = "BeerStack Logo",
+                    modifier = Modifier.size(96.dp)
+                )
+
+                Text(
+                    text = "Login",
+                    style = MaterialTheme.typography.titleLarge
+                )
+
+                OutlinedTextField(
+                    value = username,
+                    onValueChange = { username = it },
+                    label = { Text("Username") },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(16.dp)
+                )
+
+                OutlinedTextField(
+                    value = password,
+                    onValueChange = { password = it },
+                    label = { Text("Password") },
+                    singleLine = true,
+                    visualTransformation = PasswordVisualTransformation(),
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(16.dp)
+                )
+
+                FilledTonalButton(
+                    onClick = { onLogin(username, password) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(48.dp),
+                    shape = RoundedCornerShape(24.dp)
+                ) {
+                    Text("Login")
+                }
+            }
+        }
     }
 }

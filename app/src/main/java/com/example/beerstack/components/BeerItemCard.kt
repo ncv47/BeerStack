@@ -32,7 +32,7 @@ fun BeerItemCard(
             .padding(horizontal = 10.dp, vertical = 10.dp)
             .fillMaxWidth(),
         //Shadow for the boxes and more round corners
-        elevation = CardDefaults.elevatedCardElevation(defaultElevation = 10.dp),
+        elevation = CardDefaults.elevatedCardElevation(defaultElevation = 6.dp),
         shape = RoundedCornerShape(20.dp)
     ) {
         Row(
