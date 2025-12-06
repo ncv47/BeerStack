@@ -180,13 +180,38 @@ fun Body(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
-        SearchBar(
-            value = searchText,
-            onValueChange = onSearchTextChange,
-            onSearch = { beerViewModel.getBeers(searchText) }
+        // Search on the left, sort button on the right
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp, vertical = 8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            // Large search box
+            SearchBar(
+                value = searchText,
+                onValueChange = onSearchTextChange,
+                onSearch = { beerViewModel.getBeers(searchText) },
+            )
+
+            Spacer(modifier = Modifier.width(8.dp))
+
+            // Sort button (same visual weight as login)
+            FilledTonalButton(
+                onClick = { /* open dropdown via state below */ },
+                shape = RoundedCornerShape(50),
+                modifier = Modifier.height(48.dp)
+            ) {
+                Text("Sort")
+            }
+        }
+
+        // Actual dropdown for sort options
+        SortDropdown(
+            selectedSort = selectedSort,
+            onSortChange = onSortChange
         )
-        Spacer(modifier = Modifier.height(8.dp))
-        SortDropdown(selectedSort = selectedSort, onSortChange = onSortChange)
+
         Spacer(modifier = Modifier.padding(8.dp))
         when {
             error != null -> Text(text = error, color = Color.Red) // Show error if loading failed
