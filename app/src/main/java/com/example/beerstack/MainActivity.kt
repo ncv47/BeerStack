@@ -22,7 +22,6 @@ import androidx.compose.material3.Button
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.sp
 import com.example.beerstack.ui.theme.BeerStackTheme
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -34,11 +33,12 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.material3.*
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.Icon
+import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.runtime.*
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -114,41 +114,47 @@ fun Main(beerViewModel: BeerViewModel = viewModel()){
 fun TopBar(modifier: Modifier = Modifier){
     val context = LocalContext.current
 
-    Row(
+    Box(
         modifier = modifier
             .fillMaxWidth()
-            .background(Color.Yellow)
-            .padding(vertical = 8.dp, horizontal = 16.dp),
-        verticalAlignment = Alignment.CenterVertically
+            //Use theme color instead of hardcoded yellow background
+            .background(MaterialTheme.colorScheme.primary)
+            //Increase overall top bar height
+            .height(72.dp)
+            .padding(horizontal = 16.dp)
     ) {
-        // Add space to the left
-        Spacer(modifier = Modifier.weight(1f))
-
-        // Centered image and text, over the whole width of the page
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            //2f = twice as big
-            modifier = Modifier.weight(2f)
+        Row(
+            modifier = Modifier
+                .fillMaxSize(),
+            verticalAlignment = Alignment.CenterVertically
         ) {
+            // App logo on the left, bigger and centered vertically
             Image(
                 painter = painterResource(R.drawable.beerstacklogo),
-                contentDescription = "BeerStack Logo"
+                contentDescription = "BeerStack Logo",
+                modifier = Modifier
+                    .height(48.dp)
             )
-            Text(
-                text = "BeerStack",
-                fontSize = 24.sp
-            )
-        }
 
-        // Login page button to the right
-        Button(
-            onClick = {
-                val intent = Intent(context, ThirdActivity::class.java)
-                context.startActivity(intent)
-            },
-            modifier = Modifier.weight(1f)
-        ) {
-            Text(stringResource(R.string.login_page))
+            // Take up remaining space between logo and button
+            Spacer(modifier = Modifier.weight(1f))
+
+            // Login page button to the right
+            FilledTonalButton(
+                onClick = {
+                    val intent = Intent(context, ThirdActivity::class.java)
+                    context.startActivity(intent)
+                },
+                // Round pill-shaped button
+                shape = RoundedCornerShape(50)
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.AccountCircle,
+                    contentDescription = stringResource(R.string.login_page)
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+                Text(stringResource(R.string.login_page))
+            }
         }
     }
 }
