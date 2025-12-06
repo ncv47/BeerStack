@@ -457,3 +457,23 @@ fun CurrencyToggle(
     }
 }
 
+//Temp Helper for Currency Converter (to be optimized or put in new helper directory)
+fun formatBeerPrice(
+    rawPrice: String?,
+    currency: Currency,
+    eurPerUsd: Double
+): String {
+    val valueUsd = rawPrice
+        ?.replace("$", "")
+        ?.replace("€", "")
+        ?.toDoubleOrNull() ?: return "N/A"
+
+    val value = when (currency) {
+        Currency.USD -> valueUsd
+        Currency.EUR -> valueUsd * eurPerUsd
+    }
+
+    val symbol = if (currency == Currency.USD) "$" else "€"
+    return "%s%.2f".format(symbol, value)
+}
+
