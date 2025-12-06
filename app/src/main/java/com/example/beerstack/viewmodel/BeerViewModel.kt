@@ -16,6 +16,16 @@ class BeerViewModel : ViewModel() {
     // Errorhandeling while loading
     var error by mutableStateOf<String?>(null)
 
+    // Currency state
+    enum class Currency { USD, EUR }
+
+    var currency by mutableStateOf(Currency.USD)
+        private set
+
+    // How many EUR for 1 USD (used for conversion)
+    var eurPerUsd by mutableStateOf(1.0)
+        private set
+
     //Try request the beers from the api
     fun getBeers(query: String = "") {
         viewModelScope.launch {
@@ -31,6 +41,7 @@ class BeerViewModel : ViewModel() {
                 error = "Failed to load beers: ${e.message}"
             }
         }
+
     }
 
     // Filter out test data or invalid beers
