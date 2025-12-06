@@ -78,10 +78,10 @@ fun Main(beerViewModel: BeerViewModel = viewModel()){
     // use Scaffold for top and bottom bars
     Scaffold(
         topBar = {
-            Header() //no weight anymore, Scaffold handles sizing
+            TopBar() //no weight anymore, Scaffold handles sizing
         },
         bottomBar = {
-            Footer() //no weight here either
+            BottomBar() //no weight here either
         }
     ) { innerPadding ->
         Body(
@@ -103,7 +103,7 @@ fun Main(beerViewModel: BeerViewModel = viewModel()){
 }
 
 @Composable
-fun Header(modifier: Modifier = Modifier){
+fun TopBar(modifier: Modifier = Modifier){
     val context = LocalContext.current
 
     Row(
@@ -228,7 +228,7 @@ fun Body(
 }
 
 @Composable
-fun Footer(modifier: Modifier = Modifier){
+fun BottomBar(modifier: Modifier = Modifier){
     val context = LocalContext.current
 
     Column (
