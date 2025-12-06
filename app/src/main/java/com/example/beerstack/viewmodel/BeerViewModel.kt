@@ -13,6 +13,7 @@ import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import java.net.HttpURLConnection
 import java.net.URL
+import com.example.beerstack.model.Currency
 
 // Holds and manages beer list & error state for UI
 class BeerViewModel : ViewModel() {
@@ -22,14 +23,26 @@ class BeerViewModel : ViewModel() {
     var error by mutableStateOf<String?>(null)
 
     // Currency state
-    enum class Currency { USD, EUR }
-
     var currency by mutableStateOf(Currency.USD)
         private set
 
     // How many EUR for 1 USD (used for conversion)
     var eurPerUsd by mutableStateOf(1.0)
         private set
+
+    fun toggleCurrency() {
+        currency = if (currency == Currency.USD) Currency.EUR else Currency.USD
+    }
+
+    fun refreshRate() {
+        viewModelScope.launch {
+            try {
+                eurPerUsd = fetchEurPerUsd()
+            } catch (e: Exception) {
+                // optional: handle error
+            }
+        }
+    }
 
     //Try request the beers from the api
     fun getBeers(query: String = "") {

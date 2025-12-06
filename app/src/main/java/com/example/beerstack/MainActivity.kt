@@ -49,6 +49,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.automirrored.filled.List
 import com.example.beerstack.ui.BeerViewModel
 import com.example.beerstack.model.Beer
+import com.example.beerstack.model.Currency
 import com.example.beerstack.components.BeerItemCard
 
 
@@ -107,7 +108,10 @@ fun Main(beerViewModel: BeerViewModel = viewModel()){
             onSortChange = { selectedSort = it },
             //For the search functionalities
             searchText = searchText,
-            onSearchTextChange = { searchText = it }
+            onSearchTextChange = { searchText = it },
+            //For Currency Conversion
+            currency = beerViewModel.currency,
+            eurPerUsd = beerViewModel.eurPerUsd
         )
     }
 }
@@ -177,7 +181,10 @@ fun Body(
     onSortChange: (SortOption) -> Unit,
     //Search
     searchText: String,
-    onSearchTextChange: (String) -> Unit
+    onSearchTextChange: (String) -> Unit,
+    //Currency COnversion
+    currency: Currency,
+    eurPerUsd: Double
 ) {
     val context = LocalContext.current
     Column(
@@ -213,6 +220,14 @@ fun Body(
         }
 
         Spacer(modifier = Modifier.padding(4.dp))
+
+        CurrencyToggle(
+            currency = currency,
+            onToggleAndRefresh = {
+                beerViewModel.toggleCurrency()
+                beerViewModel.refreshRate()
+            }
+        )
 
         when {
             error != null -> Text(text = error, color = Color.Red) // Show error if loading failed
@@ -425,3 +440,20 @@ fun SearchBar(
         keyboardActions = KeyboardActions(onSearch = { onSearch() })
     )
 }
+
+//For the DOLLAR to EURO conversion with API
+@Composable
+fun CurrencyToggle(
+    currency: Currency,
+    onToggleAndRefresh: () -> Unit
+) {
+    FilledTonalButton(
+        onClick = onToggleAndRefresh,
+        shape = RoundedCornerShape(50),
+        contentPadding = PaddingValues(horizontal = 10.dp, vertical = 4.dp),
+        modifier = Modifier.height(40.dp)
+    ) {
+        Text(if (currency == Currency.USD) "$" else "€")
+    }
+}
+
