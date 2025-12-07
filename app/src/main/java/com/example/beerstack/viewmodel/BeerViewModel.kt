@@ -8,12 +8,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.beerstack.network.SampleApi
 import kotlinx.coroutines.launch
 import com.example.beerstack.model.Beer
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import org.json.JSONObject
-import java.net.HttpURLConnection
-import java.net.URL
 import com.example.beerstack.model.Currency
+import com.example.beerstack.network.CurrencyApi
 
 // Holds and manages beer list & error state for UI
 class BeerViewModel : ViewModel() {
@@ -111,25 +107,10 @@ class BeerViewModel : ViewModel() {
     }
 }
 
-// Fetch EUR/USD rate from currency API
-private suspend fun fetchEurPerUsd(): Double =
-    withContext(Dispatchers.IO) {
-        val url = URL(
-            "https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/eur.json"
-        )
-
-        val connection = (url.openConnection() as HttpURLConnection).apply {
-            requestMethod = "GET"
-            connectTimeout = 5000
-            readTimeout = 5000
-        }
-
-        connection.inputStream.bufferedReader().use { reader ->
-            val json = reader.readText()
-            // JSON looks like: { "date": "...", "eur": { "usd": 1.08, ... } }
-            val root = JSONObject(json)
-            val eur = root.getJSONObject("eur")
-            val eurToUsd = eur.getDouble("usd")   // 1 EUR -> X USD
-            1.0 / eurToUsd                        // store 1 USD -> X EUR
-        }
-    }
+// Fetch EUR/USD rate from currency API (See CurrencyApiService.kt)
+private suspend fun fetchEurPerUsd(): Double {
+    // 1 EUR -> X USD
+    val response = CurrencyApi.retrofitService.getEurRates()
+    val eurToUsd = response.eur.usd
+    return 1.0 / eurToUsd      // store 1 USD -> X EUR (same logic as before)
+}
