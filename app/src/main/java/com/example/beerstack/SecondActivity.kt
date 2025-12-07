@@ -96,7 +96,24 @@ class SecondActivity : ComponentActivity() {
                         beerrating = 5,
                         beeraverage = 4.0,
                         ownerId = 2
+                    ),
+                    Item(
+                        beername = "userid3",
+                        beerprice = 10,
+                        beerimage = "",
+                        beerrating = 5,
+                        beeraverage = 4.0,
+                        ownerId = 3
+                    ),
+                    Item(
+                        beername = "userid4",
+                        beerprice = 10,
+                        beerimage = "",
+                        beerrating = 5,
+                        beeraverage = 4.0,
+                        ownerId = 4
                     )
+
                 )
                 beers.forEach { repository.insertItem(it) }
             }
