@@ -45,11 +45,13 @@ class ThirdActivity : ComponentActivity() {
                                 "Welcome ${user.userName} with userid ${user.userid}",
                                 Toast.LENGTH_SHORT
                             ).show()
-                            // Pass userId to MainActivity
+
                             val intent = Intent(this@ThirdActivity, MainActivity::class.java)
                             intent.putExtra("USER_ID", user.userid)
+                            intent.putExtra("USER_NAME", user.userName)  // send username too
                             startActivity(intent)
-                        } else {
+                            finish() // important: close login screen
+                        }else {
                             Toast.makeText(
                                 applicationContext,
                                 "Invalid credentials",

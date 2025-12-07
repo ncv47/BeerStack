@@ -58,23 +58,20 @@ class MainActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        val userId = intent.getIntExtra("USER_ID", -1)
+        val username = intent.getStringExtra("USER_NAME") ?: "Unknown"
         setContent {
-            //UI THeme
-            BeerStackTheme(dynamicColor = false) { //To prevent automatic coloring {
-                //Call the main function
-                Main()
+            BeerStackTheme(dynamicColor = false) {
+                Main(userId = userId, username = username)
             }
         }
     }
 }
 
-@Preview
+
 @Composable
-fun Main(beerViewModel: BeerViewModel = viewModel()){
-    val context = LocalContext.current
-    val activity = context as? MainActivity
-    val userId = activity?.intent?.getIntExtra("USER_ID", -1) ?: -1
-    val username = activity?.intent?.getStringExtra("USER_NAME") ?: "Unknown"
+fun Main(userId: Int,username: String, beerViewModel: BeerViewModel = viewModel()){
+
 
     //For the Sort Function of the scrollable List
     var selectedSort by remember { mutableStateOf(SortOption.NAME) }
@@ -98,14 +95,16 @@ fun Main(beerViewModel: BeerViewModel = viewModel()){
 
     // use Scaffold for top and bottom bars (Handles weight on its own)
     Scaffold(
+
         topBar = {
             TopBar(userId = userId, username = username)
         },
         bottomBar = {
-            BottomBar()
+            BottomBar(userId = userId, username = username)
         }
     ) { innerPadding ->
         Body(
+
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding),
@@ -154,6 +153,14 @@ fun TopBar(userId: Int, username: String, modifier: Modifier = Modifier){
                 contentDescription = "BeerStack Logo",
                 modifier = Modifier
                     .height(48.dp)
+            )
+            Text(
+                text = "Logged in: $username (ID: $userId)",
+                color = Color.White,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.primary)
+                    .padding(8.dp)
             )
 
             // Take up remaining space between logo and button
@@ -252,6 +259,7 @@ fun Body(
                     val intent = Intent(context, FourthActivity::class.java)
                     intent.putExtra("beer_extra", beer) //must be parcelable
 
+
                     context.startActivity(intent)
                 },
                 currency = currency,
@@ -299,7 +307,7 @@ fun Body(
 }
 
 @Composable
-fun BottomBar(modifier: Modifier = Modifier){
+fun BottomBar(userId: Int, username: String,modifier: Modifier = Modifier){
     val context = LocalContext.current
 
     //keep state which item is selected
@@ -336,6 +344,8 @@ fun BottomBar(modifier: Modifier = Modifier){
             onClick = {
                 selectedItem = 1
                 val intent = Intent(context, SecondActivity::class.java)
+                intent.putExtra("USER_ID", userId)      // <-- pass userId
+                intent.putExtra("USER_NAME", username)
                 context.startActivity(intent)
             },
             icon = {
