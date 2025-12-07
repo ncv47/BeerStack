@@ -25,4 +25,7 @@ interface ItemDao {
     @Query("SELECT * FROM users ORDER BY userName ASC")
     fun getAllUsersWithBeer(): Flow<List<UserwithBeer>>
 
+    @Query("SELECT * FROM items WHERE ownerId = :ownerId")
+    fun getItemsByOwner(ownerId: Int): Flow<List<Item>>
+
 }
