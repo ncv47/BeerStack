@@ -42,12 +42,13 @@ class ThirdActivity : ComponentActivity() {
                         if (user != null) {
                             Toast.makeText(
                                 applicationContext,
-                                "Welcome ${user.userName}",
+                                "Welcome ${user.userName} with userid ${user.userid}",
                                 Toast.LENGTH_SHORT
                             ).show()
-                            startActivity(
-                                Intent(this@ThirdActivity, MainActivity::class.java)
-                            )
+                            // Pass userId to MainActivity
+                            val intent = Intent(this@ThirdActivity, MainActivity::class.java)
+                            intent.putExtra("USER_ID", user.userid)
+                            startActivity(intent)
                         } else {
                             Toast.makeText(
                                 applicationContext,

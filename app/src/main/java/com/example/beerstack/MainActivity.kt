@@ -71,6 +71,11 @@ class MainActivity : BaseActivity() {
 @Preview
 @Composable
 fun Main(beerViewModel: BeerViewModel = viewModel()){
+    val context = LocalContext.current
+    val activity = context as? MainActivity
+    val userId = activity?.intent?.getIntExtra("USER_ID", -1) ?: -1
+    val username = activity?.intent?.getStringExtra("USER_NAME") ?: "Unknown"
+
     //For the Sort Function of the scrollable List
     var selectedSort by remember { mutableStateOf(SortOption.NAME) }
     //For the search function
@@ -94,7 +99,7 @@ fun Main(beerViewModel: BeerViewModel = viewModel()){
     // use Scaffold for top and bottom bars (Handles weight on its own)
     Scaffold(
         topBar = {
-            TopBar()
+            TopBar(userId = userId, username = username)
         },
         bottomBar = {
             BottomBar()
@@ -122,7 +127,7 @@ fun Main(beerViewModel: BeerViewModel = viewModel()){
 }
 
 @Composable
-fun TopBar(modifier: Modifier = Modifier){
+fun TopBar(userId: Int, username: String, modifier: Modifier = Modifier){
     val context = LocalContext.current
 
     Box(
@@ -157,8 +162,11 @@ fun TopBar(modifier: Modifier = Modifier){
             // Login page button to the right
             FilledTonalButton(
                 onClick = {
-                    val intent = Intent(context, ThirdActivity::class.java)
+                    val intent = Intent(context, SecondActivity::class.java)
+                    intent.putExtra("USER_ID", userId)        // pass logged-in user ID
+                    intent.putExtra("USER_NAME", username)    // pass logged-in username
                     context.startActivity(intent)
+
                 },
                 // Round pill-shaped button
                 shape = RoundedCornerShape(50)
