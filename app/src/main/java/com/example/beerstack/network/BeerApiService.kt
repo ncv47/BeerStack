@@ -34,7 +34,7 @@ interface SampleBeersApiService {
 object SampleApi {
     //Use the lazy delegation
     val retrofitService: SampleBeersApiService by lazy {
-        //Create helpr object form api interface
+        //Create helper object form api interface
         //whenever call its methods, Retrofit automatically sends the actual HTTP request
         retrofit.create(SampleBeersApiService::class.java)
     }

@@ -18,7 +18,6 @@ import com.example.beerstack.model.Beer
 import com.example.beerstack.model.Currency
 import androidx.compose.ui.res.painterResource
 import com.example.beerstack.R
-import com.example.beerstack.MainActivity.* //For formatbeerprice function, later put in helper function
 //For Star Rating
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material.icons.Icons
@@ -28,6 +27,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import kotlin.math.floor
 import kotlin.math.roundToInt
+//Util Imports (Helper Functions)
+import com.example.beerstack.utils.formatBeerPrice
 
 @Composable
 fun BeerItemCard(
@@ -121,7 +122,7 @@ fun BeerItemCard(
                         beer.rating?.let {
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 StarRating(
-                                    rating = beer.rating?.average   // Double? 0–5 from your model
+                                    rating = beer.rating?.average   //
                                 )
                                 Spacer(modifier = Modifier.width(4.dp))
                                 Text(

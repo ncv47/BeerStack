@@ -22,12 +22,9 @@ import androidx.compose.material3.Button
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.example.beerstack.ui.theme.BeerStackTheme
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.background
 import android.content.Intent
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.material3.*
@@ -40,16 +37,20 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.runtime.*
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.window.Dialog
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.automirrored.filled.List
 import com.example.beerstack.ui.BeerViewModel
 import com.example.beerstack.model.Beer
 import com.example.beerstack.model.Currency
-import com.example.beerstack.components.BeerItemCard
+//Util Imports (Helper Functions)
+import com.example.beerstack.utils.sortBeers
+import com.example.beerstack.utils.BeerList
+import com.example.beerstack.utils.SortDropdown
+import com.example.beerstack.utils.SearchBar
+import com.example.beerstack.utils.CurrencyToggle
+import com.example.beerstack.utils.SortOptions
+
 
 
 class MainActivity : BaseActivity() {
@@ -73,7 +74,7 @@ fun Main(userId: Int,username: String, beerViewModel: BeerViewModel = viewModel(
 
 
     //For the Sort Function of the scrollable List
-    var selectedSort by remember { mutableStateOf(SortOption.NAME) }
+    var selectedSort by remember { mutableStateOf(SortOptions.NAME) }
     //For the search function
     var searchText by remember { mutableStateOf("") }
 
@@ -196,8 +197,8 @@ fun Body(
     beers: List<Beer>,
     error: String?,
     //Sort
-    selectedSort: SortOption,
-    onSortChange: (SortOption) -> Unit,
+    selectedSort: SortOptions,
+    onSortChange: (SortOptions) -> Unit,
     //Search
     searchText: String,
     onSearchTextChange: (String) -> Unit,
@@ -361,151 +362,3 @@ fun BottomBar(userId: Int, username: String,modifier: Modifier = Modifier){
         )
     }
 }
-
-//Show from the API the beers (now temporary the test data) in a scrolling list, using LazyColumn
-// beer = for scrollable list
-// OnGetBeerByID = for the collection specific fetch
-@Composable
-fun BeerList(
-    items: List<Beer>,
-    onAddBeerClick: (Beer) -> Unit,
-    currency: Currency,
-    eurPerUsd: Double
-) {
-    LazyColumn {
-        items(items) { beer ->
-            BeerItemCard(
-                beer = beer,
-                onAddToCollection = { onAddBeerClick(beer) },
-                currency = currency,
-                eurPerUsd = eurPerUsd
-            )
-        }
-    }
-}
-
-
-//Options for the sort function
-enum class SortOption(val label: String) {
-    NAME("A-Z"),
-    NAME_REVERSE("Z-A"),
-    PRICE("Price ↑"),
-    PRICE_REVERSE("Price ↓"),
-    RATING("Rating ↑"),
-    RATING_REVERSE("Rating ↓")
-}
-
-//The sort functionality in a dropdown menu
-@Composable
-fun SortDropdown(
-    selectedSort: SortOption,
-    onSortChange: (SortOption) -> Unit
-) {
-    var expanded by remember { mutableStateOf(false) }
-
-    Box {
-        // Small pill-shaped button showing current sort
-        FilledTonalButton(
-            onClick = { expanded = true },
-            shape = RoundedCornerShape(50),
-            contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
-            modifier = Modifier.height(40.dp) // close to searchbar height but smaller
-        ) {
-            Text("Sort: ${selectedSort.label}")
-        }
-
-        DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false }
-        ) {
-            SortOption.entries.forEach { option ->
-                DropdownMenuItem(
-                    text = { Text(option.label) },
-                    onClick = {
-                        onSortChange(option)
-                        expanded = false
-                    }
-                )
-            }
-        }
-    }
-}
-
-//The sort dropdown functionality
-fun sortBeers(beers: List<Beer>, sortOption: SortOption): List<Beer> {
-    return when (sortOption) {
-        SortOption.NAME -> beers.sortedBy { it.name }
-        SortOption.NAME_REVERSE -> beers.sortedByDescending { it.name }
-        SortOption.PRICE -> beers.sortedBy { it.price?.replace("$", "")?.toDoubleOrNull() ?: Double.MAX_VALUE }
-        SortOption.PRICE_REVERSE -> beers.sortedByDescending { it.price?.replace("$", "")?.toDoubleOrNull() ?: Double.MIN_VALUE }
-        SortOption.RATING -> beers.sortedBy { it.rating?.average ?: Double.MIN_VALUE }
-        SortOption.RATING_REVERSE -> beers.sortedByDescending { it.rating?.average ?: Double.MAX_VALUE }
-    }
-}
-
-//Searchbar functionality
-@Composable
-fun SearchBar(
-    value: String,
-    onValueChange: (String) -> Unit,
-    onSearch: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    OutlinedTextField(
-        value = value,
-        onValueChange = onValueChange,
-        placeholder = { Text("Search beers...") },
-        modifier = modifier
-            .height(56.dp)
-            .padding(end = 0.dp),
-        singleLine = true,
-        shape = RoundedCornerShape(50),
-        colors = OutlinedTextFieldDefaults.colors(
-            focusedContainerColor = MaterialTheme.colorScheme.surface,
-            unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-            focusedBorderColor = MaterialTheme.colorScheme.primary,
-            unfocusedBorderColor = MaterialTheme.colorScheme.outline
-        ),
-        keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Search),
-        keyboardActions = KeyboardActions(onSearch = { onSearch() })
-    )
-}
-
-//For the DOLLAR to EURO conversion with API
-@Composable
-fun CurrencyToggle(
-    currency: Currency,
-    onToggleAndRefresh: () -> Unit
-) {
-    FilledTonalButton(
-        onClick = onToggleAndRefresh,
-        shape = RoundedCornerShape(50),
-        contentPadding = PaddingValues(horizontal = 10.dp, vertical = 4.dp),
-        modifier = Modifier
-            .height(40.dp)
-            .width(28.dp)
-    ) {
-        Text(if (currency == Currency.USD) "$" else "€")
-    }
-}
-
-//Temp Helper for Currency Converter (to be optimized or put in new helper directory)
-fun formatBeerPrice(
-    rawPrice: String?,
-    currency: Currency,
-    eurPerUsd: Double
-): String {
-    val valueUsd = rawPrice
-        ?.replace("$", "")
-        ?.replace("€", "")
-        ?.toDoubleOrNull() ?: return "N/A"
-
-    val value = when (currency) {
-        Currency.USD -> valueUsd
-        Currency.EUR -> valueUsd * eurPerUsd
-    }
-
-    val symbol = if (currency == Currency.USD) "$" else "€"
-    return "%s%.2f".format(symbol, value)
-}
-
