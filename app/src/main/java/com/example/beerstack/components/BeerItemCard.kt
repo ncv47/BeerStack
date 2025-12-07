@@ -28,6 +28,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import kotlin.math.floor
 import kotlin.math.roundToInt
+//Util Imports (Helper Functions)
+import com.example.beerstack.utils.formatBeerPrice
 
 @Composable
 fun BeerItemCard(

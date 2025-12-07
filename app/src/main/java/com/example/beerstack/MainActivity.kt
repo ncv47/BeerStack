@@ -23,8 +23,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.beerstack.ui.theme.BeerStackTheme
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.background
 import android.content.Intent
@@ -50,7 +48,10 @@ import androidx.compose.material.icons.automirrored.filled.List
 import com.example.beerstack.ui.BeerViewModel
 import com.example.beerstack.model.Beer
 import com.example.beerstack.model.Currency
-import com.example.beerstack.components.BeerItemCard
+//Util Imports (Helper Functions)
+import com.example.beerstack.utils.sortBeers
+import com.example.beerstack.utils.BeerList
+
 
 
 class MainActivity : BaseActivity() {
@@ -345,28 +346,6 @@ fun BottomBar(modifier: Modifier = Modifier){
     }
 }
 
-//Show from the API the beers (now temporary the test data) in a scrolling list, using LazyColumn
-// beer = for scrollable list
-// OnGetBeerByID = for the collection specific fetch
-@Composable
-fun BeerList(
-    items: List<Beer>,
-    onAddBeerClick: (Beer) -> Unit,
-    currency: Currency,
-    eurPerUsd: Double
-) {
-    LazyColumn {
-        items(items) { beer ->
-            BeerItemCard(
-                beer = beer,
-                onAddToCollection = { onAddBeerClick(beer) },
-                currency = currency,
-                eurPerUsd = eurPerUsd
-            )
-        }
-    }
-}
-
 
 //Options for the sort function
 enum class SortOption(val label: String) {
@@ -414,17 +393,6 @@ fun SortDropdown(
     }
 }
 
-//The sort dropdown functionality
-fun sortBeers(beers: List<Beer>, sortOption: SortOption): List<Beer> {
-    return when (sortOption) {
-        SortOption.NAME -> beers.sortedBy { it.name }
-        SortOption.NAME_REVERSE -> beers.sortedByDescending { it.name }
-        SortOption.PRICE -> beers.sortedBy { it.price?.replace("$", "")?.toDoubleOrNull() ?: Double.MAX_VALUE }
-        SortOption.PRICE_REVERSE -> beers.sortedByDescending { it.price?.replace("$", "")?.toDoubleOrNull() ?: Double.MIN_VALUE }
-        SortOption.RATING -> beers.sortedBy { it.rating?.average ?: Double.MIN_VALUE }
-        SortOption.RATING_REVERSE -> beers.sortedByDescending { it.rating?.average ?: Double.MAX_VALUE }
-    }
-}
 
 //Searchbar functionality
 @Composable
@@ -470,25 +438,5 @@ fun CurrencyToggle(
     ) {
         Text(if (currency == Currency.USD) "$" else "€")
     }
-}
-
-//Temp Helper for Currency Converter (to be optimized or put in new helper directory)
-fun formatBeerPrice(
-    rawPrice: String?,
-    currency: Currency,
-    eurPerUsd: Double
-): String {
-    val valueUsd = rawPrice
-        ?.replace("$", "")
-        ?.replace("€", "")
-        ?.toDoubleOrNull() ?: return "N/A"
-
-    val value = when (currency) {
-        Currency.USD -> valueUsd
-        Currency.EUR -> valueUsd * eurPerUsd
-    }
-
-    val symbol = if (currency == Currency.USD) "$" else "€"
-    return "%s%.2f".format(symbol, value)
 }
 
