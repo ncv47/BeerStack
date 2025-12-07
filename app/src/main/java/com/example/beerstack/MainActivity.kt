@@ -26,7 +26,6 @@ import com.example.beerstack.ui.theme.BeerStackTheme
 import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.background
 import android.content.Intent
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.material3.*
@@ -51,6 +50,7 @@ import com.example.beerstack.utils.BeerList
 import com.example.beerstack.utils.SortDropdown
 import com.example.beerstack.utils.SearchBar
 import com.example.beerstack.utils.CurrencyToggle
+import com.example.beerstack.utils.SortOptions
 
 
 
@@ -73,7 +73,7 @@ class MainActivity : BaseActivity() {
 @Composable
 fun Main(beerViewModel: BeerViewModel = viewModel()){
     //For the Sort Function of the scrollable List
-    var selectedSort by remember { mutableStateOf(SortOption.NAME) }
+    var selectedSort by remember { mutableStateOf(SortOptions.NAME) }
     //For the search function
     var searchText by remember { mutableStateOf("") }
 
@@ -183,8 +183,8 @@ fun Body(
     beers: List<Beer>,
     error: String?,
     //Sort
-    selectedSort: SortOption,
-    onSortChange: (SortOption) -> Unit,
+    selectedSort: SortOptions,
+    onSortChange: (SortOptions) -> Unit,
     //Search
     searchText: String,
     onSearchTextChange: (String) -> Unit,
@@ -345,17 +345,3 @@ fun BottomBar(modifier: Modifier = Modifier){
         )
     }
 }
-
-
-//Options for the sort function
-enum class SortOption(val label: String) {
-    NAME("A-Z"),
-    NAME_REVERSE("Z-A"),
-    PRICE("Price ↑"),
-    PRICE_REVERSE("Price ↓"),
-    RATING("Rating ↑"),
-    RATING_REVERSE("Rating ↓")
-}
-
-
-

@@ -23,14 +23,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
-import com.example.beerstack.SortOption
 import com.example.beerstack.model.Currency
 
 //The sort functionality in a dropdown menu
 @Composable
 fun SortDropdown(
-    selectedSort: SortOption,
-    onSortChange: (SortOption) -> Unit
+    selectedSort: SortOptions,
+    onSortChange: (SortOptions) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -49,7 +48,7 @@ fun SortDropdown(
             expanded = expanded,
             onDismissRequest = { expanded = false }
         ) {
-            SortOption.entries.forEach { option ->
+            SortOptions.entries.forEach { option ->
                 DropdownMenuItem(
                     text = { Text(option.label) },
                     onClick = {
@@ -107,4 +106,14 @@ fun CurrencyToggle(
     ) {
         Text(if (currency == Currency.USD) "$" else "€")
     }
+}
+
+//Options for the sort function
+enum class SortOptions(val label: String) {
+    NAME("A-Z"),
+    NAME_REVERSE("Z-A"),
+    PRICE("Price ↑"),
+    PRICE_REVERSE("Price ↓"),
+    RATING("Rating ↑"),
+    RATING_REVERSE("Rating ↓")
 }

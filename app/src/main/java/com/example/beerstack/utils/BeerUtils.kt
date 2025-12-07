@@ -3,7 +3,6 @@ package com.example.beerstack.utils
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
-import com.example.beerstack.SortOption
 import com.example.beerstack.components.BeerItemCard
 import com.example.beerstack.model.Beer
 import com.example.beerstack.model.Currency
@@ -31,14 +30,14 @@ fun BeerList(
 }
 
 //The sort dropdown functionality
-fun sortBeers(beers: List<Beer>, sortOption: SortOption): List<Beer> {
+fun sortBeers(beers: List<Beer>, sortOption: SortOptions): List<Beer> {
     return when (sortOption) {
-        SortOption.NAME -> beers.sortedBy { it.name }
-        SortOption.NAME_REVERSE -> beers.sortedByDescending { it.name }
-        SortOption.PRICE -> beers.sortedBy { it.price?.replace("$", "")?.toDoubleOrNull() ?: Double.MAX_VALUE }
-        SortOption.PRICE_REVERSE -> beers.sortedByDescending { it.price?.replace("$", "")?.toDoubleOrNull() ?: Double.MIN_VALUE }
-        SortOption.RATING -> beers.sortedBy { it.rating?.average ?: Double.MIN_VALUE }
-        SortOption.RATING_REVERSE -> beers.sortedByDescending { it.rating?.average ?: Double.MAX_VALUE }
+        SortOptions.NAME -> beers.sortedBy { it.name }
+        SortOptions.NAME_REVERSE -> beers.sortedByDescending { it.name }
+        SortOptions.PRICE -> beers.sortedBy { it.price?.replace("$", "")?.toDoubleOrNull() ?: Double.MAX_VALUE }
+        SortOptions.PRICE_REVERSE -> beers.sortedByDescending { it.price?.replace("$", "")?.toDoubleOrNull() ?: Double.MIN_VALUE }
+        SortOptions.RATING -> beers.sortedBy { it.rating?.average ?: Double.MIN_VALUE }
+        SortOptions.RATING_REVERSE -> beers.sortedByDescending { it.rating?.average ?: Double.MAX_VALUE }
     }
 }
 
