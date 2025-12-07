@@ -74,6 +74,8 @@ dependencies {
     //For Secure Sockets Layer (via OpenSSL/with OKHttp)
     implementation("com.squareup.okhttp3:okhttp:4.11.0")
 
+    //For Star Ratings
+    implementation("androidx.compose.material:material-icons-extended:1.7.8")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

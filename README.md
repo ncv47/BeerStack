@@ -9,7 +9,7 @@
 ## Project summary
 Use this app to keep track of what beers you have already drunk in your life with a personal rating given to it
 
-### How To Use
+### How To Use  
 ZUIPPPEN
 
 ## Requirements
