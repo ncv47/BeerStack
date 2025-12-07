@@ -39,9 +39,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.runtime.*
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.window.Dialog
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.automirrored.filled.List
@@ -51,6 +48,9 @@ import com.example.beerstack.model.Currency
 //Util Imports (Helper Functions)
 import com.example.beerstack.utils.sortBeers
 import com.example.beerstack.utils.BeerList
+import com.example.beerstack.utils.SortDropdown
+import com.example.beerstack.utils.SearchBar
+import com.example.beerstack.utils.CurrencyToggle
 
 
 
@@ -357,86 +357,5 @@ enum class SortOption(val label: String) {
     RATING_REVERSE("Rating ↓")
 }
 
-//The sort functionality in a dropdown menu
-@Composable
-fun SortDropdown(
-    selectedSort: SortOption,
-    onSortChange: (SortOption) -> Unit
-) {
-    var expanded by remember { mutableStateOf(false) }
 
-    Box {
-        // Small pill-shaped button showing current sort
-        FilledTonalButton(
-            onClick = { expanded = true },
-            shape = RoundedCornerShape(50),
-            contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
-            modifier = Modifier.height(40.dp) // close to searchbar height but smaller
-        ) {
-            Text("Sort: ${selectedSort.label}")
-        }
-
-        DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false }
-        ) {
-            SortOption.entries.forEach { option ->
-                DropdownMenuItem(
-                    text = { Text(option.label) },
-                    onClick = {
-                        onSortChange(option)
-                        expanded = false
-                    }
-                )
-            }
-        }
-    }
-}
-
-
-//Searchbar functionality
-@Composable
-fun SearchBar(
-    value: String,
-    onValueChange: (String) -> Unit,
-    onSearch: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    OutlinedTextField(
-        value = value,
-        onValueChange = onValueChange,
-        placeholder = { Text("Search beers...") },
-        modifier = modifier
-            .height(56.dp)
-            .padding(end = 0.dp),
-        singleLine = true,
-        shape = RoundedCornerShape(50),
-        colors = OutlinedTextFieldDefaults.colors(
-            focusedContainerColor = MaterialTheme.colorScheme.surface,
-            unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-            focusedBorderColor = MaterialTheme.colorScheme.primary,
-            unfocusedBorderColor = MaterialTheme.colorScheme.outline
-        ),
-        keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Search),
-        keyboardActions = KeyboardActions(onSearch = { onSearch() })
-    )
-}
-
-//For the DOLLAR to EURO conversion with API
-@Composable
-fun CurrencyToggle(
-    currency: Currency,
-    onToggleAndRefresh: () -> Unit
-) {
-    FilledTonalButton(
-        onClick = onToggleAndRefresh,
-        shape = RoundedCornerShape(50),
-        contentPadding = PaddingValues(horizontal = 10.dp, vertical = 4.dp),
-        modifier = Modifier
-            .height(40.dp)
-            .width(28.dp)
-    ) {
-        Text(if (currency == Currency.USD) "$" else "€")
-    }
-}
 
