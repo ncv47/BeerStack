@@ -19,8 +19,15 @@ import com.example.beerstack.model.Currency
 import androidx.compose.ui.res.painterResource
 import com.example.beerstack.R
 import com.example.beerstack.MainActivity.* //For formatbeerprice function, later put in helper function
-
-
+//For Star Rating
+import androidx.compose.foundation.layout.Row
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.outlined.Star
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import kotlin.math.floor
+import kotlin.math.roundToInt
 
 @Composable
 fun BeerItemCard(
@@ -112,11 +119,16 @@ fun BeerItemCard(
                             )
                         }
                         beer.rating?.let {
-                            Text(
-                                text = "Rating: %.2f".format(it.average),
-                                fontSize = 14.sp,
-                                color = Color.DarkGray
-                            )
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                StarRating(
+                                    rating = beer.rating?.average   // Double? 0–5 from your model
+                                )
+                                Spacer(modifier = Modifier.width(4.dp))
+                                Text(
+                                    text = beer.rating?.average?.let { "%.1f/5".format(it) } ?: "N/A",
+                                    style = MaterialTheme.typography.bodySmall
+                                )
+                            }
                             Text(
                                 text = "Reviews: ${it.reviews}",
                                 fontSize = 12.sp,
@@ -138,6 +150,54 @@ fun BeerItemCard(
                     }
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun StarRating(
+    rating: Double?,
+    stars: Int = 5,
+    modifier: Modifier = Modifier,
+    starColor: Color = MaterialTheme.colorScheme.primary
+) {
+    val safeRating = (rating ?: 0.0).coerceIn(0.0, stars.toDouble())
+    // Round to nearest 0.5
+    val roundedToHalf = (safeRating * 2).roundToInt() / 2.0
+
+    val fullStars = floor(roundedToHalf).toInt()
+    val hasHalf = roundedToHalf % 1.0 >= 0.5
+    val emptyStars = (stars - fullStars - if (hasHalf) 1 else 0).coerceAtLeast(0)
+
+    Row(modifier = modifier) {
+        // Full stars
+        repeat(fullStars) {
+            Icon(
+                imageVector = Icons.Filled.Star,
+                contentDescription = null,
+                tint = starColor,
+                modifier = Modifier.size(18.dp)
+            )
+        }
+
+        // Half star
+        if (hasHalf) {
+            Icon(
+                painter = painterResource(id = R.drawable.half_star),
+                contentDescription = null,
+                tint = starColor,
+                modifier = Modifier.size(18.dp)
+            )
+        }
+
+        // Empty stars
+        repeat(emptyStars) {
+            Icon(
+                imageVector = Icons.Outlined.Star,
+                contentDescription = null,
+                tint = starColor.copy(alpha = 0.4f),
+                modifier = Modifier.size(18.dp)
+            )
         }
     }
 }
