@@ -154,14 +154,6 @@ fun TopBar(userId: Int, username: String, modifier: Modifier = Modifier){
                 modifier = Modifier
                     .height(48.dp)
             )
-            Text(
-                text = "Logged in: $username (ID: $userId)",
-                color = Color.White,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.primary)
-                    .padding(8.dp)
-            )
 
             // Take up remaining space between logo and button
             Spacer(modifier = Modifier.weight(1f))
@@ -169,7 +161,7 @@ fun TopBar(userId: Int, username: String, modifier: Modifier = Modifier){
             // Login page button to the right
             FilledTonalButton(
                 onClick = {
-                    val intent = Intent(context, SecondActivity::class.java)
+                    val intent = Intent(context, FifthActivity::class.java)
                     intent.putExtra("USER_ID", userId)        // pass logged-in user ID
                     intent.putExtra("USER_NAME", username)    // pass logged-in username
                     context.startActivity(intent)
@@ -180,10 +172,10 @@ fun TopBar(userId: Int, username: String, modifier: Modifier = Modifier){
             ) {
                 Icon(
                     imageVector = Icons.Filled.AccountCircle,
-                    contentDescription = stringResource(R.string.login_page)
+                    contentDescription = stringResource(R.string.profile_page)
                 )
                 Spacer(modifier = Modifier.width(4.dp))
-                Text(stringResource(R.string.login_page))
+                Text(stringResource(R.string.profile_page))
             }
         }
     }

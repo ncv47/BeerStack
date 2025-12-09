@@ -90,6 +90,14 @@ class SecondActivity : ComponentActivity() {
                         ownerId = 1
                     ),
                     Item(
+                        beername = "highestrating",
+                        beerprice = 8,
+                        beerimage = "",
+                        beerrating = 5,
+                        beeraverage = 3.4,
+                        ownerId = 1
+                    ),
+                    Item(
                         beername = "userid2",
                         beerprice = 10,
                         beerimage = "",
@@ -98,11 +106,11 @@ class SecondActivity : ComponentActivity() {
                         ownerId = 2
                     ),
                     Item(
-                        beername = "userid3",
+                        beername = "kriek",
                         beerprice = 10,
                         beerimage = "",
                         beerrating = 5,
-                        beeraverage = 4.0,
+                        beeraverage = 1.0,
                         ownerId = 3
                     ),
                     Item(
