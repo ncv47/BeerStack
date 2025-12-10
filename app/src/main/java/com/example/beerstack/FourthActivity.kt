@@ -42,8 +42,7 @@ class FourthActivity : BaseActivity() {
                                         beername = beer.name,
                                         beerprice = 0,
                                         beerimage = beer.image,
-                                        beerrating = (rating * 100).toInt(),
-                                        beeraverage = beer.rating?.average ?: 0.0,
+                                        beerrating = rating.toInt(),
                                         ownerId = userId
                                     )
                                 )
