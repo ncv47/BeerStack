@@ -120,7 +120,8 @@ fun Main(userId: Int,username: String, beerViewModel: BeerViewModel = viewModel(
             onSearchTextChange = { searchText = it },
             //For Currency Conversion
             currency = beerViewModel.currency,
-            eurPerUsd = beerViewModel.eurPerUsd
+            eurPerUsd = beerViewModel.eurPerUsd,
+            userId = userId
         )
     }
 }
@@ -196,7 +197,8 @@ fun Body(
     onSearchTextChange: (String) -> Unit,
     //Currency COnversion
     currency: Currency,
-    eurPerUsd: Double
+    eurPerUsd: Double,
+    userId: Int
 ) {
     val context = LocalContext.current
     Column(
@@ -250,7 +252,7 @@ fun Body(
                 onAddBeerClick = { beer ->
                     val intent = Intent(context, FourthActivity::class.java)
                     intent.putExtra("beer_extra", beer) //must be parcelable
-
+                    intent.putExtra("USER_ID", userId)
 
                     context.startActivity(intent)
                 },

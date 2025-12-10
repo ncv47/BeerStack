@@ -56,11 +56,10 @@ class SecondActivity : ComponentActivity() {
                                     .padding(8.dp)
                             ) {
                                 Text(text = "Name: ${beer.beername}")
-                                Text(text = "Price: ${beer.beerprice}")
                                 Text(text = "Rating: ${beer.beerrating}")
                                 Text(text = "Average: ${beer.beeraverage}")
                             }
-                            Divider(modifier = Modifier.padding(vertical = 4.dp))
+                            HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
                         }
                     }
                 }
