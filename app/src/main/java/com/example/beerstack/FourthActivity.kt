@@ -14,26 +14,50 @@ import com.example.beerstack.model.Beer
 import com.example.beerstack.ui.theme.BeerStackTheme
 import coil.compose.AsyncImage
 import androidx.compose.ui.layout.ContentScale
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
+import com.example.beerstack.data.BeerDB.AppDataContainer
+import com.example.beerstack.data.BeerDB.Item
 
 class FourthActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val beer = intent.getParcelableExtra<Beer>("beer_extra")
+        val beer = intent.getParcelableExtra("beer_extra") as? Beer
+        val userId = intent.getIntExtra("USER_ID", -1)
+
+        val repository = AppDataContainer(this).itemsRepository
 
         setContent {
             BeerStackTheme {
-                if (beer != null) {
-                    RateBeerScreen(beer = beer, onDone = { rating, location, notes ->
-                        finish()
-                    })
+                if (beer != null && userId != -1) {
+                    RateBeerScreen(
+                        beer = beer,
+                        onDone = { rating, location, notes ->
+                            lifecycleScope.launch {
+                                repository.insertItem(
+                                    item = Item(
+                                        beerid = 0, // Automatically generates
+                                        beername = beer.name,
+                                        beerprice = 0,
+                                        beerimage = beer.image,
+                                        beerrating = (rating * 100).toInt(),
+                                        beeraverage = beer.rating?.average ?: 0.0,
+                                        ownerId = userId
+                                    )
+                                )
+                            }
+                            finish()
+                        }
+                    )
                 } else {
-                    Text("No beer data received")
+                    Text("No beer data received or user missing")
                 }
             }
         }
     }
+
 }
 
 
