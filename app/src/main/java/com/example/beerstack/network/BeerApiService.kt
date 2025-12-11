@@ -23,11 +23,6 @@ interface SampleBeersApiService {
     @GET("beers/ale")
     //Asynchronously fetch a list of Beer objects
     suspend fun getBeers(): List<Beer>
-
-    //To get Beers per ID for the collection (2nd request)
-    // https://api.sampleapis.com/beers/ale/5 fetches all the data of the beer with ID = 5
-    @GET("beers/ale/{id}")
-    suspend fun getBeerById(@Path("id") id: Int): Beer  // New endpoint
 }
 
 //Object, Single Instance
