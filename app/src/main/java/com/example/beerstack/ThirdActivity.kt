@@ -24,7 +24,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.withContext
 
-class ThirdActivity : ComponentActivity() {
+class ThirdActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val repository = AppDataContainer(this).usersRepository
