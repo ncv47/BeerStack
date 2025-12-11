@@ -73,19 +73,6 @@ class BeerViewModel : ViewModel() {
     var lastAddedBeerName by mutableStateOf<String?>(null)
     var lastAddedBeerError by mutableStateOf<String?>(null)
 
-    fun getBeerById(id: Int) {
-        viewModelScope.launch {
-            try {
-                val beer = SampleApi.retrofitService.getBeerById(id)
-                lastAddedBeerName = beer.name
-                lastAddedBeerError = null
-            } catch (e: Exception) {
-                lastAddedBeerName = null
-                lastAddedBeerError = "Failed to fetch beer: ${e.message}"
-            }
-        }
-    }
-
     // Call this to clear popup after dismiss
     fun clearLastBeerInfo() {
         lastAddedBeerName = null

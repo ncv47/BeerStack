@@ -18,6 +18,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
+import com.example.beerstack.data.remote.SupabaseCollectionRepository
+import com.example.beerstack.data.remote.UserBeerDto
 
 class SecondActivity : ComponentActivity() {
 
@@ -28,9 +30,11 @@ class SecondActivity : ComponentActivity() {
 
         // Get the logged-in user ID passed from ThirdActivity
         val userId = intent.getIntExtra("USER_ID", -1)
+        //Use Supabase (Own API)
+        val supabaseRepo = SupabaseCollectionRepository()
         setContent {
             MaterialTheme {
-                var items by remember { mutableStateOf<List<Item>>(emptyList()) }
+                var items by remember { mutableStateOf<List<UserBeerDto>>(emptyList()) }
 
                 Column(
                     modifier = Modifier
@@ -55,9 +59,9 @@ class SecondActivity : ComponentActivity() {
                                     .fillMaxWidth()
                                     .padding(8.dp)
                             ) {
-                                Text(text = "Name: ${beer.beername}")
-                                Text(text = "Rating: %.1f".format(beer.beerrating))
-                                Text(text = "Average: %.1f".format(beer.beeraverage))
+                                Text(text = "Name: ${beer.name}")
+                                Text(text = "My Rating: %.1f".format(beer.myrating))
+                                Text(text = "Average: %.1f".format(beer.apiaverage))
                             }
                             HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
                         }
@@ -65,11 +69,9 @@ class SecondActivity : ComponentActivity() {
                 }
 
                 // Collect the Flow and filter items by ownerId
-                LaunchedEffect(Unit) {
+                LaunchedEffect(userId) {
                     if (userId != -1) {
-                        repository.getItemsByOwner(userId).collectLatest { filteredItems ->
-                            items = filteredItems
-                        }
+                        items = supabaseRepo.getCollection(userId)
                     }
                 }
             }
