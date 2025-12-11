@@ -18,7 +18,8 @@ import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import com.example.beerstack.data.BeerDB.AppDataContainer
 import com.example.beerstack.data.BeerDB.Item
-import com.example.beerstack.model.Rating
+import com.example.beerstack.data.remote.SupabaseCollectionRepository
+import com.example.beerstack.data.remote.UserBeerDto
 
 class FourthActivity : BaseActivity() {
 
@@ -30,6 +31,8 @@ class FourthActivity : BaseActivity() {
 
         val repository = AppDataContainer(this).itemsRepository
 
+        val supabaseRepo = SupabaseCollectionRepository()
+
         setContent {
             BeerStackTheme {
                 if (beer != null && userId != -1) {
@@ -37,20 +40,29 @@ class FourthActivity : BaseActivity() {
                         beer = beer,
                         onDone = { rating, location, notes ->
                             lifecycleScope.launch {
-                                repository.insertItem(
-                                    item = Item(
-                                        beerid = 0,
-                                        beername = beer.name,
-                                        beerprice = 0,
-                                        beerimage = beer.image,
-                                        beerrating = rating.toDouble(),          // eigen rating als Double
-                                        beeraverage = beer.rating?.average       // API-average als Double
-                                            ?: rating.toDouble(),                // of anders, je eigen rating pakenc
-                                        ownerId = userId
+                                // API-average uit Beer; als null, gebruik je eigen rating
+                                try {
+                                    val apiAvg = beer.rating?.average ?: rating.toDouble()
+
+                                    val dto = UserBeerDto(
+                                        userid = userId,
+                                        beerid = beer.id,
+                                        name = beer.name,
+                                        price = beer.price,
+                                        myrating = rating.toDouble(),
+                                        apiaverage = apiAvg,
+                                        imageurl = beer.image
                                     )
-                                )
+
+                                    supabaseRepo.addBeerToCollection(dto)
+
+                                    // tijdelijke debug
+                                    println("SUPABASE INSERT OK: $dto")
+                                    finish()
+                                } catch (e: Exception) {
+                                    println("SUPABASE INSERT ERROR: ${e.message}")
+                                }
                             }
-                            finish()
                         }
                     )
                 } else {
