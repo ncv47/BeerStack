@@ -56,8 +56,8 @@ class SecondActivity : ComponentActivity() {
                                     .padding(8.dp)
                             ) {
                                 Text(text = "Name: ${beer.beername}")
-                                Text(text = "Rating: ${beer.beerrating}")
-                                Text(text = "Average: ${beer.beeraverage}")
+                                Text(text = "Rating: %.1f".format(beer.beerrating))
+                                Text(text = "Average: %.1f".format(beer.beeraverage))
                             }
                             HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
                         }
@@ -84,7 +84,7 @@ class SecondActivity : ComponentActivity() {
                         beername = "userid1",
                         beerprice = 8,
                         beerimage = "",
-                        beerrating = 4,
+                        beerrating = 4.0,
                         beeraverage = 3.4,
                         ownerId = 1
                     ),
@@ -92,7 +92,7 @@ class SecondActivity : ComponentActivity() {
                         beername = "highestrating",
                         beerprice = 8,
                         beerimage = "",
-                        beerrating = 5,
+                        beerrating = 5.0,
                         beeraverage = 3.4,
                         ownerId = 1
                     ),
@@ -100,7 +100,7 @@ class SecondActivity : ComponentActivity() {
                         beername = "userid2",
                         beerprice = 10,
                         beerimage = "",
-                        beerrating = 5,
+                        beerrating = 5.0,
                         beeraverage = 4.0,
                         ownerId = 2
                     ),
@@ -108,7 +108,7 @@ class SecondActivity : ComponentActivity() {
                         beername = "kriek",
                         beerprice = 10,
                         beerimage = "",
-                        beerrating = 5,
+                        beerrating = 5.0,
                         beeraverage = 1.0,
                         ownerId = 3
                     ),
@@ -116,7 +116,7 @@ class SecondActivity : ComponentActivity() {
                         beername = "userid4",
                         beerprice = 10,
                         beerimage = "",
-                        beerrating = 5,
+                        beerrating = 5.0,
                         beeraverage = 4.0,
                         ownerId = 4
                     )

@@ -23,7 +23,7 @@ data class Item(
     val beername: String,
     val beerprice: Int,
     val beerimage: String? = null,
-    val beerrating: Int,
+    val beerrating: Double = 0.0,
     val beeraverage: Double = 0.0,
     val ownerId: Int
 )

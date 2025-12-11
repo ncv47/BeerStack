@@ -18,13 +18,14 @@ import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import com.example.beerstack.data.BeerDB.AppDataContainer
 import com.example.beerstack.data.BeerDB.Item
+import com.example.beerstack.model.Rating
 
 class FourthActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val beer = intent.getParcelableExtra("beer_extra") as? Beer
+        val beer = intent.getParcelableExtra<Beer>("beer_extra")
         val userId = intent.getIntExtra("USER_ID", -1)
 
         val repository = AppDataContainer(this).itemsRepository
@@ -38,11 +39,13 @@ class FourthActivity : BaseActivity() {
                             lifecycleScope.launch {
                                 repository.insertItem(
                                     item = Item(
-                                        beerid = 0, // Automatically generates
+                                        beerid = 0,
                                         beername = beer.name,
                                         beerprice = 0,
                                         beerimage = beer.image,
-                                        beerrating = rating.toInt(),
+                                        beerrating = rating.toDouble(),          // eigen rating als Double
+                                        beeraverage = beer.rating?.average       // API-average als Double
+                                            ?: rating.toDouble(),                // of anders, je eigen rating pakenc
                                         ownerId = userId
                                     )
                                 )
