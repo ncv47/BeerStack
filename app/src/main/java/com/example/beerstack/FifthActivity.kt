@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.sp
 import com.example.beerstack.data.BeerDB.AppDataContainer
 import kotlinx.coroutines.flow.collectLatest
 
-class FifthActivity : ComponentActivity() {
+class FifthActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

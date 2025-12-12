@@ -11,5 +11,6 @@ data class UserBeerDto(
     val price: String? = null,
     val myrating: Double,
     val apiaverage: Double,
-    val imageurl: String? = null
+    val imageurl: String? = null,
+    val myphoto: String? = null
 )

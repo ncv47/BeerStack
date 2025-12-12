@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 import com.example.beerstack.data.remote.SupabaseCollectionRepository
 import com.example.beerstack.data.remote.UserBeerDto
 
-class SecondActivity : ComponentActivity() {
+class SecondActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

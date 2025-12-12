@@ -1,7 +1,10 @@
 package com.example.beerstack
 
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -9,17 +12,18 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import com.example.beerstack.model.Beer
-import com.example.beerstack.ui.theme.BeerStackTheme
 import coil.compose.AsyncImage
 import androidx.compose.ui.layout.ContentScale
 import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.launch
-import com.example.beerstack.data.BeerDB.AppDataContainer
-import com.example.beerstack.data.BeerDB.Item
+import com.example.beerstack.model.Beer
+import com.example.beerstack.ui.theme.BeerStackTheme
 import com.example.beerstack.data.remote.SupabaseCollectionRepository
 import com.example.beerstack.data.remote.UserBeerDto
+import kotlinx.coroutines.launch
+import java.io.File
+import androidx.core.content.FileProvider
 
 class FourthActivity : BaseActivity() {
 
@@ -29,8 +33,6 @@ class FourthActivity : BaseActivity() {
         val beer = intent.getParcelableExtra<Beer>("beer_extra")
         val userId = intent.getIntExtra("USER_ID", -1)
 
-        val repository = AppDataContainer(this).itemsRepository
-
         val supabaseRepo = SupabaseCollectionRepository()
 
         setContent {
@@ -38,7 +40,7 @@ class FourthActivity : BaseActivity() {
                 if (beer != null && userId != -1) {
                     RateBeerScreen(
                         beer = beer,
-                        onDone = { rating, location, notes ->
+                        onDone = { rating, location, notes, myPhotoPath ->
                             lifecycleScope.launch {
                                 // API-average uit Beer; als null, gebruik je eigen rating
                                 try {
@@ -51,7 +53,8 @@ class FourthActivity : BaseActivity() {
                                         price = beer.price,
                                         myrating = rating.toDouble(),
                                         apiaverage = apiAvg,
-                                        imageurl = beer.image
+                                        imageurl = beer.image,   // API/catalogusafbeelding
+                                        myphoto = myPhotoPath    // jouw eigen Untappd-style foto (lokaal pad of URL)
                                     )
 
                                     supabaseRepo.addBeerToCollection(dto)
@@ -71,20 +74,28 @@ class FourthActivity : BaseActivity() {
             }
         }
     }
-
 }
 
 
 @Composable
 fun RateBeerScreen(
     beer: Beer,
-    onDone: (Float, String, String) -> Unit
+    onDone: (Float, String, String, String?) -> Unit   // laatste param = mijn foto (pad of URL)
 ) {
     var rating by remember { mutableFloatStateOf(beer.rating?.average?.toFloat() ?: 0f) }
     var notes by remember { mutableStateOf("") }
-    var location by remember { mutableStateOf("")}
+    var location by remember { mutableStateOf("") }
+
+    var myPhotoUri by remember { mutableStateOf<Uri?>(null) }
+
+    val context = LocalContext.current
+
+    val cameraLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.TakePicture()
+    ) { }
 
     Column(modifier = Modifier.padding(16.dp)) {
+
         Row(verticalAlignment = Alignment.CenterVertically) {
             beer.image?.let { url ->
                 AsyncImage(
@@ -98,18 +109,54 @@ fun RateBeerScreen(
             }
             Text(text = "Beer: ${beer.name}")
         }
+
+        Spacer(Modifier.height(8.dp))
+
+        // Preview of the picture
+        myPhotoUri?.let { uri ->
+            AsyncImage(
+                model = uri,
+                contentDescription = "My photo",
+                modifier = Modifier
+                    .size(96.dp)
+                    .padding(bottom = 8.dp),
+                contentScale = ContentScale.Crop
+            )
+        }
+
+        Button(
+            onClick = {
+                // App specific Pictures directory
+                val dir = context.getExternalFilesDir(android.os.Environment.DIRECTORY_PICTURES)
+                val file = File.createTempFile(
+                    "mybeer_${beer.id}_",
+                    ".jpg",
+                    dir
+                )
+                val uri = FileProvider.getUriForFile(
+                    context,
+                    "${context.packageName}.provider",
+                    file
+                )
+                myPhotoUri = uri
+                cameraLauncher.launch(uri)
+            }
+        ) {
+            Text("Take picture")
+        }
+
         Spacer(Modifier.height(8.dp))
 
         Slider(
             value = rating,
             onValueChange = { rating = it },
             valueRange = 0f..5f,
-            steps = 19    // 0, 0.25, 0.5, ... , 5.0
+            steps = 9    // 0, 0.25, 0.5, ... , 5.0
         )
 
         OutlinedTextField(
             value = location,
-            onValueChange = {location = it},
+            onValueChange = { location = it },
             label = { Text("Location")}
         )
 
@@ -119,7 +166,11 @@ fun RateBeerScreen(
             label = { Text("Notes") }
         )
 
-        Button(onClick = { onDone(rating, location, notes) }) {
+        Button(
+            onClick = {
+                onDone(rating, location, notes, myPhotoUri?.path)
+            }
+        ) {
             Text("Save")
         }
     }
