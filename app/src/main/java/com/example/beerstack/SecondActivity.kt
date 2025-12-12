@@ -12,7 +12,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
 import com.example.beerstack.data.AppDataContainer
-import com.example.beerstack.data.BeerDB.Item
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
@@ -24,7 +23,6 @@ class SecondActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val repository = AppDataContainer(this).itemsRepository
 
         // Get the logged-in user ID passed from ThirdActivity
         val userId = intent.getIntExtra("USER_ID", -1)
@@ -72,57 +70,6 @@ class SecondActivity : BaseActivity() {
                         items = supabaseRepo.getCollection(userId)
                     }
                 }
-            }
-        }
-
-        // Optional: insert sample items for testing (only if DB is empty)
-        lifecycleScope.launch(Dispatchers.IO) {
-            val currentItems = repository.getItemsByOwner(userId).firstOrNull() ?: emptyList()
-            if (currentItems.isEmpty() && userId != -1) {
-                val beers = listOf(
-                    Item(
-                        beername = "userid1",
-                        beerprice = 8,
-                        beerimage = "",
-                        beerrating = 4.0,
-                        beeraverage = 3.4,
-                        ownerId = 1
-                    ),
-                    Item(
-                        beername = "highestrating",
-                        beerprice = 8,
-                        beerimage = "",
-                        beerrating = 5.0,
-                        beeraverage = 3.4,
-                        ownerId = 1
-                    ),
-                    Item(
-                        beername = "userid2",
-                        beerprice = 10,
-                        beerimage = "",
-                        beerrating = 5.0,
-                        beeraverage = 4.0,
-                        ownerId = 2
-                    ),
-                    Item(
-                        beername = "kriek",
-                        beerprice = 10,
-                        beerimage = "",
-                        beerrating = 5.0,
-                        beeraverage = 1.0,
-                        ownerId = 3
-                    ),
-                    Item(
-                        beername = "userid4",
-                        beerprice = 10,
-                        beerimage = "",
-                        beerrating = 5.0,
-                        beeraverage = 4.0,
-                        ownerId = 4
-                    )
-
-                )
-                beers.forEach { repository.insertItem(it) }
             }
         }
     }
