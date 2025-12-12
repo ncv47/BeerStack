@@ -26,7 +26,6 @@ class FifthActivity : BaseActivity() {
 
         val username = intent.getStringExtra("USER_NAME") ?: "User"
         val userId = intent.getIntExtra("USER_ID", -1)
-        val repository = AppDataContainer(this).itemsRepository
 
         setContent {
             MaterialTheme {
@@ -36,16 +35,7 @@ class FifthActivity : BaseActivity() {
                 var favoriteBeerName by remember { mutableStateOf("None") }
                 var beersReviewed by remember { mutableStateOf(0) }
 
-                // Collect the user's beers from the database
-                LaunchedEffect(userId) {
-                    if (userId != -1) {
-                        repository.getItemsByOwner(userId).collectLatest { filteredItems ->
-                            val favoriteBeer = filteredItems.maxByOrNull { it.beerrating }
-                            favoriteBeerName = favoriteBeer?.beername ?: "None"
-                            beersReviewed = filteredItems.size
-                        }
-                    }
-                }
+
 
                 Column(
                     modifier = Modifier

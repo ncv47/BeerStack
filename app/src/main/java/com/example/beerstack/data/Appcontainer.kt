@@ -10,8 +10,6 @@ class AppDataContainer(context: Context) {
     // Access your Room database
     private val db = AppDatabase.getDatabase(context)
 
-    // Beer repository
-    val itemsRepository: ItemsRepository = OfflineItemsRepository(db.itemDao())
 
     // User repository
     val usersRepository: UsersRepository = OfflineUsersRepository(db.userDao())
