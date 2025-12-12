@@ -41,12 +41,6 @@ class ThirdActivity : BaseActivity() {
                         }
 
                         if (user != null) {
-                            Toast.makeText(
-                                applicationContext,
-                                "Welcome ${user.userName} with userid ${user.userid}",
-                                Toast.LENGTH_SHORT
-                            ).show()
-
                             val intent = Intent(this@ThirdActivity, MainActivity::class.java)
                             intent.putExtra("USER_ID", user.userid)
                             intent.putExtra("USER_NAME", user.userName)  // send username too

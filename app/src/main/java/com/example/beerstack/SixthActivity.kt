@@ -134,17 +134,17 @@ fun RegisterScreen(
                         // VALIDATION
                         when {
                             username.isBlank() -> {
-                                Toast.makeText(context, "Username cannot be empty", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(context, "Fill in all fields", Toast.LENGTH_SHORT).show()
                                 return@FilledTonalButton
                             }
 
                             password.isBlank() -> {
-                                Toast.makeText(context, "Password cannot be empty", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(context, "Fill in all fields", Toast.LENGTH_SHORT).show()
                                 return@FilledTonalButton
                             }
 
                             repeatPassword.isBlank() -> {
-                                Toast.makeText(context, "Repeat password cannot be empty", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(context, "Fill in all fields", Toast.LENGTH_SHORT).show()
                                 return@FilledTonalButton
                             }
 
