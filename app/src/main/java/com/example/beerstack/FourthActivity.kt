@@ -16,6 +16,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.lifecycle.lifecycleScope
 import com.example.beerstack.model.Beer
 import com.example.beerstack.ui.theme.BeerStackTheme
@@ -119,7 +120,9 @@ fun RateBeerScreen(
                     modifier = Modifier
                         .size(72.dp)
                         .padding(end = 12.dp),
-                    contentScale = ContentScale.Crop
+                    contentScale = ContentScale.Crop,
+                    placeholder = painterResource(R.drawable.beerpicture_placeholder),
+                    error = painterResource(R.drawable.beerpicture_placeholder)
                 )
             }
             Text(
