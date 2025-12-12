@@ -5,11 +5,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.beerstack.network.SampleApi
 import kotlinx.coroutines.launch
 import com.example.beerstack.model.Beer
 import com.example.beerstack.model.Currency
 import com.example.beerstack.network.CurrencyApi
+import com.example.beerstack.network.SupabaseApi
+import com.example.beerstack.model.toBeer
 
 // Holds and manages beer list & error state for UI
 class BeerViewModel : ViewModel() {
@@ -40,14 +41,20 @@ class BeerViewModel : ViewModel() {
         }
     }
 
-    //Try request the beers from the api
     fun getBeers(query: String = "") {
         viewModelScope.launch {
             try {
+                // 1. Fetch from Supabase (list of BeerDto)
                 //If ok, update beer list and clear any error
-                val fetchedBeers = SampleApi.retrofitService.getBeers()
+                val dtoList = SupabaseApi.retrofitService.getBeers()
+
+                // 2. Map to Beer model
+                val fetchedBeers = dtoList.map { it.toBeer() }
+
+                // 3. Filter and search
                 beerList = filterValidBeers(fetchedBeers)
-                    .filter { it.name.contains(query, ignoreCase = true) } //To filter out for the search function
+                    .filter { it.name.contains(query, ignoreCase = true) }
+
                 error = null
             } catch (e: Exception) { //Catch the error
                 // if not ok, reset list and show error

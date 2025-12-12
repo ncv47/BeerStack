@@ -1,4 +1,4 @@
-package com.example.beerstack.network
+/*package com.example.beerstack.network
 
 import retrofit2.Retrofit
 import retrofit2.http.GET
@@ -33,4 +33,4 @@ object SampleApi {
         //whenever call its methods, Retrofit automatically sends the actual HTTP request
         retrofit.create(SampleBeersApiService::class.java)
     }
-}
+}*/
