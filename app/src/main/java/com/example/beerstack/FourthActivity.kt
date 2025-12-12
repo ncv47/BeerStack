@@ -87,12 +87,21 @@ fun RateBeerScreen(
     var location by remember { mutableStateOf("") }
 
     var myPhotoUri by remember { mutableStateOf<Uri?>(null) }
+    var pendingUri by remember { mutableStateOf<Uri?>(null) }
 
     val context = LocalContext.current
 
     val cameraLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.TakePicture()
-    ) { }
+    ) { success ->
+        if (success) {
+            myPhotoUri = pendingUri   // now file definitely exists
+        } else {
+            myPhotoUri = null
+        }
+        pendingUri = null
+    }
+
 
     Column(modifier = Modifier.padding(16.dp)) {
 
@@ -120,7 +129,7 @@ fun RateBeerScreen(
                 modifier = Modifier
                     .size(96.dp)
                     .padding(bottom = 8.dp),
-                contentScale = ContentScale.Crop
+                contentScale = ContentScale.Crop,
             )
         }
 
@@ -128,17 +137,10 @@ fun RateBeerScreen(
             onClick = {
                 // App specific Pictures directory
                 val dir = context.getExternalFilesDir(android.os.Environment.DIRECTORY_PICTURES)
-                val file = File.createTempFile(
-                    "mybeer_${beer.id}_",
-                    ".jpg",
-                    dir
-                )
-                val uri = FileProvider.getUriForFile(
-                    context,
-                    "${context.packageName}.provider",
-                    file
-                )
-                myPhotoUri = uri
+                val file = File.createTempFile("mybeer_${beer.id}_", ".jpg", dir)
+                val uri = FileProvider.getUriForFile(context, "${context.packageName}.provider", file)
+
+                pendingUri = uri
                 cameraLauncher.launch(uri)
             }
         ) {
