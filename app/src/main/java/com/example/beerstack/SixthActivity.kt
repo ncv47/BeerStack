@@ -8,8 +8,8 @@ import androidx.lifecycle.lifecycleScope
 import com.example.beerstack.data.UserDB.User
 import com.example.beerstack.data.BeerDB.AppDataContainer
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -23,23 +23,38 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.withContext
 
 class SixthActivity : BaseActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         val repository = AppDataContainer(this).usersRepository
 
-        // Compose UI for nicer, centered login screen
         setContent {
-            LoginScreen(
-                onLogin = { username, password ->
+            RegisterScreen(
+                onRegister = { username, password ->
                     lifecycleScope.launch {
-                        // Switch to IO for DB call, then back to Main automatically
-                        val user = withContext(Dispatchers.IO) {
-                            repository.login(username, password)
+
+                        // insert user safely
+                        val newUser = User(
+                            userName = username,
+                            userPassword = password
+                        )
+
+                        withContext(Dispatchers.IO) {
+                            repository.insert(newUser)
                         }
 
+                        Toast.makeText(
+                            this@SixthActivity,
+                            "User registered!",
+                            Toast.LENGTH_SHORT
+                        ).show()
+
+                        // Go back to login screen
+                        startActivity(Intent(this@SixthActivity, ThirdActivity::class.java))
+                        finish()
                     }
                 }
             )
@@ -48,9 +63,9 @@ class SixthActivity : BaseActivity() {
 }
 
 @Composable
-fun LoginScreen(
+fun RegisterScreen(
+    onRegister: (String, String) -> Unit
 ) {
-    val context = LocalContext.current
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
@@ -68,22 +83,18 @@ fun LoginScreen(
                 .fillMaxWidth()
         ) {
             Column(
-                modifier = Modifier
-                    .padding(24.dp),
+                modifier = Modifier.padding(24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                // Big logo at the top
+
                 Image(
                     painter = painterResource(R.drawable.beerstacklogo),
                     contentDescription = "BeerStack Logo",
                     modifier = Modifier.size(96.dp)
                 )
 
-                Text(
-                    text = "Register",
-                    style = MaterialTheme.typography.titleLarge
-                )
+                Text("Register", style = MaterialTheme.typography.titleLarge)
 
                 OutlinedTextField(
                     value = username,
@@ -103,11 +114,9 @@ fun LoginScreen(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(16.dp)
                 )
+
                 FilledTonalButton(
-                    onClick = {
-                        val intent = Intent(context, SixthActivity::class.java)
-                        context.startActivity(intent)
-                    },
+                    onClick = { onRegister(username, password) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(48.dp),

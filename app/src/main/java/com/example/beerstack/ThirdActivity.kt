@@ -150,8 +150,8 @@ fun LoginScreen(
                 }
                 FilledTonalButton(
                     onClick = {
-                        val intent = Intent(context, SixthActivity::class.java)
-                        context.startActivity(intent)
+                        val intent2 = Intent(context, SixthActivity::class.java)
+                        context.startActivity(intent2)
                               },
                     modifier = Modifier
                         .fillMaxWidth()
