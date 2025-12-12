@@ -4,20 +4,17 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.example.beerstack.data.BeerDB.Item
-import com.example.beerstack.data.BeerDB.ItemDao
 import com.example.beerstack.data.UserDB.User
 import com.example.beerstack.data.UserDB.UserDao
 
 @Database(
-    entities = [User::class, Item::class],
+    entities = [User::class],
     version = 1,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun userDao(): UserDao
-    abstract fun itemDao(): ItemDao
 
     companion object {
         @Volatile

@@ -3,10 +3,9 @@ package com.example.beerstack
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
-import androidx.activity.ComponentActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.beerstack.data.UserDB.User
-import com.example.beerstack.data.BeerDB.AppDataContainer
+import com.example.beerstack.data.AppDataContainer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch

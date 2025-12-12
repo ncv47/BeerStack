@@ -1,7 +1,6 @@
-package com.example.beerstack.data.BeerDB
+package com.example.beerstack.data
 
 import android.content.Context
-import com.example.beerstack.data.AppDatabase
 import com.example.beerstack.data.UserDB.UsersRepository
 import com.example.beerstack.data.UserDB.OfflineUsersRepository
 
@@ -11,8 +10,6 @@ class AppDataContainer(context: Context) {
     // Access your Room database
     private val db = AppDatabase.getDatabase(context)
 
-    // Beer repository
-    val itemsRepository: ItemsRepository = OfflineItemsRepository(db.itemDao())
 
     // User repository
     val usersRepository: UsersRepository = OfflineUsersRepository(db.userDao())
