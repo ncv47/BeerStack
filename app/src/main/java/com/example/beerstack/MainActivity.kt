@@ -281,7 +281,7 @@ fun Body(
                         Text(
                             //Show message on message depending on success or error
                             text = lastAddedBeerName?.let {
-                                "Added '$it' to collection!"
+                                "Added '$it' to Stack!"
                             } ?: lastAddedBeerError.orEmpty(),
                             color = if (lastAddedBeerError != null) Color.Red else Color.Black,
                             modifier = Modifier.padding(20.dp)

@@ -147,7 +147,7 @@ fun BeerItemCard(
                         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
                         modifier = Modifier.height(36.dp)
                     ) {
-                        Text("Add To Collection", fontSize = 12.sp)
+                        Text("Add To Stack", fontSize = 12.sp)
                     }
                 }
             }
