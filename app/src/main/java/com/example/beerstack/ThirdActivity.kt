@@ -24,6 +24,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import io.ktor.util.encodeBase64
 import kotlinx.coroutines.withContext
+import okio.ByteString.Companion.decodeBase64
 
 class ThirdActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,7 +38,7 @@ class ThirdActivity : BaseActivity() {
                     lifecycleScope.launch {
                         // Switch to IO for DB call, then back to Main automatically
                         val user = withContext(Dispatchers.IO) {
-                            repository.login(username, password)
+                            repository.login(username, password.encodeBase64())
                         }
 
                         if (user != null) {
