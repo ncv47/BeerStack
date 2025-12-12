@@ -66,8 +66,11 @@ class SixthActivity : BaseActivity() {
 fun RegisterScreen(
     onRegister: (String, String) -> Unit
 ) {
+    val context = LocalContext.current
+
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var repeatPassword by remember { mutableStateOf("") }
 
     Box(
         modifier = Modifier
@@ -114,9 +117,10 @@ fun RegisterScreen(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(16.dp)
                 )
+
                 OutlinedTextField(
-                    value = password,
-                    onValueChange = { password = it },
+                    value = repeatPassword,
+                    onValueChange = { repeatPassword = it },
                     label = { Text("Repeat Password") },
                     singleLine = true,
                     visualTransformation = PasswordVisualTransformation(),
@@ -125,7 +129,35 @@ fun RegisterScreen(
                 )
 
                 FilledTonalButton(
-                    onClick = { onRegister(username, password) },
+                    onClick = {
+
+                        // VALIDATION
+                        when {
+                            username.isBlank() -> {
+                                Toast.makeText(context, "Username cannot be empty", Toast.LENGTH_SHORT).show()
+                                return@FilledTonalButton
+                            }
+
+                            password.isBlank() -> {
+                                Toast.makeText(context, "Password cannot be empty", Toast.LENGTH_SHORT).show()
+                                return@FilledTonalButton
+                            }
+
+                            repeatPassword.isBlank() -> {
+                                Toast.makeText(context, "Repeat password cannot be empty", Toast.LENGTH_SHORT).show()
+                                return@FilledTonalButton
+                            }
+
+                            password != repeatPassword -> {
+                                Toast.makeText(context, "Passwords do not match", Toast.LENGTH_SHORT).show()
+                                return@FilledTonalButton
+                            }
+
+                            else -> {
+                                onRegister(username, password)
+                            }
+                        }
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(48.dp),
