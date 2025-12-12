@@ -148,7 +148,7 @@ fun RegisterScreen(
                                 return@FilledTonalButton
                             }
 
-                            username.length < 3 -> {
+                            username.length < 3  -> {
                                 Toast.makeText(context, "Username must be longer then 3 characters", Toast.LENGTH_SHORT).show()
                                 return@FilledTonalButton
                             }
