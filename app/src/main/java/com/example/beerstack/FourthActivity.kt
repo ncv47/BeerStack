@@ -87,65 +87,54 @@ fun RateBeerScreen(
     var location by remember { mutableStateOf("") }
 
     var myPhotoUri by remember { mutableStateOf<Uri?>(null) }
+    var pendingUri by remember { mutableStateOf<Uri?>(null) }
 
     val context = LocalContext.current
 
     val cameraLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.TakePicture()
-    ) { }
+    ) { success ->
+            myPhotoUri = if (success) pendingUri else null    // now file definitely exists
+            pendingUri = null
+    }
 
-    Column(modifier = Modifier.padding(16.dp)) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
 
-        Row(verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 12.dp)
+        ) {
             beer.image?.let { url ->
                 AsyncImage(
                     model = url,
                     contentDescription = "Beer image",
                     modifier = Modifier
-                        .size(64.dp)
-                        .padding(end = 8.dp),
+                        .size(72.dp)
+                        .padding(end = 12.dp),
                     contentScale = ContentScale.Crop
                 )
             }
-            Text(text = "Beer: ${beer.name}")
-        }
-
-        Spacer(Modifier.height(8.dp))
-
-        // Preview of the picture
-        myPhotoUri?.let { uri ->
-            AsyncImage(
-                model = uri,
-                contentDescription = "My photo",
-                modifier = Modifier
-                    .size(96.dp)
-                    .padding(bottom = 8.dp),
-                contentScale = ContentScale.Crop
+            Text(
+                text = "Beer: ${beer.name}",
+                style = MaterialTheme.typography.titleMedium
             )
         }
 
-        Button(
-            onClick = {
-                // App specific Pictures directory
-                val dir = context.getExternalFilesDir(android.os.Environment.DIRECTORY_PICTURES)
-                val file = File.createTempFile(
-                    "mybeer_${beer.id}_",
-                    ".jpg",
-                    dir
-                )
-                val uri = FileProvider.getUriForFile(
-                    context,
-                    "${context.packageName}.provider",
-                    file
-                )
-                myPhotoUri = uri
-                cameraLauncher.launch(uri)
-            }
-        ) {
-            Text("Take picture")
-        }
+        Spacer(modifier = Modifier.height(8.dp))
 
-        Spacer(Modifier.height(8.dp))
+        Text(
+            text = "Rating: ${"%.1f".format(rating)} / 5",
+            style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier.align(Alignment.Start)
+        )
 
         Slider(
             value = rating,
@@ -154,22 +143,64 @@ fun RateBeerScreen(
             steps = 9    // 0, 0,5 1 1,5...
         )
 
+        // Preview of the picture
+        myPhotoUri?.let { uri ->
+            AsyncImage(
+                model = uri,
+                contentDescription = "My photo",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(300.dp)
+                    .padding(vertical = 16.dp),
+                contentScale = ContentScale.FillWidth,
+            )
+        }
+
         OutlinedTextField(
             value = location,
             onValueChange = { location = it },
-            label = { Text("Location")}
+            label = { Text("Location") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 8.dp)
         )
 
         OutlinedTextField(
             value = notes,
             onValueChange = { notes = it },
-            label = { Text("Notes") }
+            label = { Text("Notes") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(min = 120.dp)
+                .padding(top = 8.dp)
         )
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        Button(
+            onClick = {
+                // App specific Pictures directory
+                val dir = context.getExternalFilesDir(android.os.Environment.DIRECTORY_PICTURES)
+                val file = File.createTempFile("mybeer_${beer.id}_", ".jpg", dir)
+                val uri = FileProvider.getUriForFile(context, "${context.packageName}.provider", file)
+
+                pendingUri = uri
+                cameraLauncher.launch(uri)
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 4.dp)
+        ) {
+            Text("Take picture")
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
 
         Button(
             onClick = {
                 onDone(rating, location, notes, myPhotoUri?.path)
-            }
+            },
+            modifier = Modifier.fillMaxWidth()
         ) {
             Text("Save")
         }
