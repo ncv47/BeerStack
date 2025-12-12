@@ -30,8 +30,9 @@ interface UserDao {
         return getUserByUsername(username) != null
     }
 
-    @Query("SELECT * FROM users WHERE userName = :username LIMIT 1")
+    @Query("SELECT * FROM users WHERE LOWER(userName) = LOWER(:username) LIMIT 1")
     suspend fun getUserByUsername(username: String): User?
+
 
 
 }
