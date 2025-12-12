@@ -148,6 +148,18 @@ fun RegisterScreen(
                                 return@FilledTonalButton
                             }
 
+                            username.length < 3 -> {
+                                Toast.makeText(context, "Username must be longer then 3 characters", Toast.LENGTH_SHORT).show()
+                                return@FilledTonalButton
+                            }
+                            password.length < 3 -> {
+                                Toast.makeText(context, "Password must be longer then 3 characters", Toast.LENGTH_SHORT).show()
+                                return@FilledTonalButton
+                            }
+                            repeatPassword.length < 3 -> {
+                                Toast.makeText(context, "Password must be longer then 3 characters", Toast.LENGTH_SHORT).show()
+                                return@FilledTonalButton
+                            }
                             password != repeatPassword -> {
                                 Toast.makeText(context, "Passwords do not match", Toast.LENGTH_SHORT).show()
                                 return@FilledTonalButton
