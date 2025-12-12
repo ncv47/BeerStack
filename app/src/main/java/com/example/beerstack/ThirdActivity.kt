@@ -22,7 +22,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import io.ktor.util.encodeBase64
 import kotlinx.coroutines.withContext
+
 
 class ThirdActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,7 +38,7 @@ class ThirdActivity : BaseActivity() {
                     lifecycleScope.launch {
                         // Switch to IO for DB call, then back to Main automatically
                         val user = withContext(Dispatchers.IO) {
-                            repository.login(username, password)
+                            repository.login(username, password.encodeBase64())
                         }
 
                         if (user != null) {
@@ -62,10 +64,10 @@ class ThirdActivity : BaseActivity() {
             val currentUsers = repository.getAllUsers().firstOrNull() ?: emptyList()
             if (currentUsers.isEmpty()) {
                 val users = listOf(
-                    User(userName = "Kenzo", userPassword = "password"),
-                    User(userName = "Noah", userPassword = "password"),
-                    User(userName = "CHANG", userPassword = "password"),
-                    User(userName = "Lancelot", userPassword = "password")
+                    User(userName = "Kenzo", userPassword = ("password").encodeBase64()),
+                    User(userName = "Noah", userPassword = ("password").encodeBase64()),
+                    User(userName = "CHANG", userPassword = ("password").encodeBase64()),
+                    User(userName = "Lancelot", userPassword = ("password").encodeBase64())
                 )
                 users.forEach { repository.insert(it) }
             }
