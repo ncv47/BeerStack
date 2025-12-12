@@ -35,11 +35,13 @@
             android:name=".SixthActivity"
             android:exported="true"
             android:theme="@style/Theme.BeerStack"
+            android:windowSoftInputMode="adjustResize"
             />
 
         <activity
             android:name=".ThirdActivity"
             android:exported="true"
+            android:windowSoftInputMode="adjustResize"
             android:theme="@style/Theme.BeerStack">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
