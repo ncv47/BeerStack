@@ -31,7 +31,14 @@ class FourthActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val beer = intent.getParcelableExtra<Beer>("beer_extra")
+        // Suppresses deprecation warning if API > 33 and makes it backwards compatible
+        val beer: Beer? = if (android.os.Build.VERSION.SDK_INT >= 33) {
+            intent.getParcelableExtra("beer_extra", Beer::class.java)
+        } else {
+            @Suppress("DEPRECATION")
+            intent.getParcelableExtra("beer_extra")
+        }
+
         val userId = intent.getIntExtra("USER_ID", -1)
 
         val supabaseRepo = SupabaseCollectionRepository()
