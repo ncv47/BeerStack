@@ -19,6 +19,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
@@ -40,12 +41,6 @@ class ThirdActivity : BaseActivity() {
                         }
 
                         if (user != null) {
-                            Toast.makeText(
-                                applicationContext,
-                                "Welcome ${user.userName} with userid ${user.userid}",
-                                Toast.LENGTH_SHORT
-                            ).show()
-
                             val intent = Intent(this@ThirdActivity, MainActivity::class.java)
                             intent.putExtra("USER_ID", user.userid)
                             intent.putExtra("USER_NAME", user.userName)  // send username too
@@ -84,6 +79,7 @@ class ThirdActivity : BaseActivity() {
 fun LoginScreen(
     onLogin: (String, String) -> Unit
 ) {
+    val context = LocalContext.current
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
@@ -145,6 +141,18 @@ fun LoginScreen(
                     shape = RoundedCornerShape(24.dp)
                 ) {
                     Text("Login")
+                }
+                FilledTonalButton(
+                    onClick = {
+                        val intent2 = Intent(context, SixthActivity::class.java)
+                        context.startActivity(intent2)
+                              },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(48.dp),
+                    shape = RoundedCornerShape(24.dp)
+                ) {
+                    Text("Register")
                 }
             }
         }
