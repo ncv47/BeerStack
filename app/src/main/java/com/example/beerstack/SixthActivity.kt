@@ -113,7 +113,7 @@ fun RegisterScreen(
                     modifier = Modifier.size(96.dp)
                 )
 
-                Text("Register", style = MaterialTheme.typography.titleLarge)
+                Text("Registereeeee", style = MaterialTheme.typography.titleLarge)
 
                 OutlinedTextField(
                     value = username,
