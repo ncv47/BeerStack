@@ -22,6 +22,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import io.ktor.util.encodeBase64
 
 class SixthActivity : BaseActivity() {
 
@@ -38,7 +39,7 @@ class SixthActivity : BaseActivity() {
                         // insert user safely
                         val newUser = User(
                             userName = username,
-                            userPassword = password
+                            userPassword = password.encodeBase64()
                         )
 
                         withContext(Dispatchers.IO) {
