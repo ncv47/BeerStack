@@ -53,8 +53,8 @@ class FourthActivity : BaseActivity() {
                                         price = beer.price,
                                         myrating = rating.toDouble(),
                                         apiaverage = apiAvg,
-                                        imageurl = beer.image,   // API/catalogusafbeelding
-                                        myphoto = myPhotoPath    // jouw eigen Untappd-style foto (lokaal pad of URL)
+                                        imageurl = beer.image,
+                                        myphoto = myPhotoPath    // Path to the picture
                                     )
 
                                     supabaseRepo.addBeerToCollection(dto)
@@ -151,7 +151,7 @@ fun RateBeerScreen(
             value = rating,
             onValueChange = { rating = it },
             valueRange = 0f..5f,
-            steps = 9    // 0, 0.25, 0.5, ... , 5.0
+            steps = 9    // 0, 0,5 1 1,5...
         )
 
         OutlinedTextField(

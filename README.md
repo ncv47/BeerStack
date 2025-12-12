@@ -59,7 +59,7 @@ From the Advanced options menu, select Proxy > Manual.
 
 #### Burp Certificate
 
-get cacert.der from [http://brup](http://brup) in the burpsuite browser or google it and download from the site
+get cacert.der from [http://burp](http://brup) in the burpsuite browser or google it and download from the site
 
 [cacert.der](readme-resources/cacert.der)
 
