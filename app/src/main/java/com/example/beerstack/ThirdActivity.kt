@@ -24,7 +24,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import io.ktor.util.encodeBase64
 import kotlinx.coroutines.withContext
-import okio.ByteString.Companion.decodeBase64
+
 
 class ThirdActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
