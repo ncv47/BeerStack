@@ -94,32 +94,54 @@ fun RateBeerScreen(
     val cameraLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.TakePicture()
     ) { success ->
-        if (success) {
-            myPhotoUri = pendingUri   // now file definitely exists
-        } else {
-            myPhotoUri = null
-        }
-        pendingUri = null
+            myPhotoUri = if (success) pendingUri else null    // now file definitely exists
+            pendingUri = null
     }
 
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
 
-    Column(modifier = Modifier.padding(16.dp)) {
-
-        Row(verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 12.dp)
+        ) {
             beer.image?.let { url ->
                 AsyncImage(
                     model = url,
                     contentDescription = "Beer image",
                     modifier = Modifier
-                        .size(64.dp)
-                        .padding(end = 8.dp),
+                        .size(72.dp)
+                        .padding(end = 12.dp),
                     contentScale = ContentScale.Crop
                 )
             }
-            Text(text = "Beer: ${beer.name}")
+            Text(
+                text = "Beer: ${beer.name}",
+                style = MaterialTheme.typography.titleMedium
+            )
         }
 
-        Spacer(Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Text(
+            text = "Rating: ${"%.1f".format(rating)} / 5",
+            style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier.align(Alignment.Start)
+        )
+
+        Slider(
+            value = rating,
+            onValueChange = { rating = it },
+            valueRange = 0f..5f,
+            steps = 9    // 0, 0,5 1 1,5...
+        )
 
         // Preview of the picture
         myPhotoUri?.let { uri ->
@@ -127,11 +149,33 @@ fun RateBeerScreen(
                 model = uri,
                 contentDescription = "My photo",
                 modifier = Modifier
-                    .size(96.dp)
-                    .padding(bottom = 8.dp),
-                contentScale = ContentScale.Crop,
+                    .fillMaxWidth()
+                    .height(300.dp)
+                    .padding(vertical = 16.dp),
+                contentScale = ContentScale.FillWidth,
             )
         }
+
+        OutlinedTextField(
+            value = location,
+            onValueChange = { location = it },
+            label = { Text("Location") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 8.dp)
+        )
+
+        OutlinedTextField(
+            value = notes,
+            onValueChange = { notes = it },
+            label = { Text("Notes") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(min = 120.dp)
+                .padding(top = 8.dp)
+        )
+
+        Spacer(modifier = Modifier.height(12.dp))
 
         Button(
             onClick = {
@@ -142,36 +186,21 @@ fun RateBeerScreen(
 
                 pendingUri = uri
                 cameraLauncher.launch(uri)
-            }
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 4.dp)
         ) {
             Text("Take picture")
         }
 
-        Spacer(Modifier.height(8.dp))
-
-        Slider(
-            value = rating,
-            onValueChange = { rating = it },
-            valueRange = 0f..5f,
-            steps = 9    // 0, 0,5 1 1,5...
-        )
-
-        OutlinedTextField(
-            value = location,
-            onValueChange = { location = it },
-            label = { Text("Location")}
-        )
-
-        OutlinedTextField(
-            value = notes,
-            onValueChange = { notes = it },
-            label = { Text("Notes") }
-        )
+        Spacer(modifier = Modifier.height(8.dp))
 
         Button(
             onClick = {
                 onDone(rating, location, notes, myPhotoUri?.path)
-            }
+            },
+            modifier = Modifier.fillMaxWidth()
         ) {
             Text("Save")
         }
