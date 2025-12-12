@@ -10,11 +10,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.lifecycleScope
-import com.example.beerstack.data.AppDataContainer
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.launch
 import com.example.beerstack.data.remote.SupabaseCollectionRepository
 import com.example.beerstack.data.remote.UserBeerDto
 
