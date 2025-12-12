@@ -169,6 +169,10 @@ base64
 Result is this:
 > HsbawayQYhB8+cXA6fHLgTgcXsw9vVb8eRIJ2LVfY7E=
 
+That's for the old API, for the new own API:
+
+![image.png](readme-resources/image14.png)
+
 #### The Intercept & Modify Exploit
 
 When app is started or something changes in the search bar, the API is (re)fetched. When this happens and both SSL/Root block is disabled/bypassed you can intercept the request with burpsuite
