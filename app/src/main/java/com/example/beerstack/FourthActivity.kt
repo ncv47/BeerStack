@@ -16,6 +16,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.lifecycle.lifecycleScope
 import com.example.beerstack.model.Beer
 import com.example.beerstack.ui.theme.BeerStackTheme
@@ -30,7 +31,14 @@ class FourthActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val beer = intent.getParcelableExtra<Beer>("beer_extra")
+        // Suppresses deprecation warning if API > 33 and makes it backwards compatible
+        val beer: Beer? = if (android.os.Build.VERSION.SDK_INT >= 33) {
+            intent.getParcelableExtra("beer_extra", Beer::class.java)
+        } else {
+            @Suppress("DEPRECATION")
+            intent.getParcelableExtra("beer_extra")
+        }
+
         val userId = intent.getIntExtra("USER_ID", -1)
 
         val supabaseRepo = SupabaseCollectionRepository()
@@ -119,7 +127,9 @@ fun RateBeerScreen(
                     modifier = Modifier
                         .size(72.dp)
                         .padding(end = 12.dp),
-                    contentScale = ContentScale.Crop
+                    contentScale = ContentScale.Crop,
+                    placeholder = painterResource(R.drawable.beerpicture_placeholder),
+                    error = painterResource(R.drawable.beerpicture_placeholder)
                 )
             }
             Text(

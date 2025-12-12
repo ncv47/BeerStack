@@ -9,7 +9,10 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
+import androidx.compose.ui.layout.ContentScale
 import com.example.beerstack.data.remote.SupabaseCollectionRepository
 import com.example.beerstack.data.remote.UserBeerDto
 
@@ -45,24 +48,45 @@ class SecondActivity : BaseActivity() {
                         modifier = Modifier.fillMaxSize()
                     ) {
                         items(items) { beer ->
-                            Column(
+                            Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(8.dp)
+                                    .padding(8.dp),
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Text(text = "Name: ${beer.name}")
-                                Text(text = "My Rating: %.1f".format(beer.myrating))
-                                Text(text = "Average: %.1f".format(beer.apiaverage))
+                                // Stock image on the left
+                                beer.imageurl?.let { url ->
+                                    AsyncImage(
+                                        model = url,
+                                        contentDescription = "Beer image",
+                                        modifier = Modifier
+                                            .size(72.dp)
+                                            .padding(end = 12.dp),
+                                        contentScale = ContentScale.Crop,
+                                        placeholder = painterResource(R.drawable.beerpicture_placeholder),
+                                        error = painterResource(R.drawable.beerpicture_placeholder)
+                                    )
+                                }
+
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(8.dp)
+                                ) {
+                                    Text(text = "Name: ${beer.name}")
+                                    Text(text = "My Rating: %.1f".format(beer.myrating))
+                                    Text(text = "Average: %.1f".format(beer.apiaverage))
+                                }
+                                HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
                             }
-                            HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
                         }
                     }
-                }
 
-                // Collect the Flow and filter items by ownerId
-                LaunchedEffect(userId) {
-                    if (userId != -1) {
-                        items = supabaseRepo.getCollection(userId)
+                    // Collect the Flow and filter items by ownerId
+                    LaunchedEffect(userId) {
+                        if (userId != -1) {
+                            items = supabaseRepo.getCollection(userId)
+                        }
                     }
                 }
             }
