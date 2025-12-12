@@ -22,6 +22,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import com.example.beerstack.data.UserDB.OfflineUsersRepository
 import io.ktor.util.encodeBase64
 
 class SixthActivity : BaseActivity() {
@@ -35,32 +36,47 @@ class SixthActivity : BaseActivity() {
             RegisterScreen(
                 onRegister = { username, password ->
                     lifecycleScope.launch {
-
-                        // insert user safely
-                        val newUser = User(
-                            userName = username,
-                            userPassword = password.encodeBase64()
-                        )
-
-                        withContext(Dispatchers.IO) {
-                            repository.insert(newUser)
+                        // Check if username is already taken
+                        val exists = withContext(Dispatchers.IO) {
+                            if (repository is OfflineUsersRepository) {
+                                repository.isUsernameTaken(username)
+                            } else false // fallback for other repository types
                         }
 
-                        Toast.makeText(
-                            this@SixthActivity,
-                            "User registered!",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        if (exists) {
+                            Toast.makeText(
+                                this@SixthActivity,
+                                "Username already taken",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        } else {
+                            // Insert user safely
+                            val newUser = User(
+                                userName = username,
+                                userPassword = password.encodeBase64()
+                            )
 
-                        // Go back to login screen
-                        startActivity(Intent(this@SixthActivity, ThirdActivity::class.java))
-                        finish()
+                            withContext(Dispatchers.IO) {
+                                repository.insert(newUser)
+                            }
+
+                            Toast.makeText(
+                                this@SixthActivity,
+                                "User registered!",
+                                Toast.LENGTH_SHORT
+                            ).show()
+
+                            // Go back to login screen
+                            startActivity(Intent(this@SixthActivity, ThirdActivity::class.java))
+                            finish()
+                        }
                     }
                 }
             )
         }
     }
 }
+
 
 @Composable
 fun RegisterScreen(
