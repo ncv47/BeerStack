@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import com.example.beerstack.data.UserDB.User
-import com.example.beerstack.data.BeerDB.AppDataContainer
+import com.example.beerstack.data.AppDataContainer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext

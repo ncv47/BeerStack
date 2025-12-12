@@ -2,7 +2,6 @@ package com.example.beerstack
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -17,7 +16,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.beerstack.data.BeerDB.AppDataContainer
+import com.example.beerstack.data.AppDataContainer
 import kotlinx.coroutines.flow.collectLatest
 
 class FifthActivity : BaseActivity() {
