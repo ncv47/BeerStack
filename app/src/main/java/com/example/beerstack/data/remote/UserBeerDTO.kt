@@ -1,7 +1,10 @@
 package com.example.beerstack.data.remote
 
+import android.os.Parcelable
 import kotlinx.serialization.Serializable
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 @Serializable
 data class UserBeerDto(
     val id: Long? = null,
@@ -13,4 +16,4 @@ data class UserBeerDto(
     val apiaverage: Double,
     val imageurl: String? = null,
     val myphoto: String? = null
-)
+) : Parcelable
