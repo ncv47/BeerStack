@@ -26,6 +26,8 @@ import kotlinx.coroutines.launch
 import java.io.File
 import androidx.core.content.FileProvider
 import android.Manifest
+import androidx.compose.foundation.background
+import com.example.beerstack.ui.theme.BeerGradient
 
 class FourthActivity : BaseActivity() {
 
@@ -120,116 +122,121 @@ fun RateBeerScreen(
             cameraLauncher.launch(uri)
         }
     }
-
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
+            .background(BeerGradient)
+    ){
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 12.dp)
+                .fillMaxSize()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            beer.image?.let { url ->
-                AsyncImage(
-                    model = url,
-                    contentDescription = "Beer image",
-                    modifier = Modifier
-                        .size(72.dp)
-                        .padding(end = 12.dp),
-                    contentScale = ContentScale.Crop,
-                    placeholder = painterResource(R.drawable.beerpicture_placeholder),
-                    error = painterResource(R.drawable.beerpicture_placeholder)
-                )
-            }
-            Text(
-                text = "Beer: ${beer.name}",
-                style = MaterialTheme.typography.titleMedium
-            )
-        }
 
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Text(
-            text = "Rating: ${"%.1f".format(rating)} / 5",
-            style = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier.align(Alignment.Start)
-        )
-
-        Slider(
-            value = rating,
-            onValueChange = { rating = it },
-            valueRange = 0f..5f,
-            steps = 9    // 0, 0,5 1 1,5...
-        )
-
-        // Preview of the picture
-        myPhotoUri?.let { uri ->
-            AsyncImage(
-                model = uri,
-                contentDescription = "My photo",
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(300.dp)
-                    .padding(vertical = 16.dp),
-                contentScale = ContentScale.FillWidth,
+                    .padding(bottom = 12.dp)
+            ) {
+                beer.image?.let { url ->
+                    AsyncImage(
+                        model = url,
+                        contentDescription = "Beer image",
+                        modifier = Modifier
+                            .size(72.dp)
+                            .padding(end = 12.dp),
+                        contentScale = ContentScale.Crop,
+                        placeholder = painterResource(R.drawable.beerpicture_placeholder),
+                        error = painterResource(R.drawable.beerpicture_placeholder)
+                    )
+                }
+                Text(
+                    text = "Beer: ${beer.name}",
+                    style = MaterialTheme.typography.titleMedium
+                )
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text(
+                text = "Rating: ${"%.1f".format(rating)} / 5",
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.align(Alignment.Start)
             )
-        }
 
-        OutlinedTextField(
-            value = location,
-            onValueChange = { location = it },
-            label = { Text("Location") },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 8.dp)
-        )
+            Slider(
+                value = rating,
+                onValueChange = { rating = it },
+                valueRange = 0f..5f,
+                steps = 9    // 0, 0,5 1 1,5...
+            )
 
-        OutlinedTextField(
-            value = notes,
-            onValueChange = { notes = it },
-            label = { Text("Notes") },
-            modifier = Modifier
-                .fillMaxWidth()
-                .heightIn(min = 120.dp)
-                .padding(top = 8.dp)
-        )
+            // Preview of the picture
+            myPhotoUri?.let { uri ->
+                AsyncImage(
+                    model = uri,
+                    contentDescription = "My photo",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(300.dp)
+                        .padding(vertical = 16.dp),
+                    contentScale = ContentScale.FillWidth,
+                )
+            }
 
-        Spacer(modifier = Modifier.height(12.dp))
+            OutlinedTextField(
+                value = location,
+                onValueChange = { location = it },
+                label = { Text("Location") },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp)
+            )
 
-        Button(
-            onClick = {
-                // App specific Pictures directory
-                val dir = context.getExternalFilesDir(android.os.Environment.DIRECTORY_PICTURES)
-                val file = File.createTempFile("mybeer_${beer.id}_", ".jpg", dir)
-                val uri = FileProvider.getUriForFile(context, "${context.packageName}.provider", file)
+            OutlinedTextField(
+                value = notes,
+                onValueChange = { notes = it },
+                label = { Text("Notes") },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(min = 120.dp)
+                    .padding(top = 8.dp)
+            )
 
-                pendingUri = uri
+            Spacer(modifier = Modifier.height(12.dp))
 
-                //First ask camera permission
-                permissionLauncher.launch(Manifest.permission.CAMERA)
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 4.dp)
-        ) {
-            Text("Take picture")
-        }
+            Button(
+                onClick = {
+                    // App specific Pictures directory
+                    val dir = context.getExternalFilesDir(android.os.Environment.DIRECTORY_PICTURES)
+                    val file = File.createTempFile("mybeer_${beer.id}_", ".jpg", dir)
+                    val uri = FileProvider.getUriForFile(context, "${context.packageName}.provider", file)
 
-        Spacer(modifier = Modifier.height(8.dp))
+                    pendingUri = uri
 
-        Button(
-            onClick = {
-                onDone(rating, location, notes, myPhotoUri?.path)
-            },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("Save")
+                    //First ask camera permission
+                    permissionLauncher.launch(Manifest.permission.CAMERA)
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 4.dp)
+            ) {
+                Text("Take picture")
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Button(
+                onClick = {
+                    onDone(rating, location, notes, myPhotoUri?.path)
+                },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Save")
+            }
         }
     }
 }
