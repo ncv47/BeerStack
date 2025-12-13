@@ -25,6 +25,7 @@ import com.example.beerstack.data.remote.UserBeerDto
 import kotlinx.coroutines.launch
 import java.io.File
 import androidx.core.content.FileProvider
+import android.Manifest
 
 class FourthActivity : BaseActivity() {
 
@@ -104,8 +105,20 @@ fun RateBeerScreen(
     val cameraLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.TakePicture()
     ) { success ->
-            myPhotoUri = if (success) pendingUri else null    // now file definitely exists
-            pendingUri = null
+        if (success && pendingUri != null) {
+            myPhotoUri = pendingUri    // now file definitely exists
+        }
+    }
+
+    // Start the thing for asking camera permission
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+        // If granted it will launch the camera
+    ) { granted ->
+        val uri = pendingUri
+        if (granted && uri != null) {
+            cameraLauncher.launch(uri)
+        }
     }
 
     Column(
@@ -197,7 +210,9 @@ fun RateBeerScreen(
                 val uri = FileProvider.getUriForFile(context, "${context.packageName}.provider", file)
 
                 pendingUri = uri
-                cameraLauncher.launch(uri)
+
+                //First ask camera permission
+                permissionLauncher.launch(Manifest.permission.CAMERA)
             },
             modifier = Modifier
                 .fillMaxWidth()
