@@ -39,6 +39,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.window.Dialog
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.automirrored.filled.List
+import androidx.compose.material.icons.filled.Home
 import com.example.beerstack.ui.BeerViewModel
 import com.example.beerstack.model.Beer
 import com.example.beerstack.model.Currency
@@ -50,23 +51,24 @@ import com.example.beerstack.utils.SearchBar
 import com.example.beerstack.utils.CurrencyToggle
 import com.example.beerstack.utils.SortOptions
 
-
-
 class MainActivity : BaseActivity() {
-    //OVerite onCreate, when the activity is start/page is launched
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         enableEdgeToEdge()
         val userId = intent.getIntExtra("USER_ID", -1)
         val username = intent.getStringExtra("USER_NAME") ?: "Unknown"
         setContent {
             BeerStackTheme(dynamicColor = false) {
-                Main(userId = userId, username = username)
+                Main(
+                    userId = userId,
+                    username = username
+                )
             }
         }
     }
 }
-
 
 @Composable
 fun Main(userId: Int,username: String, beerViewModel: BeerViewModel = viewModel()){
@@ -99,7 +101,8 @@ fun Main(userId: Int,username: String, beerViewModel: BeerViewModel = viewModel(
             TopBar(userId = userId, username = username)
         },
         bottomBar = {
-            BottomBar(userId = userId, username = username)
+            BottomBar(userId = userId, username = username, currentScreenIsHome = true, currentScreenIsStack = false
+            )
         }
     ) { innerPadding ->
         Body(
@@ -312,26 +315,60 @@ fun Body(
 }
 
 @Composable
-fun BottomBar(userId: Int, username: String,modifier: Modifier = Modifier){
+fun BottomBar(userId: Int, username: String, currentScreenIsHome: Boolean, currentScreenIsStack: Boolean, modifier: Modifier = Modifier){
     val context = LocalContext.current
 
     //keep state which item is selected
-    var selectedItem by remember { mutableIntStateOf(0) }
+    var selectedItem by remember {
+        mutableIntStateOf(
+        when{
+            currentScreenIsHome -> 0
+            currentScreenIsStack -> 1
+            else -> 0
+            }
+        )
+    }
 
     NavigationBar(
         modifier = modifier
             .fillMaxWidth()
         // background color comes from MaterialTheme by default
     ) {
+        // Home button (MainActivity)
+        NavigationBarItem(
+            selected = selectedItem == 0,
+            onClick = {
+                selectedItem = 0
+                val intent = Intent(context, MainActivity::class.java)
+                if (!currentScreenIsHome) {
+                    intent.putExtra("USER_ID", userId)
+                    intent.putExtra("USER_NAME", username)
+                    context.startActivity(intent)
+                }
+            },
+            icon = {
+                Icon(
+                    imageVector = Icons.Filled.Home,
+                    contentDescription = stringResource(R.string.home_page)
+                )
+            },
+            label = { Text(stringResource(R.string.home_page)) },
+            colors = NavigationBarItemDefaults.colors(
+                indicatorColor = Color.Transparent  // no blue background when selected
+            )
+        )
+
         //Button to the second page with the database of beer collection
         NavigationBarItem(
             selected = selectedItem == 1,
             onClick = {
                 selectedItem = 1
-                val intent = Intent(context, SecondActivity::class.java)
-                intent.putExtra("USER_ID", userId)      // <-- pass userId
-                intent.putExtra("USER_NAME", username)
-                context.startActivity(intent)
+                if(!currentScreenIsStack) {
+                    val intent = Intent(context, SecondActivity::class.java)
+                    intent.putExtra("USER_ID", userId)
+                    intent.putExtra("USER_NAME", username)
+                    context.startActivity(intent)
+                }
             },
             icon = {
                 // Button as image/icon that you can click on
@@ -342,7 +379,7 @@ fun BottomBar(userId: Int, username: String,modifier: Modifier = Modifier){
             },
             label = { Text(stringResource(R.string.collection_page)) },
             colors = NavigationBarItemDefaults.colors(
-            indicatorColor = Color.Transparent  // no blue background when selected
+                indicatorColor = Color.Transparent  // no blue background when selected
             )
         )
     }
