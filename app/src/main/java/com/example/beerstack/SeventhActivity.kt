@@ -136,6 +136,7 @@ fun AddOwnBeerScreen(
                 onSave(dto)
             },
             modifier = Modifier.fillMaxWidth(),
+            // This field has to be filled in for the button to work
             enabled = name.isNotBlank()
         ) {
             Text("Save")

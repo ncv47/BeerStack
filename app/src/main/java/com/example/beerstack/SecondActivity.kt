@@ -1,7 +1,9 @@
 package com.example.beerstack
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -9,10 +11,10 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import androidx.compose.ui.layout.ContentScale
 import com.example.beerstack.data.remote.SupabaseCollectionRepository
 import com.example.beerstack.data.remote.UserBeerDto
 
@@ -21,11 +23,11 @@ class SecondActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-
         // Get the logged-in user ID passed from ThirdActivity
         val userId = intent.getIntExtra("USER_ID", -1)
         //Use Supabase (Own API)
         val supabaseRepo = SupabaseCollectionRepository()
+
         setContent {
             MaterialTheme {
                 var items by remember { mutableStateOf<List<UserBeerDto>>(emptyList()) }
@@ -51,7 +53,16 @@ class SecondActivity : BaseActivity() {
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(8.dp),
+                                    .padding(8.dp)
+                                    .clickable {
+                                        val intent = Intent(
+                                            this@SecondActivity,
+                                            EighthActivity::class.java
+                                        ).apply {
+                                            putExtra("beer_entry", beer)
+                                        }
+                                        startActivity(intent)
+                                    },
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 // Stock image on the left
