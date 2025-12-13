@@ -4,6 +4,13 @@
 
     <!--allow internet permission, so can access the api-->
     <uses-permission android:name="android.permission.INTERNET" />
+    <!--allow camera permission -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <!--Declare camera feature -->
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+
 
     <application
         android:allowBackup="true"
