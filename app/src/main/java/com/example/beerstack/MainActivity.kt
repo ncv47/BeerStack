@@ -34,7 +34,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.runtime.*
 import androidx.compose.ui.window.Dialog
@@ -260,8 +259,20 @@ fun Body(
                 eurPerUsd = eurPerUsd
             )
 
-            searchText.isNotBlank() -> Text("No beers found")
-            else -> Text(text = "Loading...")
+            searchText.isNotBlank() -> {
+                // Button to add your own beer
+                Button(
+                    onClick = {
+                        val intent = Intent(context, SeventhActivity::class.java)
+                        intent.putExtra("USER_ID", userId)
+                        context.startActivity(intent)
+                    },
+                    modifier = Modifier
+                        .padding(top = 16.dp)
+                ) {
+                    Text("Beer not found, add it yourself!")
+                }
+            }
         }
 
         //Get last successful fetched beer & last error message
@@ -312,26 +323,6 @@ fun BottomBar(userId: Int, username: String,modifier: Modifier = Modifier){
             .fillMaxWidth()
         // background color comes from MaterialTheme by default
     ) {
-        //Button to add a own, new beer that ist in the API
-        NavigationBarItem(
-            selected = selectedItem == 0,
-            onClick = {
-                selectedItem = 0
-                //TODO: navigate to "add own beer" screen
-            },
-            icon = {
-                // Button as image/icon that you can click on
-                Icon(
-                    imageVector = Icons.Filled.Add,
-                    contentDescription = stringResource(R.string.add_beer)
-                )
-            },
-            label = { Text(stringResource(R.string.add_beer)) },
-            colors = NavigationBarItemDefaults.colors(
-            indicatorColor = Color.Transparent  // no blue background when selected
-            )
-        )
-
         //Button to the second page with the database of beer collection
         NavigationBarItem(
             selected = selectedItem == 1,

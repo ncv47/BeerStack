@@ -17,3 +17,14 @@ data class UserBeerDto(
     val imageurl: String? = null,
     val myphoto: String? = null
 ) : Parcelable
+
+@Parcelize
+@Serializable
+data class BeerDto(
+    val id: Long? = null,
+    val name: String,
+    val price: String,
+    val apiaverage: Double,
+    val reviews: Int,
+    val imageurl: String? = null
+) : Parcelable

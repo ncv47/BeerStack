@@ -24,4 +24,9 @@ class SupabaseCollectionRepository {
             client.from("BeerCollection")
                 .insert(item)
         }
-}
+
+    suspend fun addBeerToBeerList(beer: BeerDto) =
+        withContext(Dispatchers.IO) {
+            client.from("Beers")
+                .insert(beer)
+        }}
