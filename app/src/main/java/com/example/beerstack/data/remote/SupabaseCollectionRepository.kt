@@ -3,6 +3,7 @@ package com.example.beerstack.data.remote
 import io.github.jan.supabase.postgrest.from
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import com.example.beerstack.data.remote.UserBeerDto
 
 class SupabaseCollectionRepository {
 
@@ -24,4 +25,9 @@ class SupabaseCollectionRepository {
             client.from("BeerCollection")
                 .insert(item)
         }
-}
+
+    suspend fun addBeerToBeerList(beer: BeerDto) =
+        withContext(Dispatchers.IO) {
+            client.from("Beers")
+                .insert(beer)
+        }}
