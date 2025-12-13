@@ -3,14 +3,21 @@ package com.example.beerstack
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.beerstack.data.remote.UserBeerDto
@@ -33,7 +40,10 @@ class EighthActivity : BaseActivity() {
         setContent {
             BeerStackTheme {
                 if (beer != null) {
-                    BeerDetailScreen(beer = beer)
+                    BeerDetailScreen(
+                        beer = beer,
+                        onBack = { finish() }
+                    )
                 } else {
                     Text("No beer data")
                 }
@@ -43,7 +53,10 @@ class EighthActivity : BaseActivity() {
 }
 
 @Composable
-fun BeerDetailScreen(beer: UserBeerDto) {
+fun BeerDetailScreen(
+    beer: UserBeerDto,
+    onBack: () -> Unit
+) {
     val context = LocalContext.current
 
     Box(
@@ -51,84 +64,124 @@ fun BeerDetailScreen(beer: UserBeerDto) {
             .fillMaxSize()
             .background(BeerGradient)
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-
-            // Top: self-made picture, Untappd-style header
-            val headerModel = remember(beer.myphoto) {
-                beer.myphoto?.let { relative ->
-                    val picturesDir =
-                        context.getExternalFilesDir(android.os.Environment.DIRECTORY_PICTURES)
-                    val fileName = relative.substringAfterLast('/')
-                    val file = java.io.File(picturesDir, fileName)
-                    if (file.exists()) android.net.Uri.fromFile(file) else null
-                }
+        Scaffold(
+            containerColor = Color.Transparent,
+            topBar = {
+                DetailTopBar(onBack = onBack)
             }
-
-            AsyncImage(
-                model = headerModel,
-                contentDescription = "My beer photo",
+        ) { innerPadding ->
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(260.dp),
-                contentScale = ContentScale.Crop,
-                placeholder = painterResource(R.drawable.beerpicture_placeholder),
-                error = painterResource(R.drawable.beerpicture_placeholder)
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 12.dp),
-                verticalAlignment = Alignment.CenterVertically
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // Stock image on the left
-                beer.imageurl?.let { url ->
-                    AsyncImage(
-                        model = url,
-                        contentDescription = "Beer image",
-                        modifier = Modifier
-                            .size(72.dp)
-                            .padding(end = 12.dp),
-                        contentScale = ContentScale.Crop,
-                        placeholder = painterResource(R.drawable.beerpicture_placeholder),
-                        error = painterResource(R.drawable.beerpicture_placeholder)
-                    )
+
+                // Top: self-made picture, Untappd-style header
+                val headerModel = remember(beer.myphoto) {
+                    beer.myphoto?.let { relative ->
+                        val picturesDir =
+                            context.getExternalFilesDir(android.os.Environment.DIRECTORY_PICTURES)
+                        val fileName = relative.substringAfterLast('/')
+                        val file = java.io.File(picturesDir, fileName)
+                        if (file.exists()) android.net.Uri.fromFile(file) else null
+                    }
                 }
 
-                Column(
-                    modifier = Modifier.fillMaxWidth()
+                AsyncImage(
+                    model = headerModel,
+                    contentDescription = "My beer photo",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(260.dp),
+                    contentScale = ContentScale.Crop,
+                    placeholder = painterResource(R.drawable.beerpicture_placeholder),
+                    error = painterResource(R.drawable.beerpicture_placeholder)
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 12.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(
-                        text = "Name: ${beer.name}",
-                        style = MaterialTheme.typography.titleMedium
-                    )
-                    Text(
-                        text = "My Rating: %.1f".format(beer.myrating),
-                        style = MaterialTheme.typography.bodyMedium
-                    )
+                    // Stock image on the left
+                    beer.imageurl?.let { url ->
+                        AsyncImage(
+                            model = url,
+                            contentDescription = "Beer image",
+                            modifier = Modifier
+                                .size(72.dp)
+                                .padding(end = 12.dp),
+                            contentScale = ContentScale.Crop,
+                            placeholder = painterResource(R.drawable.beerpicture_placeholder),
+                            error = painterResource(R.drawable.beerpicture_placeholder)
+                        )
+                    }
+
+                    Column(
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(
+                            text = "Name: ${beer.name}",
+                            style = MaterialTheme.typography.titleMedium
+                        )
+                        Text(
+                            text = "My Rating: %.1f".format(beer.myrating),
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                    }
                 }
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                // Notes and location
+                Text(
+                    text = "Location: ${beer.location.orEmpty()}",
+                    style = MaterialTheme.typography.bodyMedium
+                )
+
+                Spacer(modifier = Modifier.height(4.dp))
+
+                Text(
+                    text = "Notes: ${beer.notes.orEmpty()}",
+                    style = MaterialTheme.typography.bodyMedium
+                )
             }
+        }
+    }
+}
 
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // Notes and location
-            Text(
-                text = "Location: ${beer.location.orEmpty()}",
-                style = MaterialTheme.typography.bodyMedium
+@Composable
+fun DetailTopBar(onBack: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 48.dp, start = 16.dp, end = 16.dp, bottom = 12.dp)
+            .background(Color.Transparent),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Row ( // This extra row is so that the arrow and the return text acts like on button
+            modifier = Modifier
+                .clip(RoundedCornerShape(50)) // Makes it so that when you click it the shadow doesn't look like one big block but is an actual nice rounded shape that just fits
+                .clickable{ onBack() } // Makes it so that the arrow and the text "return" are clickable to go back
+                .padding(4.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ){
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                contentDescription = "Back"
             )
 
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.width(8.dp))
 
             Text(
-                text = "Notes: ${beer.notes.orEmpty()}",
-                style = MaterialTheme.typography.bodyMedium
+                text = "Return",
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.SemiBold
             )
         }
     }
