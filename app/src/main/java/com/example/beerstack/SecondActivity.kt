@@ -49,17 +49,19 @@ class SecondActivity : BaseActivity() {
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         // Show the logged-in user
-                        Text(
+                        /*Text(
                             text = "Logged in User: $username",
                             style = MaterialTheme.typography.titleMedium,
                             modifier = Modifier.padding(bottom = 16.dp)
                         )
+                         */
 
                         // Item list
                         LazyColumn(
                             modifier = Modifier
                                 .weight(1f)
                                 .fillMaxWidth()
+                                .padding(top = 48.dp)
                         ) {
                             items(items) { beer ->
                                 Row(
