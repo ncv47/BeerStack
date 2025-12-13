@@ -209,11 +209,11 @@ To user ID 3
 
 ![image.png](readme-resources/image18.png)
 
-ass a result we will see the collectin of user ID 3 instead of 5, even tho the app still thinks we are 5: "Logged in user ID: 5"
+As a result we will see the collectin of user ID 3 instead of 5, even tho the app still thinks we are 5: "Logged in user ID: 5"
 
 ![image.png](readme-resources/image19.png)
 
-database for reference
+API as reference
 
 ![image.png](readme-resources/image20.png)
 
