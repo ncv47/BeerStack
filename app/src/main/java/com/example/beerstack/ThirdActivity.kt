@@ -22,8 +22,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import com.example.beerstack.ui.theme.BeerGradient
 import io.ktor.util.encodeBase64
 import kotlinx.coroutines.withContext
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.ui.draw.clip
+import com.example.beerstack.ui.theme.BeerStackTheme
 
 
 class ThirdActivity : BaseActivity() {
@@ -33,30 +37,32 @@ class ThirdActivity : BaseActivity() {
 
         // Compose UI for nicer, centered login screen
         setContent {
-            LoginScreen(
-                onLogin = { username, password ->
-                    lifecycleScope.launch {
-                        // Switch to IO for DB call, then back to Main automatically
-                        val user = withContext(Dispatchers.IO) {
-                            repository.login(username, password.encodeBase64())
-                        }
+            BeerStackTheme(dynamicColor = false) {
+                LoginScreen(
+                    onLogin = { username, password ->
+                        lifecycleScope.launch {
+                            // Switch to IO for DB call, then back to Main automatically
+                            val user = withContext(Dispatchers.IO) {
+                                repository.login(username, password.encodeBase64())
+                            }
 
-                        if (user != null) {
-                            val intent = Intent(this@ThirdActivity, MainActivity::class.java)
-                            intent.putExtra("USER_ID", user.userid)
-                            intent.putExtra("USER_NAME", user.userName)  // send username too
-                            startActivity(intent)
-                            finish() // important: close login screen
-                        }else {
-                            Toast.makeText(
-                                applicationContext,
-                                "Invalid credentials",
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            if (user != null) {
+                                val intent = Intent(this@ThirdActivity, MainActivity::class.java)
+                                intent.putExtra("USER_ID", user.userid)
+                                intent.putExtra("USER_NAME", user.userName)  // send username too
+                                startActivity(intent)
+                                finish() // important: close login screen
+                            }else {
+                                Toast.makeText(
+                                    applicationContext,
+                                    "Invalid credentials",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
                         }
                     }
-                }
-            )
+                )
+            }
         }
 
         // Populate users
@@ -87,7 +93,7 @@ fun LoginScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.surfaceVariant),
+            .background(BeerGradient),
         contentAlignment = Alignment.Center
     ) {
         Card(
@@ -95,7 +101,10 @@ fun LoginScreen(
             elevation = CardDefaults.elevatedCardElevation(defaultElevation = 8.dp),
             modifier = Modifier
                 .padding(24.dp)
-                .fillMaxWidth()
+                .fillMaxWidth(),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.secondary
+            )
         ) {
             Column(
                 modifier = Modifier
@@ -107,7 +116,9 @@ fun LoginScreen(
                 Image(
                     painter = painterResource(R.drawable.beerstacklogo),
                     contentDescription = "BeerStack Logo",
-                    modifier = Modifier.size(96.dp)
+                    modifier = Modifier
+                        .size(96.dp)
+                        .clip(CircleShape) // Makes the image have a circle form
                 )
 
                 Text(

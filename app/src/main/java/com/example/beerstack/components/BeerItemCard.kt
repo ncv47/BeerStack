@@ -1,5 +1,6 @@
 package com.example.beerstack.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -21,10 +22,13 @@ import com.example.beerstack.R
 //For Star Rating
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.StarHalf
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.Star
+import androidx.compose.material.icons.outlined.StarBorder
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import com.example.beerstack.ui.theme.BeerStackTheme
 import kotlin.math.floor
 import kotlin.math.roundToInt
 //Util Imports (Helper Functions)
@@ -43,6 +47,9 @@ fun BeerItemCard(
         modifier = modifier
             .padding(horizontal = 10.dp, vertical = 10.dp)
             .fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.secondary
+        ),
         //Shadow for the boxes and more round corners
         elevation = CardDefaults.elevatedCardElevation(defaultElevation = 6.dp),
         shape = RoundedCornerShape(20.dp)
@@ -195,9 +202,9 @@ fun StarRating(
         // Empty stars
         repeat(emptyStars) {
             Icon(
-                imageVector = Icons.Outlined.Star,
+                imageVector = Icons.Outlined.StarBorder,
                 contentDescription = null,
-                tint = starColor.copy(alpha = 0.4f),
+                tint = starColor,
                 modifier = Modifier.size(18.dp)
             )
         }

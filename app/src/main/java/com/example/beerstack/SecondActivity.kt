@@ -3,20 +3,30 @@ package com.example.beerstack
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.beerstack.data.remote.SupabaseCollectionRepository
 import com.example.beerstack.data.remote.UserBeerDto
+import com.example.beerstack.ui.theme.BeerGradient
+import com.example.beerstack.ui.theme.BeerStackTheme
 
 class SecondActivity : BaseActivity() {
 
@@ -31,85 +41,105 @@ class SecondActivity : BaseActivity() {
         val supabaseRepo = SupabaseCollectionRepository()
 
         setContent {
-            MaterialTheme {
+            BeerStackTheme(dynamicColor = false) {
                 var items by remember { mutableStateOf<List<UserBeerDto>>(emptyList()) }
 
-                Column(
+                Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                        .background(BeerGradient)
                 ) {
-                    // Show the logged-in user ID
-                    Text(
-                        text = "Logged in User ID: $userId",
-                        style = MaterialTheme.typography.titleMedium,
-                        modifier = Modifier.padding(bottom = 16.dp)
-                    )
+                    Scaffold(
+                        containerColor = Color.Transparent,
+                        topBar = {
+                            TopBar(userId = userId, username = username)
+                        },
+                        bottomBar = {
+                            BottomBar(userId = userId, username = username, currentScreenIsHome = false, currentScreenIsStack = true
+                            )
+                        }
+                    ) { innerPadding ->
 
-                    // Item list
-                    LazyColumn(
-                        modifier = Modifier
-                            .weight(1f)
-                            .fillMaxWidth()
-                    ) {
-                        items(items) { beer ->
-                            Row(
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(innerPadding),
+                            contentAlignment = Alignment.Center   // center child
+                        ){
+                            Column(
                                 modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(8.dp)
-                                    .clickable {
-                                        val intent = Intent(
-                                            this@SecondActivity,
-                                            EighthActivity::class.java
-                                        ).apply {
-                                            putExtra("beer_entry", beer)
-                                        }
-                                        startActivity(intent)
-                                    },
-                                verticalAlignment = Alignment.CenterVertically
+                                    .fillMaxSize()
+                                    .padding(16.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally
                             ) {
-                                // Stock image on the left
-                                beer.imageurl?.let { url ->
-                                    AsyncImage(
-                                        model = url,
-                                        contentDescription = "Beer image",
-                                        modifier = Modifier
-                                            .size(72.dp)
-                                            .padding(end = 12.dp),
-                                        contentScale = ContentScale.Crop,
-                                        placeholder = painterResource(R.drawable.beerpicture_placeholder),
-                                        error = painterResource(R.drawable.beerpicture_placeholder)
-                                    )
+                                // Show the logged-in user
+                                /*Text(
+                                    text = "Logged in User: $username",
+                                    style = MaterialTheme.typography.titleMedium,
+                                    modifier = Modifier.padding(bottom = 16.dp)
+                                )
+                                 */
+
+                                // Item list
+                                LazyColumn(
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .fillMaxWidth()
+                                        .padding(top = 48.dp)
+                                ) {
+                                    items(items) { beer ->
+                                        Row(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .padding(8.dp)
+                                                .clickable {
+                                                    val intent = Intent(
+                                                        this@SecondActivity,
+                                                        EighthActivity::class.java
+                                                    ).apply {
+                                                        putExtra("beer_entry", beer)
+                                                    }
+                                                    startActivity(intent)
+                                                },
+                                            verticalAlignment = Alignment.CenterVertically
+                                        ) {
+                                            // Stock image on the left
+                                            beer.imageurl?.let { url ->
+                                                AsyncImage(
+                                                    model = url,
+                                                    contentDescription = "Beer image",
+                                                    modifier = Modifier
+                                                        .size(72.dp)
+                                                        .padding(end = 12.dp),
+                                                    contentScale = ContentScale.Crop,
+                                                    placeholder = painterResource(R.drawable.beerpicture_placeholder),
+                                                    error = painterResource(R.drawable.beerpicture_placeholder)
+                                                )
+                                            }
+
+                                            Column(
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .padding(8.dp)
+                                            ) {
+                                                Text(text = "Name: ${beer.name}")
+                                                Text(text = "My Rating: %.1f".format(beer.myrating))
+                                                Text(text = "Average: %.1f".format(beer.apiaverage))
+                                            }
+                                            HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
+                                        }
+                                    }
                                 }
 
-                                Column(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(8.dp)
-                                ) {
-                                    Text(text = "Name: ${beer.name}")
-                                    Text(text = "My Rating: %.1f".format(beer.myrating))
-                                    Text(text = "Average: %.1f".format(beer.apiaverage))
+                                // Collect the Flow and filter items by ownerId
+                                LaunchedEffect(userId) {
+                                    if (userId != -1) {
+                                        items = supabaseRepo.getCollection(userId)
+                                    }
                                 }
-                                HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
                             }
                         }
                     }
-
-                    // Collect the Flow and filter items by ownerId
-                    LaunchedEffect(userId) {
-                        if (userId != -1) {
-                            items = supabaseRepo.getCollection(userId)
-                        }
-                    }
-
-                    BottomBar(
-                        userId = userId,
-                        username = username,
-                        currentScreenIsHome = false,
-                        currentScreenIsStack = true
-                    )
                 }
             }
         }
