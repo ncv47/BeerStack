@@ -106,7 +106,9 @@ class SecondActivity : BaseActivity() {
 
                     BottomBar(
                         userId = userId,
-                        username = username
+                        username = username,
+                        currentScreenIsHome = false,
+                        currentScreenIsStack = true
                     )
                 }
             }

@@ -101,7 +101,8 @@ fun Main(userId: Int,username: String, beerViewModel: BeerViewModel = viewModel(
             TopBar(userId = userId, username = username)
         },
         bottomBar = {
-            BottomBar(userId = userId, username = username)
+            BottomBar(userId = userId, username = username, currentScreenIsHome = true, currentScreenIsStack = false
+            )
         }
     ) { innerPadding ->
         Body(
@@ -314,11 +315,19 @@ fun Body(
 }
 
 @Composable
-fun BottomBar(userId: Int, username: String, modifier: Modifier = Modifier){
+fun BottomBar(userId: Int, username: String, currentScreenIsHome: Boolean, currentScreenIsStack: Boolean, modifier: Modifier = Modifier){
     val context = LocalContext.current
 
     //keep state which item is selected
-    var selectedItem by remember { mutableIntStateOf(0) }
+    var selectedItem by remember {
+        mutableIntStateOf(
+        when{
+            currentScreenIsHome -> 0
+            currentScreenIsStack -> 1
+            else -> 0
+            }
+        )
+    }
 
     NavigationBar(
         modifier = modifier
@@ -330,6 +339,12 @@ fun BottomBar(userId: Int, username: String, modifier: Modifier = Modifier){
             selected = selectedItem == 0,
             onClick = {
                 selectedItem = 0
+                val intent = Intent(context, MainActivity::class.java)
+                if (!currentScreenIsHome) {
+                    intent.putExtra("USER_ID", userId)
+                    intent.putExtra("USER_NAME", username)
+                    context.startActivity(intent)
+                }
             },
             icon = {
                 Icon(
@@ -348,10 +363,12 @@ fun BottomBar(userId: Int, username: String, modifier: Modifier = Modifier){
             selected = selectedItem == 1,
             onClick = {
                 selectedItem = 1
-                val intent = Intent(context, SecondActivity::class.java)
-                intent.putExtra("USER_ID", userId)      // <-- pass userId
-                intent.putExtra("USER_NAME", username)
-                context.startActivity(intent)
+                if(!currentScreenIsStack) {
+                    val intent = Intent(context, SecondActivity::class.java)
+                    intent.putExtra("USER_ID", userId)
+                    intent.putExtra("USER_NAME", username)
+                    context.startActivity(intent)
+                }
             },
             icon = {
                 // Button as image/icon that you can click on
