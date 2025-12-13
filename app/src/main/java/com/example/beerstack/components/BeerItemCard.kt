@@ -1,5 +1,6 @@
 package com.example.beerstack.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -43,6 +44,9 @@ fun BeerItemCard(
         modifier = modifier
             .padding(horizontal = 10.dp, vertical = 10.dp)
             .fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.secondary
+        ),
         //Shadow for the boxes and more round corners
         elevation = CardDefaults.elevatedCardElevation(defaultElevation = 6.dp),
         shape = RoundedCornerShape(20.dp)

@@ -240,7 +240,7 @@ fun Body(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 8.dp, vertical = 8.dp),
+                .padding(horizontal = 8.dp, vertical = 8.dp) ,
             verticalAlignment = Alignment.CenterVertically
         ) {
             // Large search box on the left

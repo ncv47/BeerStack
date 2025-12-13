@@ -20,9 +20,9 @@ private val DarkColorScheme = darkColorScheme(
 
 private val LightColorScheme = lightColorScheme(
     primary = PrimaryColor,
-    secondary = SecondaryColor,
+    secondary = CardBg,
     tertiary = Pink40,
-    secondaryContainer = PrimaryColor
+    secondaryContainer = ChipBg
 
 
     /* Other default colors to override
