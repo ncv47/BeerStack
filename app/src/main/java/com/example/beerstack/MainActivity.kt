@@ -42,6 +42,7 @@ import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.beerstack.ui.BeerViewModel
 import com.example.beerstack.model.Beer
@@ -176,10 +177,11 @@ fun TopBar(userId: Int, username: String, modifier: Modifier = Modifier){
         ) {
             // App logo on the left, bigger and centered vertically
             Image(
-                painter = painterResource(R.drawable.beerstacklogo),
+                painter = painterResource(R.drawable.beerstacklogotransparent),
                 contentDescription = "BeerStack Logo",
                 modifier = Modifier
-                    .height(48.dp)
+                    .height(48.dp),
+                contentScale = ContentScale.Fit
             )
 
             // Take up remaining space between logo and button
