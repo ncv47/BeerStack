@@ -7,11 +7,11 @@ val BeerGoldLight = Color(0xFFF7D26A)
 val BeerGoldDeep = Color(0xFFDA9A1B)
 
 val CardBg = Color(0xFFFFF7F0)
-val ChipBg = Color(0xFFF4EAFE).copy(alpha = 0.5f)
+val ChipBg = Color(0xFFC2B9B7).copy(alpha = 0.5f) // Background of the buttons
 
 
 val Pink80 = Color(0xFFFFF000)
 
 val Pink40 = Color(0xFF0015FF)
-val PrimaryColor = Color(0xFFFF6D00)
+val PrimaryColor = Color(0xFFFF0000)
 val SecondaryColor = Color(0xFFFF7700)
