@@ -22,6 +22,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import com.example.beerstack.ui.theme.BeerGradient
 import io.ktor.util.encodeBase64
 import kotlinx.coroutines.withContext
 
@@ -87,7 +88,7 @@ fun LoginScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.surfaceVariant),
+            .background(BeerGradient),
         contentAlignment = Alignment.Center
     ) {
         Card(
