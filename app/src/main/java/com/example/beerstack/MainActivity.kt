@@ -39,6 +39,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.window.Dialog
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.automirrored.filled.List
+import androidx.compose.material.icons.filled.Home
 import com.example.beerstack.ui.BeerViewModel
 import com.example.beerstack.model.Beer
 import com.example.beerstack.model.Currency
@@ -50,23 +51,24 @@ import com.example.beerstack.utils.SearchBar
 import com.example.beerstack.utils.CurrencyToggle
 import com.example.beerstack.utils.SortOptions
 
-
-
 class MainActivity : BaseActivity() {
-    //OVerite onCreate, when the activity is start/page is launched
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         enableEdgeToEdge()
         val userId = intent.getIntExtra("USER_ID", -1)
         val username = intent.getStringExtra("USER_NAME") ?: "Unknown"
         setContent {
             BeerStackTheme(dynamicColor = false) {
-                Main(userId = userId, username = username)
+                Main(
+                    userId = userId,
+                    username = username
+                )
             }
         }
     }
 }
-
 
 @Composable
 fun Main(userId: Int,username: String, beerViewModel: BeerViewModel = viewModel()){
@@ -312,7 +314,7 @@ fun Body(
 }
 
 @Composable
-fun BottomBar(userId: Int, username: String,modifier: Modifier = Modifier){
+fun BottomBar(userId: Int, username: String, modifier: Modifier = Modifier){
     val context = LocalContext.current
 
     //keep state which item is selected
@@ -323,6 +325,24 @@ fun BottomBar(userId: Int, username: String,modifier: Modifier = Modifier){
             .fillMaxWidth()
         // background color comes from MaterialTheme by default
     ) {
+        // Home button (MainActivity)
+        NavigationBarItem(
+            selected = selectedItem == 0,
+            onClick = {
+                selectedItem = 0
+            },
+            icon = {
+                Icon(
+                    imageVector = Icons.Filled.Home,
+                    contentDescription = stringResource(R.string.home_page)
+                )
+            },
+            label = { Text(stringResource(R.string.home_page)) },
+            colors = NavigationBarItemDefaults.colors(
+                indicatorColor = Color.Transparent  // no blue background when selected
+            )
+        )
+
         //Button to the second page with the database of beer collection
         NavigationBarItem(
             selected = selectedItem == 1,
@@ -342,7 +362,7 @@ fun BottomBar(userId: Int, username: String,modifier: Modifier = Modifier){
             },
             label = { Text(stringResource(R.string.collection_page)) },
             colors = NavigationBarItemDefaults.colors(
-            indicatorColor = Color.Transparent  // no blue background when selected
+                indicatorColor = Color.Transparent  // no blue background when selected
             )
         )
     }

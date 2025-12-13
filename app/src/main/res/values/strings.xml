@@ -3,4 +3,5 @@
     <string name="add_beer">Add Own Beer</string>
     <string name="collection_page">Stack</string>
     <string name="profile_page">Profile</string>
+    <string name="home_page">Home</string>
 </resources>
