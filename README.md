@@ -169,27 +169,27 @@ base64
 Result is this:
 > HsbawayQYhB8+cXA6fHLgTgcXsw9vVb8eRIJ2LVfY7E=
 
-That's for the old API, for the new own API:
+##### That's for the old API, for the new own API:
 
 ![image.png](readme-resources/image14.png)
 
 #### The Intercept & Modify Exploit
 
-When app is started or something changes in the search bar, the API is (re)fetched. When this happens and both SSL/Root block is disabled/bypassed you can intercept the request with burpsuite
+When pressed the euro or dollar button next to the search bar, the API is (re)fetched and the prices change from currency. When this happens and both SSL/Root block is disabled/bypassed you can intercept the request with burpsuite
 
 ![image.png](readme-resources/image4.png)
 
-when you change the path of the api in the inspector (bottom left corner)
+when you change the path of the api in the inspector (bottom right corner) from euro to twd (taiwanese dollar ~x36)
 
 ![image.png](readme-resources/image5.png)
 
-You’ll be able to see another endpoint of the API (Filtered with ‘g’ in this case)
+The value of each beer logically sky rockets
 
 ![image.png](readme-resources/image6.png)
 
 ![image.png](readme-resources/image7.png)
 
-So the main API request to [https://api.sampleapis.com/beers/ale](https://api.sampleapis.com/beers/ale) is intercepted and modified to another endpoint: [https://api.sampleapis.com/beers/stouts](https://api.sampleapis.com/beers/stouts)
+So the euro conversion rate api request [euro conversion rate](https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/eur.json) is intercepted and modified to the taiwanese dollar conversion rate: [taiwanese dollar conversion rate](https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/twd.json)
 
 #### ![](readme-resources/API.png) API request with IDOR
 Request to server x retrieving JSON in the following format displayed in screen x.

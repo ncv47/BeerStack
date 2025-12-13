@@ -62,7 +62,7 @@ class FourthActivity : BaseActivity() {
                                         myrating = rating.toDouble(),
                                         apiaverage = apiAvg,
                                         imageurl = beer.image,
-                                        myphoto = myPhotoPath    // Path to the picture
+                                        myphoto = myPhotoPath
                                     )
 
                                     supabaseRepo.addBeerToCollection(dto)
