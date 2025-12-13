@@ -23,6 +23,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.beerstack.data.remote.UserBeerDto
@@ -43,7 +44,7 @@ class EighthActivity : BaseActivity() {
         }
 
         setContent {
-            BeerStackTheme {
+            BeerStackTheme(dynamicColor = false) {
                 if (beer != null) {
                     BeerDetailScreen(
                         beer = beer,
@@ -165,7 +166,11 @@ fun BeerDetailScreen(
 }
 
 @Composable
-fun StarRating(rating: Float, maxRating: Int = 5) {
+fun StarRating(
+    rating: Float,
+    maxRating: Int = 5,
+    starColor: Color = MaterialTheme.colorScheme.primary
+) {
     Row {
         for (i in 1..maxRating) {
             val starValue = i.toFloat()
@@ -179,7 +184,7 @@ fun StarRating(rating: Float, maxRating: Int = 5) {
             Icon(
                 imageVector = icon,
                 contentDescription = null,
-                tint = Color.Yellow
+                tint = starColor
             )
         }
     }

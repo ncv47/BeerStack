@@ -13,5 +13,5 @@ val ChipBg = Color(0xFFF4EAFE).copy(alpha = 0.5f)
 val Pink80 = Color(0xFFFFF000)
 
 val Pink40 = Color(0xFF0015FF)
-val PrimaryColor = Color(0xFFD50000)
+val PrimaryColor = Color(0xFFFF6D00)
 val SecondaryColor = Color(0xFFFF7700)
