@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -113,110 +114,124 @@ fun RegisterScreen(
                 RegisterTopBar(onBack = onBack)
             }
         ) { innerPadding ->
-            Card(
-                shape = RoundedCornerShape(24.dp),
-                elevation = CardDefaults.elevatedCardElevation(defaultElevation = 8.dp),
+            // Pretty complicated looking for what it actually is
+            val top = innerPadding.calculateTopPadding()
+            val bottom = innerPadding.calculateBottomPadding()
+
+            Box(
                 modifier = Modifier
-                    .padding(innerPadding)
-                    .padding(24.dp)
-                    .fillMaxWidth(),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.secondary
-                )
+                    .fillMaxSize()
+                    .padding(
+                        top = top / 2 - 10.dp, // Making it half and subtracting it with 10 makes it the same as the first login screen
+                        bottom = bottom,        // keep bottom as is
+                    ),
+                contentAlignment = Alignment.Center   // center child
             ) {
-                Column(
-                    modifier = Modifier.padding(24.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                Card(
+                    shape = RoundedCornerShape(24.dp),
+                    elevation = CardDefaults.elevatedCardElevation(defaultElevation = 8.dp),
+                    modifier = Modifier
+                        .padding(24.dp)
+                        .fillMaxWidth(),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.secondary
+                    )
                 ) {
-
-                    Image(
-                        painter = painterResource(R.drawable.beerstacklogo),
-                        contentDescription = "BeerStack Logo",
+                    Column(
                         modifier = Modifier
-                            .size(96.dp)
-                            .clip(CircleShape) // Makes the image have a circle form
-                    )
-
-                    Text("Register", style = MaterialTheme.typography.titleLarge)
-
-                    OutlinedTextField(
-                        value = username,
-                        onValueChange = { username = it },
-                        label = { Text("Username") },
-                        singleLine = true,
-                        modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(16.dp)
-                    )
-
-                    OutlinedTextField(
-                        value = password,
-                        onValueChange = { password = it },
-                        label = { Text("Password") },
-                        singleLine = true,
-                        visualTransformation = PasswordVisualTransformation(),
-                        modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(16.dp)
-                    )
-
-                    OutlinedTextField(
-                        value = repeatPassword,
-                        onValueChange = { repeatPassword = it },
-                        label = { Text("Repeat Password") },
-                        singleLine = true,
-                        visualTransformation = PasswordVisualTransformation(),
-                        modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(16.dp)
-                    )
-
-                    FilledTonalButton(
-                        onClick = {
-
-                            // VALIDATION
-                            when {
-                                username.isBlank() -> {
-                                    Toast.makeText(context, "Fill in all fields", Toast.LENGTH_SHORT).show()
-                                    return@FilledTonalButton
-                                }
-
-                                password.isBlank() -> {
-                                    Toast.makeText(context, "Fill in all fields", Toast.LENGTH_SHORT).show()
-                                    return@FilledTonalButton
-                                }
-
-                                repeatPassword.isBlank() -> {
-                                    Toast.makeText(context, "Fill in all fields", Toast.LENGTH_SHORT).show()
-                                    return@FilledTonalButton
-                                }
-
-                                username.length < 3  -> {
-                                    Toast.makeText(context, "Username must be longer then 3 characters", Toast.LENGTH_SHORT).show()
-                                    return@FilledTonalButton
-                                }
-                                password.length < 3 -> {
-                                    Toast.makeText(context, "Password must be longer then 3 characters", Toast.LENGTH_SHORT).show()
-                                    return@FilledTonalButton
-                                }
-                                repeatPassword.length < 3 -> {
-                                    Toast.makeText(context, "Password must be longer then 3 characters", Toast.LENGTH_SHORT).show()
-                                    return@FilledTonalButton
-                                }
-                                password != repeatPassword -> {
-                                    Toast.makeText(context, "Passwords do not match", Toast.LENGTH_SHORT).show()
-                                    return@FilledTonalButton
-                                }
-
-                                else -> {
-                                    onRegister(username, password)
-                                }
-                            }
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(48.dp),
-                        shape = RoundedCornerShape(24.dp)
+                            .padding(24.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
-                        Text("Register")
+
+                        Image(
+                            painter = painterResource(R.drawable.beerstacklogo),
+                            contentDescription = "BeerStack Logo",
+                            modifier = Modifier
+                                .size(96.dp)
+                                .clip(CircleShape) // Makes the image have a circle form
+                        )
+
+                        Text("Register", style = MaterialTheme.typography.titleLarge)
+
+                        OutlinedTextField(
+                            value = username,
+                            onValueChange = { username = it },
+                            label = { Text("Username") },
+                            singleLine = true,
+                            modifier = Modifier.fillMaxWidth(),
+                            shape = RoundedCornerShape(16.dp)
+                        )
+
+                        OutlinedTextField(
+                            value = password,
+                            onValueChange = { password = it },
+                            label = { Text("Password") },
+                            singleLine = true,
+                            visualTransformation = PasswordVisualTransformation(),
+                            modifier = Modifier.fillMaxWidth(),
+                            shape = RoundedCornerShape(16.dp)
+                        )
+
+                        OutlinedTextField(
+                            value = repeatPassword,
+                            onValueChange = { repeatPassword = it },
+                            label = { Text("Repeat Password") },
+                            singleLine = true,
+                            visualTransformation = PasswordVisualTransformation(),
+                            modifier = Modifier.fillMaxWidth(),
+                            shape = RoundedCornerShape(16.dp)
+                        )
+
+                        FilledTonalButton(
+                            onClick = {
+
+                                // VALIDATION
+                                when {
+                                    username.isBlank() -> {
+                                        Toast.makeText(context, "Fill in all fields", Toast.LENGTH_SHORT).show()
+                                        return@FilledTonalButton
+                                    }
+
+                                    password.isBlank() -> {
+                                        Toast.makeText(context, "Fill in all fields", Toast.LENGTH_SHORT).show()
+                                        return@FilledTonalButton
+                                    }
+
+                                    repeatPassword.isBlank() -> {
+                                        Toast.makeText(context, "Fill in all fields", Toast.LENGTH_SHORT).show()
+                                        return@FilledTonalButton
+                                    }
+
+                                    username.length < 3  -> {
+                                        Toast.makeText(context, "Username must be longer then 3 characters", Toast.LENGTH_SHORT).show()
+                                        return@FilledTonalButton
+                                    }
+                                    password.length < 3 -> {
+                                        Toast.makeText(context, "Password must be longer then 3 characters", Toast.LENGTH_SHORT).show()
+                                        return@FilledTonalButton
+                                    }
+                                    repeatPassword.length < 3 -> {
+                                        Toast.makeText(context, "Password must be longer then 3 characters", Toast.LENGTH_SHORT).show()
+                                        return@FilledTonalButton
+                                    }
+                                    password != repeatPassword -> {
+                                        Toast.makeText(context, "Passwords do not match", Toast.LENGTH_SHORT).show()
+                                        return@FilledTonalButton
+                                    }
+
+                                    else -> {
+                                        onRegister(username, password)
+                                    }
+                                }
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(48.dp),
+                            shape = RoundedCornerShape(24.dp)
+                        ) {
+                            Text("Register")
+                        }
                     }
                 }
             }
