@@ -40,7 +40,6 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
@@ -114,23 +113,11 @@ fun Main(userId: Int,username: String, beerViewModel: BeerViewModel = viewModel(
                 TopBar(userId = userId, username = username)
             },
             bottomBar = {
-                BottomBar(userId = userId, username = username)
+                BottomBar(userId = userId, username = username, currentScreenIsHome = true, currentScreenIsStack = false
+                )
             }
         ) { innerPadding ->
             Body(
-    // use Scaffold for top and bottom bars (Handles weight on its own)
-    Scaffold(
-
-        topBar = {
-            TopBar(userId = userId, username = username)
-        },
-        bottomBar = {
-            BottomBar(userId = userId, username = username, currentScreenIsHome = true, currentScreenIsStack = false
-            )
-        }
-    ) { innerPadding ->
-        Body(
-
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding),
