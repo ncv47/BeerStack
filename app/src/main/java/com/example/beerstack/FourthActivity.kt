@@ -28,11 +28,18 @@ import androidx.core.content.FileProvider
 import android.Manifest
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.StarHalf
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.StarHalf
+import androidx.compose.material.icons.outlined.Star
+import androidx.compose.material.icons.outlined.StarBorder
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import com.example.beerstack.ui.theme.BeerGradient
 
@@ -104,7 +111,8 @@ fun RateBeerScreen(
     onDone: (Float, String, String, String?) -> Unit,   // laatste param = mijn foto (pad of URL)
     onBack: () -> Unit
 ) {
-    var rating by remember { mutableFloatStateOf(beer.rating?.average?.toFloat() ?: 0f) }
+    //var rating by remember { mutableFloatStateOf(beer.rating?.average?.toFloat() ?: 0f) }
+    var myRating by remember { mutableStateOf(2.5f) }
     var notes by remember { mutableStateOf("") }
     var location by remember { mutableStateOf("") }
 
@@ -178,9 +186,14 @@ fun RateBeerScreen(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
-                    text = "Rating: ${"%.1f".format(rating)} / 5",
+                    text = "Rating: ${"%.1f".format(myRating)} / 5",
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.align(Alignment.Start)
+                )
+
+                StarRatingBar(
+                    rating = myRating,
+                    onRatingChange = { myRating = it }
                 )
 
                 /* To be replaced with actual stars
@@ -249,7 +262,7 @@ fun RateBeerScreen(
 
                 FilledTonalButton(
                     onClick = {
-                        onDone(rating, location, notes, myPhotoUri?.path)
+                        onDone(myRating, location, notes, myPhotoUri?.path)
                     },
                     modifier = Modifier.fillMaxWidth()
                 ) {
@@ -259,6 +272,58 @@ fun RateBeerScreen(
         }
     }
 }
+
+@Composable
+fun StarRatingBar(
+    rating: Float,
+    onRatingChange: (Float) -> Unit,
+    maxRating: Int = 5
+) {
+    Row {
+        for (i in 1..maxRating) {
+            val starValue = i.toFloat()
+
+            // choose icon for display
+            val icon = when {
+                rating >= starValue       -> Icons.Filled.Star        // full
+                rating >= starValue - 0.5f -> Icons.AutoMirrored.Filled.StarHalf   // half
+                else                       -> Icons.Outlined.StarBorder    // empty
+            }
+
+            StarIcon(
+                starValue = starValue,
+                icon = icon,
+                onRatingChange = onRatingChange
+            )
+        }
+    }
+}
+
+@Composable
+private fun StarIcon(
+    starValue: Float,
+    icon: ImageVector,
+    onRatingChange: (Float) -> Unit
+) {
+    Icon(
+        imageVector = icon,
+        contentDescription = null,
+        tint = Color.Yellow,
+        modifier = Modifier
+            .size(32.dp)
+            .combinedClickable(
+                onClick = {
+                    // single tap → full star (1,2,3,...)
+                    onRatingChange(starValue)
+                },
+                onDoubleClick = {
+                    // long press → half star (0.5,1.5,2.5,...)
+                    onRatingChange(starValue - 0.5f)
+                }
+            )
+    )
+}
+
 
 @Composable
 fun AddingTopBar(onBack: () -> Unit) {
