@@ -52,6 +52,7 @@ fun AddOwnBeerScreen(
     var apiAverageText by remember { mutableStateOf("") }
     var totalReviewsText by remember { mutableStateOf("") }
     var imageUrl by remember { mutableStateOf("") }
+    var selectedCurrency by remember { mutableStateOf("USD") }
 
     Column(
         modifier = Modifier
@@ -78,10 +79,36 @@ fun AddOwnBeerScreen(
                 .padding(top = 8.dp)
         )
 
+        // De currency button
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            FilterChip(
+                selected = selectedCurrency == "USD",
+                onClick = { selectedCurrency = "USD" },
+                label = { Text("USD") }
+            )
+            FilterChip(
+                selected = selectedCurrency == "EUR",
+                onClick = { selectedCurrency = "EUR" },
+                label = { Text("EUR") }
+            )
+        }
+
+        //Format for the price
+        fun validatePriceInput(input: String): String {
+            val cleaned = input.replace(",", ".")
+            val regex = Regex("^\\d{0,7}(\\.\\d{0,2})?$") // max 7 cijfers voor de punt, 2 erna (1 MILLION BEERS)
+            return if (cleaned.isEmpty() || regex.matches(cleaned)) cleaned else priceText
+        }
+
         OutlinedTextField(
             value = priceText,
-            onValueChange = { priceText = it },
-            label = { Text("Price") },
+            onValueChange = { new ->
+                priceText = validatePriceInput(new)
+            },
+            label = { Text("Price (0.00)") },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             modifier = Modifier
                 .fillMaxWidth()
@@ -121,13 +148,14 @@ fun AddOwnBeerScreen(
 
         Button(
             onClick = {
-                val price = priceText
+                val price = priceText.ifBlank { "0.00" }
                 val apiAvg = apiAverageText.toDoubleOrNull() ?: 0.0
                 val totalReviews = totalReviewsText.toIntOrNull() ?: 0
 
                 val dto = BeerDto(
                     id = null,            // API generates ID
                     name = name,
+                    currency = selectedCurrency,
                     price = price,
                     apiaverage = apiAvg,
                     reviews = totalReviews,
@@ -143,3 +171,4 @@ fun AddOwnBeerScreen(
         }
     }
 }
+

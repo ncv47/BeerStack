@@ -59,6 +59,7 @@ class FourthActivity : BaseActivity() {
                                         userid = userId,
                                         beerid = beer.id,
                                         name = beer.name,
+                                        currency = beer.currency,
                                         price = beer.price,
                                         myrating = rating.toDouble(),
                                         apiaverage = apiAvg,

@@ -41,22 +41,30 @@ fun sortBeers(beers: List<Beer>, sortOption: SortOptions): List<Beer> {
     }
 }
 
-//Temp Helper for Currency Converter (to be optimized or put in new helper directory)
+// To show symbol of price (EUR/USD)
+// To convert symbols and currency rates
 fun formatBeerPrice(
-    rawPrice: String?,
-    currency: Currency,
+    rawPrice: String,
+    beerCurrency: String,
+    appCurrency: Currency,   // enum uit je model
     eurPerUsd: Double
 ): String {
-    val valueUsd = rawPrice
-        ?.replace("$", "")
-        ?.replace("€", "")
-        ?.toDoubleOrNull() ?: return "N/A"
+    val base = rawPrice.toDoubleOrNull() ?: return ""
 
-    val value = when (currency) {
-        Currency.USD -> valueUsd
-        Currency.EUR -> valueUsd * eurPerUsd
+    val priceInUsd = when (beerCurrency.uppercase()) {
+        "EUR" -> base / eurPerUsd
+        else  -> base
     }
 
-    val symbol = if (currency == Currency.USD) "$" else "€"
-    return "%s%.2f".format(symbol, value)
+    val finalAmount = when (appCurrency) {
+        Currency.EUR -> priceInUsd * eurPerUsd
+        Currency.USD -> priceInUsd
+    }
+
+    val symbol = when (appCurrency) {
+        Currency.EUR -> "€"
+        Currency.USD -> "$"
+    }
+
+    return "%s%.2f".format(symbol, finalAmount)
 }

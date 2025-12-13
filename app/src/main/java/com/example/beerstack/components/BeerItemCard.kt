@@ -112,7 +112,8 @@ fun BeerItemCard(
                             Text(
                                 text = "Price: " + formatBeerPrice(
                                     rawPrice = it,
-                                    currency = currency,
+                                    beerCurrency = beer.currency,
+                                    appCurrency = currency,
                                     eurPerUsd = eurPerUsd
                                 ),
                                 fontSize = 14.sp,
