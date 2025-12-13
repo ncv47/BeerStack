@@ -192,13 +192,30 @@ The value of each beer logically sky rockets
 So the euro conversion rate api request [euro conversion rate](https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/eur.json) is intercepted and modified to the taiwanese dollar conversion rate: [taiwanese dollar conversion rate](https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/twd.json)
 
 #### ![](readme-resources/API.png) API request with IDOR
-Request to server x retrieving JSON in the following format displayed in screen x.
 
-Need the collection page/database to be finished:
+For IDOR we will manipulate the app into thinking we are another user to read out our stack/collection
 
-you will intercept the insecure request to add a beer to the collection and edit it into a colleciton of another user/delete…
+![image.png](readme-resources/image15.png)
 
-Or just modify the ID of the beer to make another beer go into the collection
+When logged in as user 5 i have 1 beer in my collection
+
+![image.png](readme-resources/image16.png)
+
+But if we intercept this request we can change the user ID from 5
+
+![image.png](readme-resources/image17.png)
+
+To user ID 3
+
+![image.png](readme-resources/image18.png)
+
+ass a result we will see the collectin of user ID 3 instead of 5, even tho the app still thinks we are 5: "Logged in user ID: 5"
+
+![image.png](readme-resources/image19.png)
+
+database for reference
+
+![image.png](readme-resources/image20.png)
 
 ## ![](readme-resources/Database.png) Room database
 Type of data stored in the database used in screen x and displayed in screen y.
