@@ -19,8 +19,8 @@ class BeerViewModel : ViewModel() {
     // Errorhandeling while loading
     var error by mutableStateOf<String?>(null)
 
-    // Currency state
-    var currency by mutableStateOf(Currency.USD)
+    // Currency state (start with euro)
+    var currency by mutableStateOf(Currency.EUR)
         private set
 
     // How many EUR for 1 USD (used for conversion)

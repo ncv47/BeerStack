@@ -28,7 +28,7 @@ import androidx.compose.material3.MaterialTheme
 import kotlin.math.floor
 import kotlin.math.roundToInt
 //Util Imports (Helper Functions)
-import com.example.beerstack.utils.formatBeerPriceWithSymbol
+import com.example.beerstack.utils.formatBeerPrice
 
 @Composable
 fun BeerItemCard(
@@ -110,9 +110,11 @@ fun BeerItemCard(
                     ) {
                         beer.price?.let {
                             Text(
-                                text = "Price: " + formatBeerPriceWithSymbol(
+                                text = "Price: " + formatBeerPrice(
                                     rawPrice = it,
-                                    beerCurrency = beer.currency
+                                    beerCurrency = beer.currency,
+                                    appCurrency = currency,
+                                    eurPerUsd = eurPerUsd
                                 ),
                                 fontSize = 14.sp,
                                 color = Color.DarkGray
