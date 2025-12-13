@@ -14,6 +14,8 @@ data class UserBeerDto(
     val price: String? = null,
     val myrating: Double,
     val apiaverage: Double,
+    val notes: String,
+    val location: String,
     val imageurl: String? = null,
     val myphoto: String? = null
 ) : Parcelable

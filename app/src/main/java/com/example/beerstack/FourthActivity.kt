@@ -61,6 +61,8 @@ class FourthActivity : BaseActivity() {
                                         price = beer.price,
                                         myrating = rating.toDouble(),
                                         apiaverage = apiAvg,
+                                        notes = notes,
+                                        location = location,
                                         imageurl = beer.image,
                                         myphoto = myPhotoPath
                                     )
