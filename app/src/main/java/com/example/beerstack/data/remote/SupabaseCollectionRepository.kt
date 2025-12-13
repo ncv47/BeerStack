@@ -3,7 +3,6 @@ package com.example.beerstack.data.remote
 import io.github.jan.supabase.postgrest.from
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import com.example.beerstack.data.remote.UserBeerDto
 
 class SupabaseCollectionRepository {
 

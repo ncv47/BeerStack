@@ -263,14 +263,14 @@ fun Body(
                 // Button to add your own beer
                 Button(
                     onClick = {
-                        val intent = Intent(context, ThirdActivity::class.java)
+                        val intent = Intent(context, SeventhActivity::class.java)
                         intent.putExtra("USER_ID", userId)
                         context.startActivity(intent)
                     },
                     modifier = Modifier
                         .padding(top = 16.dp)
                 ) {
-                    Text("No beer found, add your own!")
+                    Text("Beer not found, add it yourself!")
                 }
             }
         }
