@@ -25,6 +25,8 @@ class SecondActivity : BaseActivity() {
 
         // Get the logged-in user ID passed from ThirdActivity
         val userId = intent.getIntExtra("USER_ID", -1)
+        val username = intent.getStringExtra("USER_NAME") ?: "Unknown"
+
         //Use Supabase (Own API)
         val supabaseRepo = SupabaseCollectionRepository()
 
@@ -47,7 +49,9 @@ class SecondActivity : BaseActivity() {
 
                     // Item list
                     LazyColumn(
-                        modifier = Modifier.fillMaxSize()
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxWidth()
                     ) {
                         items(items) { beer ->
                             Row(
@@ -99,6 +103,11 @@ class SecondActivity : BaseActivity() {
                             items = supabaseRepo.getCollection(userId)
                         }
                     }
+
+                    BottomBar(
+                        userId = userId,
+                        username = username
+                    )
                 }
             }
         }
