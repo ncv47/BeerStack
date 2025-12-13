@@ -2,8 +2,10 @@ package com.example.beerstack.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Purple80 = Color(0xFFD0BCFF)
-val PurpleGrey80 = Color(0xFFCCC2DC)
+val BeerFoam = Color(0xFFFDFCF8)
+val BeerGoldLight = Color(0xFFF7D26A)
+val BeerGoldDeep = Color(0xFFDA9A1B)
+
 val Pink80 = Color(0xFFEFB8C8)
 
 val Purple40 = Color(0xFF6650a4)

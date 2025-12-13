@@ -46,6 +46,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.beerstack.ui.BeerViewModel
 import com.example.beerstack.model.Beer
 import com.example.beerstack.model.Currency
+import com.example.beerstack.ui.theme.BeerGradient
 //Util Imports (Helper Functions)
 import com.example.beerstack.utils.sortBeers
 import com.example.beerstack.utils.BeerList
@@ -102,15 +103,7 @@ fun Main(userId: Int,username: String, beerViewModel: BeerViewModel = viewModel(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(
-                Brush.verticalGradient(
-                    colors = listOf(
-                        Color(0xFFFDFCF8), // foam-ish
-                        Color(0xFFF7D26A), // light gold
-                        Color(0xFFDA9A1B)  // deeper gold
-                    )
-                )
-            )
+            .background(BeerGradient)
     ) {
 
         // use Scaffold for top and bottom bars (Handles weight on its own)
