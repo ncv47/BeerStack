@@ -31,8 +31,16 @@
             android:exported="true"
             android:theme="@style/Theme.BeerStack"
             />
+
         <activity
             android:name=".SixthActivity"
+            android:exported="true"
+            android:theme="@style/Theme.BeerStack"
+            android:windowSoftInputMode="adjustResize"
+            />
+
+        <activity
+            android:name=".SeventhActivity"
             android:exported="true"
             android:theme="@style/Theme.BeerStack"
             android:windowSoftInputMode="adjustResize"
