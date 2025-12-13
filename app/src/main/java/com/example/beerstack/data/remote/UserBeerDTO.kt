@@ -11,6 +11,7 @@ data class UserBeerDto(
     val userid: Int,
     val beerid: Int,
     val name: String,
+    val currency: String,
     val price: String? = null,
     val myrating: Double,
     val apiaverage: Double,
@@ -25,6 +26,7 @@ data class UserBeerDto(
 data class BeerDto(
     val id: Long? = null,
     val name: String,
+    val currency: String,
     val price: String,
     val apiaverage: Double,
     val reviews: Int,

@@ -6,6 +6,7 @@ import kotlinx.serialization.Serializable
 data class BeerDto(
     val beerid: Int,
     val name: String,
+    val currency: String,
     val price: String,
     val apiaverage: Double?,
     val reviews: Int?,
@@ -16,6 +17,7 @@ data class BeerDto(
 fun BeerDto.toBeer(): Beer = Beer(
     id = beerid,
     name = name,
+    currency = currency,
     price = price,
     image = imageurl,
     rating = if (apiaverage != null && reviews != null)
