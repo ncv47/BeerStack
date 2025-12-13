@@ -25,6 +25,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import com.example.beerstack.data.UserDB.OfflineUsersRepository
+import com.example.beerstack.ui.theme.BeerGradient
 import com.example.beerstack.ui.theme.BeerStackTheme
 import io.ktor.util.encodeBase64
 
@@ -96,7 +97,7 @@ fun RegisterScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.surfaceVariant),
+            .background(BeerGradient),
         contentAlignment = Alignment.Center
     ) {
         Card(
