@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.beerstack.data.remote.SupabaseCollectionRepository
 import com.example.beerstack.data.remote.UserBeerDto
+import com.example.beerstack.ui.theme.BeerStackTheme
 
 class SecondActivity : BaseActivity() {
 
@@ -31,7 +32,7 @@ class SecondActivity : BaseActivity() {
         val supabaseRepo = SupabaseCollectionRepository()
 
         setContent {
-            MaterialTheme {
+            BeerStackTheme(dynamicColor = false) {
                 var items by remember { mutableStateOf<List<UserBeerDto>>(emptyList()) }
 
                 Column(
@@ -40,9 +41,9 @@ class SecondActivity : BaseActivity() {
                         .padding(16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    // Show the logged-in user ID
+                    // Show the logged-in user
                     Text(
-                        text = "Logged in User ID: $userId",
+                        text = "Logged in User: $username",
                         style = MaterialTheme.typography.titleMedium,
                         modifier = Modifier.padding(bottom = 16.dp)
                     )
