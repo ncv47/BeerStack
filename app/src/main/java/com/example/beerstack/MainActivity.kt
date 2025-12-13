@@ -40,6 +40,8 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.Preview
 import com.example.beerstack.ui.BeerViewModel
 import com.example.beerstack.model.Beer
 import com.example.beerstack.model.Currency
@@ -54,7 +56,9 @@ import com.example.beerstack.utils.SortOptions
 class MainActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
+
 
         enableEdgeToEdge()
         val userId = intent.getIntExtra("USER_ID", -1)
@@ -382,5 +386,14 @@ fun BottomBar(userId: Int, username: String, currentScreenIsHome: Boolean, curre
                 indicatorColor = Color.Transparent  // no blue background when selected
             )
         )
+    }
+}
+
+
+@Preview(showBackground = true, widthDp = 320, heightDp = 320)
+@Composable
+fun MainPreview() {
+    BeerStackTheme(dynamicColor = false) {
+        Main(userId = 3,username = "password", beerViewModel = viewModel())
     }
 }
