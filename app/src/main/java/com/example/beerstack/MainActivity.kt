@@ -41,7 +41,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.AutoGraph
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.beerstack.ui.BeerViewModel
