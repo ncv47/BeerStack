@@ -55,79 +55,87 @@ class SecondActivity : BaseActivity() {
                             TopBar(userId = userId, username = username)
                         },
                         bottomBar = {
-                            BottomBar(userId = userId, username = username, currentScreenIsHome = true, currentScreenIsStack = false
+                            BottomBar(userId = userId, username = username, currentScreenIsHome = false, currentScreenIsStack = true
                             )
                         }
-                    ) {
-                        Column(
+                    ) { innerPadding ->
+
+                        Box(
                             modifier = Modifier
                                 .fillMaxSize()
-                                .padding(16.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            // Show the logged-in user
-                            /*Text(
-                                text = "Logged in User: $username",
-                                style = MaterialTheme.typography.titleMedium,
-                                modifier = Modifier.padding(bottom = 16.dp)
-                            )
-                             */
-
-                            // Item list
-                            LazyColumn(
+                                .padding(innerPadding),
+                            contentAlignment = Alignment.Center   // center child
+                        ){
+                            Column(
                                 modifier = Modifier
-                                    .weight(1f)
-                                    .fillMaxWidth()
-                                    .padding(top = 48.dp)
+                                    .fillMaxSize()
+                                    .padding(16.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally
                             ) {
-                                items(items) { beer ->
-                                    Row(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(8.dp)
-                                            .clickable {
-                                                val intent = Intent(
-                                                    this@SecondActivity,
-                                                    EighthActivity::class.java
-                                                ).apply {
-                                                    putExtra("beer_entry", beer)
-                                                }
-                                                startActivity(intent)
-                                            },
-                                        verticalAlignment = Alignment.CenterVertically
-                                    ) {
-                                        // Stock image on the left
-                                        beer.imageurl?.let { url ->
-                                            AsyncImage(
-                                                model = url,
-                                                contentDescription = "Beer image",
-                                                modifier = Modifier
-                                                    .size(72.dp)
-                                                    .padding(end = 12.dp),
-                                                contentScale = ContentScale.Crop,
-                                                placeholder = painterResource(R.drawable.beerpicture_placeholder),
-                                                error = painterResource(R.drawable.beerpicture_placeholder)
-                                            )
-                                        }
+                                // Show the logged-in user
+                                /*Text(
+                                    text = "Logged in User: $username",
+                                    style = MaterialTheme.typography.titleMedium,
+                                    modifier = Modifier.padding(bottom = 16.dp)
+                                )
+                                 */
 
-                                        Column(
+                                // Item list
+                                LazyColumn(
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .fillMaxWidth()
+                                        .padding(top = 48.dp)
+                                ) {
+                                    items(items) { beer ->
+                                        Row(
                                             modifier = Modifier
                                                 .fillMaxWidth()
                                                 .padding(8.dp)
+                                                .clickable {
+                                                    val intent = Intent(
+                                                        this@SecondActivity,
+                                                        EighthActivity::class.java
+                                                    ).apply {
+                                                        putExtra("beer_entry", beer)
+                                                    }
+                                                    startActivity(intent)
+                                                },
+                                            verticalAlignment = Alignment.CenterVertically
                                         ) {
-                                            Text(text = "Name: ${beer.name}")
-                                            Text(text = "My Rating: %.1f".format(beer.myrating))
-                                            Text(text = "Average: %.1f".format(beer.apiaverage))
+                                            // Stock image on the left
+                                            beer.imageurl?.let { url ->
+                                                AsyncImage(
+                                                    model = url,
+                                                    contentDescription = "Beer image",
+                                                    modifier = Modifier
+                                                        .size(72.dp)
+                                                        .padding(end = 12.dp),
+                                                    contentScale = ContentScale.Crop,
+                                                    placeholder = painterResource(R.drawable.beerpicture_placeholder),
+                                                    error = painterResource(R.drawable.beerpicture_placeholder)
+                                                )
+                                            }
+
+                                            Column(
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .padding(8.dp)
+                                            ) {
+                                                Text(text = "Name: ${beer.name}")
+                                                Text(text = "My Rating: %.1f".format(beer.myrating))
+                                                Text(text = "Average: %.1f".format(beer.apiaverage))
+                                            }
+                                            HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
                                         }
-                                        HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
                                     }
                                 }
-                            }
 
-                            // Collect the Flow and filter items by ownerId
-                            LaunchedEffect(userId) {
-                                if (userId != -1) {
-                                    items = supabaseRepo.getCollection(userId)
+                                // Collect the Flow and filter items by ownerId
+                                LaunchedEffect(userId) {
+                                    if (userId != -1) {
+                                        items = supabaseRepo.getCollection(userId)
+                                    }
                                 }
                             }
                         }
