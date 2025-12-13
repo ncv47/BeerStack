@@ -13,16 +13,19 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import com.example.beerstack.data.UserDB.OfflineUsersRepository
+import com.example.beerstack.ui.theme.BeerStackTheme
 import io.ktor.util.encodeBase64
 
 class SixthActivity : BaseActivity() {
@@ -33,46 +36,48 @@ class SixthActivity : BaseActivity() {
         val repository = AppDataContainer(this).usersRepository
 
         setContent {
-            RegisterScreen(
-                onRegister = { username, password ->
-                    lifecycleScope.launch {
-                        // Check if username is already taken
-                        val exists = withContext(Dispatchers.IO) {
-                            if (repository is OfflineUsersRepository) {
-                                repository.isUsernameTaken(username)
-                            } else false // fallback for other repository types
-                        }
-
-                        if (exists) {
-                            Toast.makeText(
-                                this@SixthActivity,
-                                "Username already taken",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        } else {
-                            // Insert user safely
-                            val newUser = User(
-                                userName = username,
-                                userPassword = password.encodeBase64()
-                            )
-
-                            withContext(Dispatchers.IO) {
-                                repository.insert(newUser)
+            BeerStackTheme(dynamicColor = false) {
+                RegisterScreen(
+                    onRegister = { username, password ->
+                        lifecycleScope.launch {
+                            // Check if username is already taken
+                            val exists = withContext(Dispatchers.IO) {
+                                if (repository is OfflineUsersRepository) {
+                                    repository.isUsernameTaken(username)
+                                } else false // fallback for other repository types
                             }
 
-                            Toast.makeText(
-                                this@SixthActivity,
-                                "User registered!",
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            if (exists) {
+                                Toast.makeText(
+                                    this@SixthActivity,
+                                    "Username already taken",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            } else {
+                                // Insert user safely
+                                val newUser = User(
+                                    userName = username,
+                                    userPassword = password.encodeBase64()
+                                )
 
-                            // Go back to login screen
-                            startActivity(Intent(this@SixthActivity, ThirdActivity::class.java))
-                            finish()
+                                withContext(Dispatchers.IO) {
+                                    repository.insert(newUser)
+                                }
+
+                                Toast.makeText(
+                                    this@SixthActivity,
+                                    "User registered!",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+
+                                // Go back to login screen
+                                startActivity(Intent(this@SixthActivity, ThirdActivity::class.java))
+                                finish()
+                            }
                         }
                     }
-                }
-            )
+                )
+            }
         }
     }
 }
@@ -110,7 +115,9 @@ fun RegisterScreen(
                 Image(
                     painter = painterResource(R.drawable.beerstacklogo),
                     contentDescription = "BeerStack Logo",
-                    modifier = Modifier.size(96.dp)
+                    modifier = Modifier
+                        .size(96.dp)
+                        .clip(CircleShape) // Makes the image have a circle form
                 )
 
                 Text("Register", style = MaterialTheme.typography.titleLarge)
