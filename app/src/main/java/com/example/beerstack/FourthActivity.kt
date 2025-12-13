@@ -183,12 +183,14 @@ fun RateBeerScreen(
                     modifier = Modifier.align(Alignment.Start)
                 )
 
+                /* To be replaced with actual stars
                 Slider(
                     value = rating,
                     onValueChange = { rating = it },
                     valueRange = 0f..5f,
                     steps = 9    // 0, 0,5 1 1,5...
                 )
+                */
 
                 // Preview of the picture
                 myPhotoUri?.let { uri ->
@@ -224,7 +226,7 @@ fun RateBeerScreen(
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                Button(
+                FilledTonalButton(
                     onClick = {
                         // App specific Pictures directory
                         val dir = context.getExternalFilesDir(android.os.Environment.DIRECTORY_PICTURES)
@@ -245,7 +247,7 @@ fun RateBeerScreen(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                Button(
+                FilledTonalButton(
                     onClick = {
                         onDone(rating, location, notes, myPhotoUri?.path)
                     },
