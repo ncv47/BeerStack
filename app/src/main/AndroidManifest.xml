@@ -79,6 +79,14 @@
             android:windowSoftInputMode="adjustResize"
             />
 
+        <activity
+            android:name=".NinthActivity"
+            android:exported="true"
+            android:theme="@style/Theme.BeerStack"
+            android:windowSoftInputMode="adjustResize"
+            />
+
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"
