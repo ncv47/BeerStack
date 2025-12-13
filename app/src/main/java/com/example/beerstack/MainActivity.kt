@@ -39,8 +39,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.window.Dialog
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.automirrored.filled.List
+import androidx.compose.material.icons.filled.AutoGraph
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.beerstack.ui.BeerViewModel
@@ -113,8 +113,9 @@ fun Main(userId: Int,username: String, beerViewModel: BeerViewModel = viewModel(
                 TopBar(userId = userId, username = username)
             },
             bottomBar = {
-                BottomBar(userId = userId, username = username, currentScreenIsHome = true, currentScreenIsStack = false
-                )
+                BottomBar(userId = userId, username = username, currentScreenIsHome = true, currentScreenIsStack = false, currentScreenIsLeaderboard = false
+
+                    )
             }
         ) { innerPadding ->
             Body(
@@ -328,7 +329,7 @@ fun Body(
 }
 
 @Composable
-fun BottomBar(userId: Int, username: String, currentScreenIsHome: Boolean, currentScreenIsStack: Boolean, modifier: Modifier = Modifier){
+fun BottomBar(userId: Int, username: String, currentScreenIsHome: Boolean, currentScreenIsStack: Boolean, currentScreenIsLeaderboard: Boolean, modifier: Modifier = Modifier){
     val context = LocalContext.current
 
     //keep state which item is selected
@@ -337,6 +338,7 @@ fun BottomBar(userId: Int, username: String, currentScreenIsHome: Boolean, curre
         when{
             currentScreenIsHome -> 0
             currentScreenIsStack -> 1
+            currentScreenIsLeaderboard -> 2
             else -> 0
             }
         )
@@ -391,6 +393,30 @@ fun BottomBar(userId: Int, username: String, currentScreenIsHome: Boolean, curre
                 )
             },
             label = { Text(stringResource(R.string.collection_page)) },
+            colors = NavigationBarItemDefaults.colors(
+                indicatorColor = Color.Transparent  // no blue background when selected
+            )
+        )
+
+        // Leaderboard button
+        NavigationBarItem(
+            selected = selectedItem == 2,
+            onClick = {
+                if (!currentScreenIsLeaderboard) {
+                    selectedItem = 2
+                    val intent = Intent(context, NinthActivity::class.java)
+                    intent.putExtra("USER_ID", userId)
+                    intent.putExtra("USER_NAME", username)
+                    context.startActivity(intent)
+                }
+            },
+            icon = {
+                Icon(
+                    imageVector = Icons.Filled.AutoGraph,
+                    contentDescription = "Leaderboard"
+                )
+            },
+            label = { Text("Leaderboard") },
             colors = NavigationBarItemDefaults.colors(
                 indicatorColor = Color.Transparent  // no blue background when selected
             )
