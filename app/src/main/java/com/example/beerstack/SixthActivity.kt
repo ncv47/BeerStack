@@ -105,7 +105,10 @@ fun RegisterScreen(
             elevation = CardDefaults.elevatedCardElevation(defaultElevation = 8.dp),
             modifier = Modifier
                 .padding(24.dp)
-                .fillMaxWidth()
+                .fillMaxWidth(),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.secondary
+            )
         ) {
             Column(
                 modifier = Modifier.padding(24.dp),

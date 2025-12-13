@@ -21,6 +21,7 @@ private val DarkColorScheme = darkColorScheme(
 private val LightColorScheme = lightColorScheme(
     primary = PrimaryColor,
     secondary = CardBg,
+    onSecondary = Black,
     tertiary = Pink40,
     secondaryContainer = ChipBg
 

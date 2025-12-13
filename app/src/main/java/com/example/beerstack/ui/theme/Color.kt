@@ -10,6 +10,8 @@ val CardBg = Color(0xFFFFF7F0)
 val ChipBg = Color(0xFFC2B9B7).copy(alpha = 0.5f) // Background of the buttons
 
 
+val Black = Color(0xFF000000)
+
 val Pink80 = Color(0xFFFFF000)
 
 val Pink40 = Color(0xFF0015FF)
