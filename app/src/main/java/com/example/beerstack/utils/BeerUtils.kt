@@ -42,14 +42,29 @@ fun sortBeers(beers: List<Beer>, sortOption: SortOptions): List<Beer> {
 }
 
 // To show symbol of price (EUR/USD)
-fun formatBeerPriceWithSymbol(
+// To convert symbols and currency rates
+fun formatBeerPrice(
     rawPrice: String,
-    beerCurrency: String
+    beerCurrency: String,
+    appCurrency: Currency,   // enum uit je model
+    eurPerUsd: Double
 ): String {
-    val symbol = when (beerCurrency.uppercase()) {
-        "EUR" -> "€"
-        "USD" -> "$"
-        else  -> ""
+    val base = rawPrice.toDoubleOrNull() ?: return ""
+
+    val priceInUsd = when (beerCurrency.uppercase()) {
+        "EUR" -> base / eurPerUsd
+        else  -> base
     }
-    return "$symbol$rawPrice"
+
+    val finalAmount = when (appCurrency) {
+        Currency.EUR -> priceInUsd * eurPerUsd
+        Currency.USD -> priceInUsd
+    }
+
+    val symbol = when (appCurrency) {
+        Currency.EUR -> "€"
+        Currency.USD -> "$"
+    }
+
+    return "%s%.2f".format(symbol, finalAmount)
 }
