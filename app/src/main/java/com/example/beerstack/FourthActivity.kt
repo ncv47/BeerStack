@@ -303,12 +303,13 @@ fun StarRatingBar(
 private fun StarIcon(
     starValue: Float,
     icon: ImageVector,
-    onRatingChange: (Float) -> Unit
+    onRatingChange: (Float) -> Unit,
+    starColor: Color = MaterialTheme.colorScheme.primary
 ) {
     Icon(
         imageVector = icon,
         contentDescription = null,
-        tint = Color.Yellow,
+        tint = starColor,
         modifier = Modifier
             .size(32.dp)
             .combinedClickable(
