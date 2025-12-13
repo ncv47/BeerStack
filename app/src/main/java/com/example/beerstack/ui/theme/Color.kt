@@ -13,5 +13,5 @@ val ChipBg = Color(0xFFC2B9B7).copy(alpha = 0.5f) // Background of the buttons
 val Pink80 = Color(0xFFFFF000)
 
 val Pink40 = Color(0xFF0015FF)
-val PrimaryColor = Color(0xFFFF0000)
+val PrimaryColor = Color(0xFFF1B42F)
 val SecondaryColor = Color(0xFFFF7700)
