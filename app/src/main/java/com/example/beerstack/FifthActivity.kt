@@ -4,8 +4,10 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
@@ -100,24 +102,30 @@ fun ProfileTopBar(onBack: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 24.dp)
+            .padding(top = 48.dp, start = 16.dp, end = 16.dp, bottom = 12.dp)
             .background(Color.Transparent),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        IconButton(onClick = onBack) {
+        Row ( // This extra row is so that the arrow and the return text acts like on button
+            modifier = Modifier
+                .clip(RoundedCornerShape(50)) // Makes it so that when you click it the shadow doesn't look like one big block but is an actual nice rounded shape that just fits
+                .clickable{ onBack() } // Makes it so that the arrow and the text "return" are clickable to go back
+                .padding(4.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ){
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                 contentDescription = "Back"
             )
+
+            Spacer(modifier = Modifier.width(8.dp))
+
+            Text(
+                text = "Return",
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.SemiBold
+            )
         }
-
-        Spacer(modifier = Modifier.width(8.dp))
-
-        Text(
-            text = "Return",
-            style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.SemiBold
-        )
     }
 }
 
