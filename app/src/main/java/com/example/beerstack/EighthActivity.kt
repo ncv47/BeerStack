@@ -8,6 +8,11 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.StarHalf
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.StarHalf
+import androidx.compose.material.icons.outlined.Star
+import androidx.compose.material.icons.outlined.StarBorder
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -129,10 +134,14 @@ fun BeerDetailScreen(
                             text = "Name: ${beer.name}",
                             style = MaterialTheme.typography.titleMedium
                         )
-                        Text(
-                            text = "My Rating: %.1f".format(beer.myrating),
-                            style = MaterialTheme.typography.bodyMedium
-                        )
+                        Row() {
+                            Text(
+                                text = "My Rating:",
+                                style = MaterialTheme.typography.titleMedium
+                            )
+                            StarRating(rating = beer.myrating.toFloat())
+                            Text(beer.myrating.toString())
+                        }
                     }
                 }
 
@@ -141,19 +150,41 @@ fun BeerDetailScreen(
                 // Notes and location
                 Text(
                     text = "Location: ${beer.location.orEmpty()}",
-                    style = MaterialTheme.typography.bodyMedium
+                    style = MaterialTheme.typography.titleMedium
                 )
 
                 Spacer(modifier = Modifier.height(4.dp))
 
                 Text(
                     text = "Notes: ${beer.notes.orEmpty()}",
-                    style = MaterialTheme.typography.bodyMedium
+                    style = MaterialTheme.typography.titleMedium
                 )
             }
         }
     }
 }
+
+@Composable
+fun StarRating(rating: Float, maxRating: Int = 5) {
+    Row {
+        for (i in 1..maxRating) {
+            val starValue = i.toFloat()
+            val icon = when {
+                rating >= starValue -> Icons.Filled.Star
+                rating >= starValue - 0.5f -> Icons.AutoMirrored.Filled.StarHalf
+
+                else -> Icons.Outlined.StarBorder
+            }
+
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                tint = Color.Yellow
+            )
+        }
+    }
+}
+
 
 @Composable
 fun DetailTopBar(onBack: () -> Unit) {
