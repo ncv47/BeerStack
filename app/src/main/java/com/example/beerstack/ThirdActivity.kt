@@ -25,6 +25,8 @@ import androidx.compose.ui.unit.dp
 import com.example.beerstack.ui.theme.BeerGradient
 import io.ktor.util.encodeBase64
 import kotlinx.coroutines.withContext
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.ui.draw.clip
 
 
 class ThirdActivity : BaseActivity() {
@@ -108,7 +110,9 @@ fun LoginScreen(
                 Image(
                     painter = painterResource(R.drawable.beerstacklogo),
                     contentDescription = "BeerStack Logo",
-                    modifier = Modifier.size(96.dp)
+                    modifier = Modifier
+                        .size(96.dp)
+                        .clip(CircleShape) // Makes the image have a circle form
                 )
 
                 Text(
