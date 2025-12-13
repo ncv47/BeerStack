@@ -22,8 +22,10 @@ import com.example.beerstack.R
 //For Star Rating
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.StarHalf
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.Star
+import androidx.compose.material.icons.outlined.StarBorder
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import kotlin.math.floor
@@ -198,9 +200,9 @@ fun StarRating(
         // Empty stars
         repeat(emptyStars) {
             Icon(
-                imageVector = Icons.Outlined.Star,
+                imageVector = Icons.Outlined.StarBorder,
                 contentDescription = null,
-                tint = starColor.copy(alpha = 0.4f),
+                tint = starColor,
                 modifier = Modifier.size(18.dp)
             )
         }
