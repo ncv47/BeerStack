@@ -46,10 +46,10 @@ import com.example.beerstack.model.Currency
 //Util Imports (Helper Functions)
 import com.example.beerstack.utils.sortBeers
 import com.example.beerstack.utils.BeerList
-import com.example.beerstack.utils.SortDropdown
-import com.example.beerstack.utils.SearchBar
-import com.example.beerstack.utils.CurrencyToggle
-import com.example.beerstack.utils.SortOptions
+import com.example.beerstack.components.SortDropdown
+import com.example.beerstack.components.SearchBar
+import com.example.beerstack.components.CurrencyToggle
+import com.example.beerstack.components.SortOptions
 
 //---MAIN SCREEN---
 
