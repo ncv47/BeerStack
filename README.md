@@ -262,8 +262,10 @@ Started off with just an alert popping up that told you to do an atje but this w
 
 Then we heard from the teachers that someone changed all the pictures by intercepting the api so we just stole this idea and did this too.
 
-Started off by looking at which things i needed for the api in the app.
+Started off by looking at which things i needed for the api in the app. 
+
 ![[image21.png]](readme-resources/image21.png)
+
 In BeerDto.kt you can see what comes out of the api and we need the imageurl
 
 ![[image22.png]](readme-resources/image22.png)
@@ -328,6 +330,7 @@ I did this using android studio
 In Build > Generate App Bundle or APKs > Generate APKs
 It will build the app and generate an APK inside app/build/outputs/apk/debug/app-debug.apk
 ![[image27.png]](readme-resources/image27.png)
+
 Now you can use this apk for whatever you want
 
 We needed it to get the smali from our class out of it and copy it inside our legitimate app
@@ -383,6 +386,7 @@ The second time is the screenshot above and that was an updated version of the a
 
 you need you need a line inside some smali file that says something like this
 ![[image31.png]](readme-resources/image31.png)
+
 and some time later
 ![[image32.png]](readme-resources/image32.png)
 But you don't know the number so here it was 0
@@ -445,12 +449,16 @@ After installation it works
 
 ## ![](readme-resources/Frida.png) Frida
 Detail implementation of Frida
-### What to do
+### What to do 
+
 ![image.png](readme-resources/image12.png)
+
 We will be bypassing this function that checks if the phone is rooted or not so that we will still be able to run the app even though we have a rooted device.
 
-### Starting point
+### Starting point 
+
 ![image.png](readme-resources/11.png)
+
 I started of with the code from the slides and tested just this but with some tweaks so it fits our app and not the one from the slides
 
 ```Javascript
@@ -563,8 +571,10 @@ Java.perform(function () {
 ```
 
 We changed the this.isRooted(); to return false;
-so now we don't just call the normal isRooted() function but we just always return a false so that it always looks like the device is not rooted.
+so now we don't just call the normal isRooted() function but we just always return a false so that it always looks like the device is not rooted. 
+
 ![image.png](readme-resources/image12.png)
+
 Now we see it got called and there are no more errors and the app just starts up even though we have a rooted device
 
 ## ![](readme-resources/Root.png) Root
