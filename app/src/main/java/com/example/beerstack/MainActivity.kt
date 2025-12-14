@@ -78,7 +78,6 @@ class MainActivity : BaseActivity() {
 @Composable
 fun Main(userId: Int,username: String, beerViewModel: BeerViewModel = viewModel()){
 
-
     //For the Sort Function of the scrollable List
     var selectedSort by remember { mutableStateOf(SortOptions.NAME) }
     //For the search function
@@ -133,7 +132,9 @@ fun Main(userId: Int,username: String, beerViewModel: BeerViewModel = viewModel(
                 //For Currency Conversion
                 currency = beerViewModel.currency,
                 eurPerUsd = beerViewModel.eurPerUsd,
-                userId = userId
+                userId = userId,
+                // NEW: loading flag from ViewModel
+                isLoading = beerViewModel.isLoading
             )
         }
     }
@@ -208,20 +209,22 @@ fun Body(
     //Search
     searchText: String,
     onSearchTextChange: (String) -> Unit,
-    //Currency COnversion
+    //Currency conversion
     currency: Currency,
     eurPerUsd: Double,
-    userId: Int
+    userId: Int,
+    // NEW: loading flag
+    isLoading: Boolean
 ) {
     val context = LocalContext.current
     Column(
         modifier = modifier
             .fillMaxWidth(),
-            //.background(MaterialTheme.colorScheme.surfaceVariant), // Slightly darker background so cards pop more
+        //.background(MaterialTheme.colorScheme.surfaceVariant), // Slightly darker background so cards pop more
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
-        // TOP: Search on the left, sort currency converter & sort dropdownmenu on the right
+        // TOP: Search on the left, sort currency converter & sort dropdown menu on the right
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -259,6 +262,15 @@ fun Body(
         Spacer(modifier = Modifier.padding(4.dp))
 
         when {
+            isLoading -> {
+                // Show loading while beers are being fetched
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
+            }
             error != null -> Text(text = error, color = Color.Red) // Show error if loading failed
             beers.isNotEmpty() -> BeerList(
                 items = beers,
@@ -331,11 +343,11 @@ fun BottomBar(userId: Int, username: String, currentScreenIsHome: Boolean, curre
     //keep state which item is selected
     var selectedItem by remember {
         mutableIntStateOf(
-        when{
-            currentScreenIsHome -> 0
-            currentScreenIsStack -> 1
-            currentScreenIsLeaderboard -> 2
-            else -> 0
+            when{
+                currentScreenIsHome -> 0
+                currentScreenIsStack -> 1
+                currentScreenIsLeaderboard -> 2
+                else -> 0
             }
         )
     }
