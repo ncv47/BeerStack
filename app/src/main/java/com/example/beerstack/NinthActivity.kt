@@ -89,7 +89,7 @@ fun LeaderboardScreen(
     var isLoading by remember { mutableStateOf(true) }
     var error by remember { mutableStateOf<String?>(null) }
     var userBeers by remember { mutableStateOf<List<UserBeerDto>>(emptyList()) }
-    val sampleData = listOf(1, 2, 3, 4, 5, 6, 700)
+    val drinksPerDay = userBeers.drinksLast7Days()
 
     LaunchedEffect(userId) {
         try {
@@ -199,8 +199,7 @@ fun LeaderboardScreen(
                         Spacer(modifier = Modifier.height(16.dp))
 
                         DrinksGraphCard(
-
-                            drinksPerDay  = (sampleData),
+                            drinksPerDay = drinksPerDay,
                             modifier = Modifier.padding(16.dp)
                         )
                     }
@@ -209,6 +208,30 @@ fun LeaderboardScreen(
             }
         }
     }
+}
+fun List<UserBeerDto>.drinksLast7Days(): List<Int> {
+    val today = Calendar.getInstance()
+    val counts = MutableList(7) { 0 }
+
+    // For each beer, check which day (0 = 6 days ago, 6 = today)
+    forEach { beer ->
+        val beerDate = beer.date?.let {
+            try {
+                // Parse ISO date (yyyy-MM-dd or yyyy-MM-ddTHH:mm:ss)
+                val parts = it.split("T")[0].split("-").map { p -> p.toInt() }
+                val cal = Calendar.getInstance()
+                cal.set(parts[0], parts[1] - 1, parts[2], 0, 0, 0)
+                cal
+            } catch (e: Exception) { null }
+        } ?: return@forEach
+
+        val diff = ((today.timeInMillis - beerDate.timeInMillis) / (1000 * 60 * 60 * 24)).toInt()
+        if (diff in 0..6) {
+            counts[6 - diff] += 1 // index 6 = today
+        }
+    }
+
+    return counts
 }
 
 @Composable
@@ -267,7 +290,7 @@ fun LeaderboardRow(
 
 @Composable
 fun DrinksGraphCard(
-    drinksPerDay: List<Int>, // should have exactly 7 items
+    drinksPerDay: List<Int>, // must have exactly 7 items
     modifier: Modifier = Modifier
 ) {
     require(drinksPerDay.size == 7) { "drinksPerDay must have 7 items" }
@@ -275,106 +298,47 @@ fun DrinksGraphCard(
     val maxDrinks = drinksPerDay.maxOrNull() ?: 0
     val circleRadius = 6.dp
     val lineColor = Color(0xFF4A90E2)
-    val fillColor = Color(0xFF4A90E2).copy(alpha = 0.3f)
+    val fillColor = lineColor.copy(alpha = 0.3f)
+    val days = listOf("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
 
     Card(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(260.dp),
+        modifier = modifier.fillMaxWidth().height(260.dp),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = Color.Transparent)
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp)
-        ) {
+        Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(
-                    text = "DRINKS >",
-                    style = MaterialTheme.typography.titleSmall,
-                    color = Color.White
-                )
-                Text(
-                    text = "SEE ALL",
-                    style = MaterialTheme.typography.titleSmall,
-                    color = Color(0xFF5DA9FF)
-                )
+                Text("DRINKS >", style = MaterialTheme.typography.titleSmall, color = Color.White)
+                Text("SEE ALL", style = MaterialTheme.typography.titleSmall, color = Color(0xFF5DA9FF))
             }
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(Modifier.height(12.dp))
 
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(120.dp)
-            ) {
+            Box(modifier = Modifier.fillMaxWidth().height(120.dp)) {
                 Canvas(modifier = Modifier.fillMaxSize()) {
-                    val width = size.width
-                    val height = size.height
-                    val spacing = width / (drinksPerDay.size - 1)
-                    val baseline = height * 0.75f
-
-                    // Calculate points for graph line
-                    val points = drinksPerDay.mapIndexed { index, count ->
-                        val x = index * spacing
-                        val y = if (maxDrinks > 0)
-                            baseline - (count.toFloat() / maxDrinks) * (baseline * 0.7f)
-                        else
-                            baseline
-                        Offset(x, y)
+                    val spacing = size.width / (drinksPerDay.size - 1)
+                    val baseline = size.height * 0.75f
+                    val points = drinksPerDay.mapIndexed { i, count ->
+                        Offset(i * spacing, baseline - if (maxDrinks > 0) (count / maxDrinks.toFloat()) * baseline * 0.7f else 0f)
                     }
 
-                    // Draw line connecting dots
-                    for (i in 0 until points.lastIndex) {
-                        drawLine(
-                            color = lineColor,
-                            start = points[i],
-                            end = points[i + 1],
-                            strokeWidth = 3f,
-                            cap = StrokeCap.Round
-                        )
-                    }
+                    // Draw line and filled area
+                    for (i in 0 until points.lastIndex) drawLine(lineColor, points[i], points[i + 1], 3f, StrokeCap.Round)
+                    drawPath(Path().apply { moveTo(points.first().x, baseline); points.forEach { lineTo(it.x, it.y) }; lineTo(points.last().x, baseline); close() }, fillColor)
 
-                    // Draw filled area below line
-                    val path = Path().apply {
-                        moveTo(points.first().x, baseline)
-                        points.forEach { lineTo(it.x, it.y) }
-                        lineTo(points.last().x, baseline)
-                        close()
-                    }
-                    drawPath(path, fillColor)
-
-                    // Draw circles for each point
-                    val pxRadius = circleRadius.toPx() // convert Dp to pixels
-                    points.forEach { point ->
-                        drawCircle(
-                            color = lineColor,
-                            radius = pxRadius,
-                            center = point
-                        )
-                    }
+                    // Draw circles
+                    val pxRadius = circleRadius.toPx()
+                    points.forEach { drawCircle(lineColor, pxRadius, it) }
                 }
             }
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(Modifier.height(12.dp))
 
-            // Days below graph
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                val days = listOf("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
-                days.forEach { day ->
-                    Text(
-                        text = day,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = Color.White
-                    )
-                }
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                days.forEach { Text(it, style = MaterialTheme.typography.bodySmall, color = Color.White) }
             }
         }
     }
