@@ -50,6 +50,7 @@
             android:name=".FourthActivity"
             android:exported="true"
             android:theme="@style/Theme.BeerStack"
+            android:windowSoftInputMode="adjustResize"
             />
 
         <activity
