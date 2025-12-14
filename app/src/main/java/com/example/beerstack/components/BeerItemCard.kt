@@ -67,7 +67,7 @@ fun BeerItemCard(
                 Text(
                     text = "ID: ${beer.id}",
                     fontSize = 10.sp,
-                    color = Color.LightGray,
+                    color = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier
                         .padding(bottom = 4.dp)
                 )
@@ -102,7 +102,7 @@ fun BeerItemCard(
                     Text(
                         text = beer.name,
                         fontSize = 18.sp,
-                        color = Color.Black
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                 }
 
@@ -124,7 +124,7 @@ fun BeerItemCard(
                                     eurPerUsd = eurPerUsd
                                 ),
                                 fontSize = 14.sp,
-                                color = Color.DarkGray
+                                color = MaterialTheme.colorScheme.onSurface
                             )
                         }
                         beer.rating?.let {
@@ -141,7 +141,7 @@ fun BeerItemCard(
                             Text(
                                 text = "Reviews: ${it.reviews}",
                                 fontSize = 12.sp,
-                                color = Color.Gray
+                                color = MaterialTheme.colorScheme.onSurface
                             )
                         }
                     }
