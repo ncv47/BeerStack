@@ -7,8 +7,10 @@ import kotlinx.coroutines.withContext
 // Represents a user's position in the leaderboard
 data class UserBeerCount(
     val userId: Int,
-    val count: Int
+    val count: Int,
+    val lastBeerDate: String? // ISO string from Supabase
 )
+
 
 // Handles all interactions with Supabase for the BeerCollection and Beers tables
 class SupabaseCollectionRepository {
@@ -16,23 +18,31 @@ class SupabaseCollectionRepository {
     // Fetch all beers from the BeerCollection table, group by user, and count beers per user
     // Returns a list of UserBeerCount objects sorted descending by count
     suspend fun getLeaderboard(): List<UserBeerCount> = withContext(Dispatchers.IO) {
-        // Takes all the beers from the BeerCollection
         val allBeers = client.from("BeerCollection")
             .select()
-            // Takes the JSON and decodes it
             .decodeList<UserBeerDto>()
 
         allBeers
-            // Goes over every pair and groups them by userId
             .groupBy { it.userid }
             .map { (userId, beers) ->
+
+                // Find the most recent date for this user
+                val latestDate = beers
+                    .mapNotNull { it.date }
+                    .maxOrNull() // works if ISO-8601 (yyyy-MM-dd or yyyy-MM-ddTHH:mm:ss)
+
                 UserBeerCount(
                     userId = userId,
-                    count = beers.size
+                    count = beers.size,
+                    lastBeerDate = latestDate
                 )
             }
-            .sortedByDescending { it.count }
+            .sortedWith(
+                compareByDescending<UserBeerCount> { it.count }
+                    .thenByDescending { it.lastBeerDate }
+            )
     }
+
 
     // Reference to the Supabase client
     private val client = supabaseClient
