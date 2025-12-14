@@ -1,6 +1,6 @@
 package com.example.beerstack.model
 
-import kotlinx.serialization.Serializable
+import kotlinx.serialization.Serializable //Used to convert from and to JSON
 
 enum class Currency {
     USD,

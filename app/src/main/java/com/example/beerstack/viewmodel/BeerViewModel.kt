@@ -32,14 +32,16 @@ class BeerViewModel : ViewModel() {
     var eurPerUsd by mutableDoubleStateOf(1.0)
         private set
 
+    // Toggle between EUR and USD currency
     fun toggleCurrency() {
         currency = if (currency == Currency.USD) Currency.EUR else Currency.USD
     }
 
-    fun refreshRate() {
+    // Refresh currency conversion rate from the API
+    fun refreshConversionRate() {
         viewModelScope.launch {
             try {
-                eurPerUsd = fetchEurPerUsd()
+                eurPerUsd = fetchEurPerUsd() // Calls API and updates rate
             } catch (e: Exception) {
                 println("ERROR: ${e.message}")
             }
@@ -58,8 +60,7 @@ class BeerViewModel : ViewModel() {
                 val fetchedBeers = dtoList.map { it.toBeer() }
 
                 // 3. Filter and search
-                beerList = filterValidBeers(fetchedBeers)
-                    .filter { it.name.contains(query, ignoreCase = true) }
+                beerList = fetchedBeers.filter { it.name.contains(query, ignoreCase = true) }
 
                 error = null
             } catch (e: Exception) { //Catch the error
@@ -70,28 +71,6 @@ class BeerViewModel : ViewModel() {
                 isLoading = false
             }
         }
-    }
-
-    // Filter out test data or invalid beers
-    private fun filterValidBeers(beers: List<Beer>): List<Beer> =
-    // THere is some test/invalid date in the API, to not show this filter them like so
-        // ALso filter out beers with no price and beer names shouldn't have { in there name
-        beers.filter { beer ->
-            !beer.name.contains("{") &&
-                    !beer.name.contains("random") &&
-                    beer.price != null &&
-                    beer.price != "{{price}}" &&
-                    !beer.name.equals("Hi", ignoreCase = true)
-        }
-
-    //All this is for the collection, specific beer fetch from api (2nd request)
-    var lastAddedBeerName by mutableStateOf<String?>(null)
-    var lastAddedBeerError by mutableStateOf<String?>(null)
-
-    // Call this to clear popup after dismiss
-    fun clearLastBeerInfo() {
-        lastAddedBeerName = null
-        lastAddedBeerError = null
     }
 
     // Fetch EUR/USD rate from currency API (See CurrencyApiService.kt)

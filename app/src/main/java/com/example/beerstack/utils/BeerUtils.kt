@@ -9,8 +9,7 @@ import com.example.beerstack.model.Beer
 import com.example.beerstack.model.Currency
 
 //Show from the API the beers (now temporary the test data) in a scrolling list, using LazyColumn
-// beer = for scrollable list
-// OnGetBeerByID = for the collection specific fetch
+// BeerList = for scrollable list
 @Composable
 fun BeerList(
     items: List<Beer>,
@@ -18,13 +17,13 @@ fun BeerList(
     currency: Currency,
     eurPerUsd: Double
 ) {
-    LazyColumn {
-        items(items) { beer ->
+    LazyColumn {                        // lazy scrollable column for performance
+        items(items) { beer ->          // loop through each beer in the list
             BeerItemCard(
-                beer = beer,
-                onAddToCollection = { onAddBeerClick(beer) },
-                currency = currency,
-                eurPerUsd = eurPerUsd
+                beer = beer,            // pass beer data
+                onAddToCollection = { onAddBeerClick(beer) },   //To add beer to collectoin
+                currency = currency,    // currency for price display
+                eurPerUsd = eurPerUsd   // exchange rate for conversion
             )
         }
     }
@@ -50,22 +49,26 @@ fun formatBeerPrice(
     appCurrency: Currency,   // enum uit je model
     eurPerUsd: Double
 ): String {
-    val base = rawPrice.toDoubleOrNull() ?: return ""
+    val base = rawPrice.toDoubleOrNull() ?: return "" // safely parse price
 
-    val priceInUsd = when (beerCurrency.uppercase()) {
-        "EUR" -> base / eurPerUsd
-        else  -> base
+    // Convert to EUR if original is USD
+    val priceInEur = when (beerCurrency.uppercase()) {
+        "USD" -> base * eurPerUsd  // USD -> EUR
+        else  -> base               // EUR stays EUR
     }
 
+    // Convert USD price to app currency (EUR)
     val finalAmount = when (appCurrency) {
-        Currency.EUR -> priceInUsd * eurPerUsd
-        Currency.USD -> priceInUsd
+        Currency.EUR -> priceInEur
+        Currency.USD -> priceInEur / eurPerUsd
     }
 
+    // Determine symbol to display
     val symbol = when (appCurrency) {
         Currency.EUR -> "€"
         Currency.USD -> "$"
     }
 
+    // Return formatted string with 2 decimal places
     return "%s%.2f".format(symbol, finalAmount)
 }
