@@ -136,6 +136,7 @@ class SecondActivity : BaseActivity() {
                                                 }
                                             }
                                         } else {
+                                            val representative = beersWithSameName.first()
                                             var expanded by remember { mutableStateOf(false) }
 
                                             Column(
@@ -145,6 +146,20 @@ class SecondActivity : BaseActivity() {
                                                     .padding(8.dp)
                                             ) {
                                                 // Header row per name
+
+                                                representative.imageurl?.let { url ->
+                                                    AsyncImage(
+                                                        model = url,
+                                                        contentDescription = "Beer image",
+                                                        modifier = Modifier
+                                                            .size(72.dp)
+                                                            .padding(end = 12.dp),
+                                                        contentScale = ContentScale.Crop,
+                                                        placeholder = painterResource(R.drawable.beerpicture_placeholder),
+                                                        error = painterResource(R.drawable.beerpicture_placeholder)
+                                                    )
+                                                }
+
                                                 Text(text = "Name: $name")
                                                 Text(text = "Entries: ${beersWithSameName.size}")
 
