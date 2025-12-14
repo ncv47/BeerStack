@@ -287,7 +287,7 @@ fun Body(
 
             searchText.isNotBlank() -> {
                 // Button to add your own beer
-                Button(
+                FilledTonalButton(
                     onClick = {
                         val intent = Intent(context, SeventhActivity::class.java)
                         intent.putExtra("USER_ID", userId)
@@ -323,7 +323,7 @@ fun Body(
                             color = if (lastAddedBeerError != null) Color.Red else Color.Black,
                             modifier = Modifier.padding(20.dp)
                         )
-                        Button(
+                        FilledTonalButton(
                             onClick = { beerViewModel.clearLastBeerInfo() },
                             shape = RoundedCornerShape(14.dp),
                             modifier = Modifier.padding(bottom = 8.dp)
