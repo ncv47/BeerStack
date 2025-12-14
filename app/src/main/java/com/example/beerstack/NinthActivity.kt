@@ -3,22 +3,22 @@ package com.example.beerstack
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.beerstack.data.AppDatabase
 import com.example.beerstack.data.UserDB.OfflineUsersRepository
 import com.example.beerstack.data.UserDB.UsersRepository
 import com.example.beerstack.data.remote.SupabaseCollectionRepository
 import com.example.beerstack.data.remote.UserBeerCount
+import com.example.beerstack.ui.theme.BeerGradient
 import com.example.beerstack.ui.theme.BeerStackTheme
 import kotlinx.coroutines.flow.first
 
@@ -50,7 +50,7 @@ class NinthActivity : BaseActivity() {
                     localUserMap = allUsers.associate { it.userid to it.userName }
                 }
 
-                LeaderboardScreenBare(
+                LeaderboardScreen(
                     userId = userId,
                     username = username,
                     supabaseRepo = supabaseRepo,
@@ -62,7 +62,7 @@ class NinthActivity : BaseActivity() {
 }
 
 @Composable
-fun LeaderboardScreenBare(
+fun LeaderboardScreen(
     userId: Int,
     username: String,
     supabaseRepo: SupabaseCollectionRepository,
@@ -103,46 +103,69 @@ fun LeaderboardScreenBare(
         }
     }
 
-    Scaffold(
-        topBar = {
-            Text(
-                text = "Leaderboard ($username)",
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(BeerGradient)
+    ) {
+        Scaffold(
+            containerColor = Color.Transparent,
+            topBar = {
+                // Reuse your styled TopBar
+                TopBar(userId = userId, username = username)
+            },
+            bottomBar = {
+                // Reuse your styled BottomBar with Leaderboard selected
+                BottomBar(
+                    userId = userId,
+                    username = username,
+                    currentScreenIsHome = false,
+                    currentScreenIsStack = false,
+                    currentScreenIsLeaderboard = true
+                )
+            }
+        ) { innerPadding ->
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-            )
-        }
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .padding(16.dp)
-        ) {
-            when {
-                isLoading -> {
-                    // Fancy stuff
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        CircularProgressIndicator()
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "Leaderboard",
+                    style = MaterialTheme.typography.headlineMedium,
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
+
+                when {
+                    isLoading -> {
+                        // Fancy stuff
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator()
+                        }
                     }
-                }
-                error != null -> {
-                    Text(text = error ?: "Unknown error")
-                }
-                rows.isEmpty() -> {
-                    Text(text = "No users found.")
-                }
-                else -> {
-                    LazyColumn {
-                        items(rows) { entry ->
-                            LeaderboardRowBare(
-                                entry = entry,
-                                isCurrentUser = entry.userId == userId,
-                                localUserMap = localUserMap
-                            )
+                    error != null -> {
+                        Text(text = error ?: "Unknown error")
+                    }
+                    rows.isEmpty() -> {
+                        Text(text = "No users found.")
+                    }
+                    else -> {
+                        LazyColumn(
+                            modifier = Modifier.fillMaxSize(),
+                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            items(rows) { entry ->
+                                LeaderboardRow(
+                                    entry = entry,
+                                    isCurrentUser = entry.userId == userId,
+                                    localUserMap = localUserMap
+                                )
+                            }
                         }
                     }
                 }
@@ -152,28 +175,48 @@ fun LeaderboardScreenBare(
 }
 
 @Composable
-fun LeaderboardRowBare(
+fun LeaderboardRow(
     entry: UserBeerCount,
     isCurrentUser: Boolean,
     localUserMap: Map<Int, String>
 ) {
     val name = localUserMap[entry.userId] ?: "User ${entry.userId}"
 
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 4.dp),
-        verticalAlignment = Alignment.CenterVertically
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
-        Column(modifier = Modifier.weight(1f)) {
-            Text(text = name, style = MaterialTheme.typography.bodyLarge)
-            if (isCurrentUser) {
-                Text(text = "(you)", style = MaterialTheme.typography.bodySmall)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = name,
+                    style = MaterialTheme.typography.titleMedium,
+                    color = if (isCurrentUser)
+                        MaterialTheme.colorScheme.primary
+                    else
+                        MaterialTheme.colorScheme.onSurface,
+                    fontWeight = if (isCurrentUser)
+                        androidx.compose.ui.text.font.FontWeight.Bold
+                    else
+                        androidx.compose.ui.text.font.FontWeight.Normal
+                )
+                if (isCurrentUser) {
+                    Text(
+                        text = "That's you!",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
             }
+            Text(
+                text = "${entry.count} ${if (entry.count == 1) "beer" else "beers"}",
+                style = MaterialTheme.typography.titleMedium
+            )
         }
-        Text(
-            text = "${entry.count} ${if (entry.count == 1) "beer" else "beers"}",
-            style = MaterialTheme.typography.bodyLarge
-        )
     }
 }
