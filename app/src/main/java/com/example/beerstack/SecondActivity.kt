@@ -17,6 +17,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.example.beerstack.components.UserBeerGroupCard
 import com.example.beerstack.components.UserBeerItemCard
 import com.example.beerstack.data.remote.SupabaseCollectionRepository
 import com.example.beerstack.data.remote.UserBeerDto
@@ -184,29 +185,18 @@ class SecondActivity : BaseActivity() {
                                             )
 >>>>>>> 434f8e6 (Made it so when there is only 1 they already use the itemcard)
                                         } else {
-                                            val representative = beersWithSameName.first()
-                                            var expanded by remember { mutableStateOf(false) }
 
-                                            Column(
-                                                modifier = Modifier
-                                                    .fillMaxWidth()
-                                                    .clickable { expanded = !expanded }
-                                                    .padding(8.dp)
-                                            ) {
-                                                // Header row per name
-
-                                                representative.imageurl?.let { url ->
-                                                    AsyncImage(
-                                                        model = url,
-                                                        contentDescription = "Beer image",
-                                                        modifier = Modifier
-                                                            .size(72.dp)
-                                                            .padding(end = 12.dp),
-                                                        contentScale = ContentScale.Crop,
-                                                        placeholder = painterResource(R.drawable.beerpicture_placeholder),
-                                                        error = painterResource(R.drawable.beerpicture_placeholder)
-                                                    )
+                                            UserBeerGroupCard(
+                                                name = name,
+                                                beersWithSameName = beersWithSameName,
+                                                onBeerClick = { beer ->
+                                                    val intent = Intent(
+                                                        this@SecondActivity,
+                                                        EighthActivity::class.java
+                                                    ).apply { putExtra("beer_entry", beer) }
+                                                    startActivity(intent)
                                                 }
+<<<<<<< HEAD
 
                                                 Text(text = "Name: $name")
                                                 Text(text = "Entries: ${beersWithSameName.size}")
@@ -292,6 +282,9 @@ class SecondActivity : BaseActivity() {
                                                     }
                                                 }
                                             }
+=======
+                                            )
+>>>>>>> d55ae03 (made use of the grouped card one for the groups to make it look nicer)
                                         }
                                     }
                                 }
