@@ -457,7 +457,7 @@ We will be bypassing this function that checks if the phone is rooted or not so 
 
 ### Starting point 
 
-![image.png](readme-resources/11.png)
+![image.png](readme-resources/image11.png)
 
 I started of with the code from the slides and tested just this but with some tweaks so it fits our app and not the one from the slides
 
