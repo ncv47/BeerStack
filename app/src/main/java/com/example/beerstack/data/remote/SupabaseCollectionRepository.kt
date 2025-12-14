@@ -4,7 +4,31 @@ import io.github.jan.supabase.postgrest.from
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
+data class UserBeerCount(
+    val userId: Int,
+    val count: Int
+)
+
 class SupabaseCollectionRepository {
+
+    suspend fun getLeaderboard(): List<UserBeerCount> = withContext(Dispatchers.IO) {
+        // Takes all the beers from the BeerCollection
+        val allBeers = client.from("BeerCollection")
+            .select()
+            // Takes the JSON and decodes it
+            .decodeList<UserBeerDto>()
+
+        allBeers
+            // Goes over every pair and groups them by userId
+            .groupBy { it.userid }
+            .map { (userId, beers) ->
+                UserBeerCount(
+                    userId = userId,
+                    count = beers.size
+                )
+            }
+            .sortedByDescending { it.count }
+    }
 
     private val client = supabaseClient
 
