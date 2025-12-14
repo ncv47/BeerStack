@@ -22,6 +22,8 @@ import com.example.beerstack.ui.theme.BeerGradient
 import com.example.beerstack.ui.theme.BeerStackTheme
 import kotlinx.coroutines.flow.first
 
+//---LEADERBOARD---
+
 class NinthActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {

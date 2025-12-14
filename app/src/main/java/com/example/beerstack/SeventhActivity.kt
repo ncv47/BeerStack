@@ -18,6 +18,8 @@ import kotlinx.coroutines.launch
 
 class SeventhActivity : BaseActivity() {
 
+//---ADD OWN BEER SCREEN---
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

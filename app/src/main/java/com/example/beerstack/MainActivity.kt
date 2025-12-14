@@ -55,6 +55,8 @@ import com.example.beerstack.utils.SearchBar
 import com.example.beerstack.utils.CurrencyToggle
 import com.example.beerstack.utils.SortOptions
 
+//---MAIN SCREEN---
+
 class MainActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {

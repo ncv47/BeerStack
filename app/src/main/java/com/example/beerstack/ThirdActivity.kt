@@ -29,6 +29,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.ui.draw.clip
 import com.example.beerstack.ui.theme.BeerStackTheme
 
+//--LOGIN SCREEN---
 
 class ThirdActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
