@@ -22,7 +22,7 @@ data class Beer(
     val rating: Rating? = null
 ) : Parcelable
 
-//The rating is stored in json with 2 different values,
+//The rating is stored in json with 2 diffrent values,
 // the average review /5 and how many reviews it has
 //Serialization = save temporary in memory
 @Parcelize
@@ -52,13 +52,13 @@ object RatingOrStringSerializer : KSerializer<Rating?> {
                 Rating(avg, rev) // Build Rating instance
             }
             is JsonPrimitive -> null // If it's just a string (like "") -> missing
-            else -> null //Anything else is ignored (shouldn't be the case)
+            else -> null //Anything else is ignored (shouldnt be the case)
         }
     }
     // Deserialize: fetch, split up and READ!
-    // Serialize: convert object to JSON, which we don't need in this case
+    // Serialize: convert object to JSON, wich we dont need in this case
     override fun serialize(encoder: Encoder, value: Rating?) {
-        //So just to tell that we don't do anything anymore with the object (to JSON)
+        //So just to tell that we dont do anything anymore with the object (to JSON)
         throw NotImplementedError()
     }
 }
