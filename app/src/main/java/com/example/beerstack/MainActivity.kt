@@ -51,6 +51,7 @@ import com.example.beerstack.components.SearchBar
 import com.example.beerstack.components.CurrencyToggle
 import com.example.beerstack.components.SortOptions
 import androidx.compose.material.icons.filled.AutoGraph
+import com.example.beerstack.ui.theme.BeerGradient
 
 //---MAIN SCREEN---
 
@@ -97,38 +98,43 @@ fun Main(userId: Int,username: String, beerViewModel: BeerViewModel = viewModel(
         beers = beerViewModel.beerList,
         sortOption = selectedSort
     )
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(BeerGradient)
+    ) {
+        // use Scaffold for top and bottom bars (Handles weight on its own)
+        Scaffold(
 
-    // use Scaffold for top and bottom bars (Handles weight on its own)
-    Scaffold(
+            topBar = {
+                TopBar(userId = userId, username = username)
+            },
+            bottomBar = {
+                BottomBar(userId = userId, username = username, currentScreenIsHome = true, currentScreenIsStack = false, currentScreenIsLeaderboard = false
+                )
+            }
+        ) { innerPadding ->
+            Body(
 
-        topBar = {
-            TopBar(userId = userId, username = username)
-        },
-        bottomBar = {
-            BottomBar(userId = userId, username = username, currentScreenIsHome = true, currentScreenIsStack = false, currentScreenIsLeaderboard = false
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding),
+                //Pass the viewmodel data down to the body composable
+                beerViewModel = beerViewModel,
+                beers = sortedBeers,
+                error = beerViewModel.error,
+                //For te sort functionalities
+                selectedSort = selectedSort,
+                onSortChange = { selectedSort = it },
+                //For the search functionalities
+                searchText = searchText,
+                onSearchTextChange = { searchText = it },
+                //For Currency Conversion
+                currency = beerViewModel.currency,
+                eurPerUsd = beerViewModel.eurPerUsd,
+                userId = userId
             )
         }
-    ) { innerPadding ->
-        Body(
-
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding),
-            //Pass the viewmodel data down to the body composable
-            beerViewModel = beerViewModel,
-            beers = sortedBeers,
-            error = beerViewModel.error,
-            //For te sort functionalities
-            selectedSort = selectedSort,
-            onSortChange = { selectedSort = it },
-            //For the search functionalities
-            searchText = searchText,
-            onSearchTextChange = { searchText = it },
-            //For Currency Conversion
-            currency = beerViewModel.currency,
-            eurPerUsd = beerViewModel.eurPerUsd,
-            userId = userId
-        )
     }
 }
 
@@ -156,7 +162,7 @@ fun TopBar(userId: Int, username: String, modifier: Modifier = Modifier){
         ) {
             // App logo on the left, bigger and centered vertically
             Image(
-                painter = painterResource(R.drawable.beerstacklogo),
+                painter = painterResource(R.drawable.beerstacklogotransparent),
                 contentDescription = "BeerStack Logo",
                 modifier = Modifier
                     .height(48.dp)
