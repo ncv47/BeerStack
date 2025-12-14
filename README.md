@@ -245,6 +245,76 @@ API as reference
 
 ## ![](readme-resources/Database.png) Room database
 Type of data stored in the database used in screen x and displayed in screen y.
+### Documentation
+
+The application uses a **Room database** to store **local user authentication data**.  
+This database is used for the **Login**, **Register**, and **Profile** screens.
+
+---
+
+## Type of data stored
+
+The Room database contains a single table called `users`.
+
+Each record in the table represents one user and contains the following fields:
+- `userid` – Integer, primary key, auto-generated
+- `userName` – Username of the user
+- `userPassword` – Password of the user
+
+This data is stored locally to support **offline usage** and **user persistence**.
+
+---
+
+## Entity – User
+
+The `User` entity defines the structure of the `users` table in the database.
+
+```kotlin
+@Entity(tableName = "users")
+data class User(
+    @PrimaryKey(autoGenerate = true)
+    val userid: Int = 0,
+    val userName: String,
+    val userPassword: String,
+)
+```
+
+---
+
+## DAO - UserDao
+
+The `UserDao` is responsible for all database operations related to users.
+
+**Implemented functionality**
+- Insert a new user
+- Update existing user data
+- Delete a user
+- Retrieve all users
+- Retrieve a user by ID
+- Authenticate a user (login)
+- Check if a username already exists (case-insensitive)
+
+The DAO uses Kotlin Flow so database changes are observed automatically
+
+## Repository pattern
+
+To seperate database logic from UI logic, the **Repository pattern** is used.
+
+**Structure**
+- `UsersRepository` defines the available database operations
+- `OfflineUsersRepository` implements these operations using Room
+
+This abstraction improves maintainability and testability
+
+## Database configuration
+
+The Room database is configured in `Appdatabase`.
+
+**Details**
+- Database name: `app_database`
+- Database version: `1`
+- Uses a **Signleton pattern** to ensure a single database instance
+- `fallbacktoDestructiveMigration()` is enabled for development
 
 ## ![](readme-resources/Database.png) Secure storage
 Type of data stored used in screen x and displayed in screen y.
@@ -479,78 +549,7 @@ Java.perform(function () {
 
 ![image.png](readme-resources/image13.png)
 
-This was the result of the first test where we see that we called the isRooted() functionality and were able to do something with it so for now just a console.log() and do what it was supposed to do with the this.isRooted()
-
-### Room database
-
-The application uses a **Room database** to store **local user authentication data**.  
-This database is used for the **Login**, **Register**, and **Profile** screens.
-
----
-
-## Type of data stored
-
-The Room database contains a single table called `users`.
-
-Each record in the table represents one user and contains the following fields:
-- `userid` – Integer, primary key, auto-generated
-- `userName` – Username of the user
-- `userPassword` – Password of the user
-
-This data is stored locally to support **offline usage** and **user persistence**.
-
----
-
-## Entity – User
-
-The `User` entity defines the structure of the `users` table in the database.
-
-```kotlin
-@Entity(tableName = "users")
-data class User(
-    @PrimaryKey(autoGenerate = true)
-    val userid: Int = 0,
-    val userName: String,
-    val userPassword: String,
-)
-```
-
----
-
-## DAO - UserDao
-
-The `UserDao` is responsible for all database operations related to users.
-
-**Implemented functionality**
-- Insert a new user
-- Update existing user data
-- Delete a user
-- Retrieve all users
-- Retrieve a user by ID
-- Authenticate a user (login)
-- Check if a username already exists (case-insensitive)
-
-The DAO uses Kotlin Flow so database changes are observed automatically
-
-## Repository pattern
-
-To seperate database logic from UI logic, the **Repository pattern** is used.
-
-**Structure**
-- `UsersRepository` defines the available database operations
-- `OfflineUsersRepository` implements these operations using Room
-
-This abstraction improves maintainability and testability
-
-## Database configuration
-
-The Room database is configured in `Appdatabase`.
-
-**Details**
-- Database name: `app_database`
-- Database version: `1`
-- Uses a **Signleton pattern** to ensure a single database instance
-- `fallbacktoDestructiveMigration()` is enabled for development
+This was the result of the first test where we see that we called the isRooted() functionality and were able to do something with it so for now just a console.log() and do what it was supposed to do with the this.isRooted() 
 
 ### Final changes
 
