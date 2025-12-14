@@ -211,7 +211,7 @@ fun Body(
     //Search
     searchText: String,
     onSearchTextChange: (String) -> Unit,
-    //Currency COnversion
+    //Currency conversion
     currency: Currency,
     eurPerUsd: Double,
     userId: Int
@@ -224,7 +224,7 @@ fun Body(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
-        // TOP: Search on the left, sort currency converter & sort dropdownmenu on the right
+        // TOP: Search on the left, sort currency converter & sort dropdown menu on the right
         Row(
             modifier = Modifier
                 .fillMaxWidth()

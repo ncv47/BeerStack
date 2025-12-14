@@ -111,7 +111,7 @@ fun RateBeerScreen(
     onBack: () -> Unit
 ) {
     //var rating by remember { mutableFloatStateOf(beer.rating?.average?.toFloat() ?: 0f) }
-    var myRating by remember { mutableStateOf(2.5f) }
+    var myRating by remember { mutableFloatStateOf(2.5f) }
     var notes by remember { mutableStateOf("") }
     var location by remember { mutableStateOf("") }
 

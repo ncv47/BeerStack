@@ -1,6 +1,5 @@
 package com.example.beerstack.components
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -22,13 +21,10 @@ import com.example.beerstack.R
 //For Star Rating
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.StarHalf
 import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material.icons.outlined.StarBorder
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import com.example.beerstack.ui.theme.BeerStackTheme
 import kotlin.math.floor
 import kotlin.math.roundToInt
 //Util Imports (Helper Functions)
@@ -130,11 +126,11 @@ fun BeerItemCard(
                         beer.rating?.let {
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 StarRating(
-                                    rating = beer.rating?.average   //
+                                    rating = beer.rating.average   //
                                 )
                                 Spacer(modifier = Modifier.width(4.dp))
                                 Text(
-                                    text = beer.rating?.average?.let { "%.1f/5".format(it) } ?: "N/A",
+                                    text = beer.rating.average.let { "%.1f/5".format(it) },
                                     style = MaterialTheme.typography.bodySmall
                                 )
                             }
@@ -166,8 +162,8 @@ fun BeerItemCard(
 @Composable
 fun StarRating(
     rating: Double?,
-    stars: Int = 5,
     modifier: Modifier = Modifier,
+    stars: Int = 5,
     starColor: Color = MaterialTheme.colorScheme.primary
 ) {
     val safeRating = (rating ?: 0.0).coerceIn(0.0, stars.toDouble())
