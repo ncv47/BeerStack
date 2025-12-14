@@ -241,6 +241,10 @@ fun UserBeerGroupCard(
                                         text = "Average: %.1f".format(beer.apiaverage),
                                         style = MaterialTheme.typography.bodyMedium
                                     )
+                                    Text(
+                                        text = "Location: ${beer.location}",
+                                        style = MaterialTheme.typography.bodyMedium
+                                    )
                                 }
                             }
                         }
