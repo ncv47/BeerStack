@@ -139,7 +139,7 @@ fun TopBar(userId: Int, username: String, modifier: Modifier = Modifier){
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.primary)
+            .background(Color.Transparent)
             //Increase overall top bar height
             .height(100.dp)
             .padding(
