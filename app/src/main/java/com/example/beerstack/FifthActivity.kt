@@ -18,10 +18,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.beerstack.data.remote.SupabaseCollectionRepository
 import com.example.beerstack.ui.theme.BeerStackTheme
 import com.example.beerstack.ui.theme.BeerGradient
 
@@ -33,6 +32,9 @@ class FifthActivity : BaseActivity() {
         val username = intent.getStringExtra("USER_NAME") ?: "User"
         val userId = intent.getIntExtra("USER_ID", -1)
 
+        // Talks to the API for the user's collection
+        val supabaseRepo = SupabaseCollectionRepository()
+
         setContent {
             BeerStackTheme(dynamicColor = false) {
                 val context = LocalContext.current
@@ -40,6 +42,7 @@ class FifthActivity : BaseActivity() {
                 ProfileScreen(
                     username = username,
                     userId = userId,
+                    supabaseRepo = supabaseRepo,
                     onLogout = {
                         val intent = Intent(context, ThirdActivity::class.java)
                         context.startActivity(intent)
@@ -50,16 +53,35 @@ class FifthActivity : BaseActivity() {
         }
     }
 }
+
 @Composable
 fun ProfileScreen(
     username: String,
     userId: Int,
+    supabaseRepo: SupabaseCollectionRepository,
     onLogout: () -> Unit,
     onBack: () -> Unit
 ) {
     var favoriteBeerName by remember { mutableStateOf("None") }
-    var beersReviewed by remember { mutableStateOf(0) }
+    var beersReviewed by remember { mutableIntStateOf(0) }
 
+    // Load the user's collection and compute favorite beer = beer you have the most of
+    LaunchedEffect(userId) {
+        if (userId == -1) return@LaunchedEffect
+            // Get all beers in this user's collection
+            val collection = supabaseRepo.getCollection(userId)  // List<UserBeerDto>
+
+            // Number of beers reviewed = number of entries
+            beersReviewed = collection.size
+
+            // Group by beer name and pick the one with the highest count
+            val favorite = collection
+                .groupBy { it.name }
+                .maxByOrNull { (_, beers) -> beers.size }
+
+            favoriteBeerName = favorite?.key ?: "None"
+
+    }
 
     Box(
         modifier = Modifier
@@ -82,7 +104,6 @@ fun ProfileScreen(
                 ProfileHeader(username = username, userId = userId)
 
                 Spacer(modifier = Modifier.height(28.dp))
-
                 ProfileInfoRow("Username", username)
                 ProfileInfoRow("User ID", userId.toString())
                 ProfileInfoRow("Member Since", "2025")
@@ -106,13 +127,13 @@ fun ProfileTopBar(onBack: () -> Unit) {
             .background(Color.Transparent),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Row ( // This extra row is so that the arrow and the return text acts like on button
+        Row( // This extra row is so that the arrow and the return text acts like on button
             modifier = Modifier
                 .clip(RoundedCornerShape(50)) // Makes it so that when you click it the shadow doesn't look like one big block but is an actual nice rounded shape that just fits
-                .clickable{ onBack() } // Makes it so that the arrow and the text "return" are clickable to go back
+                .clickable { onBack() } // Makes it so that the arrow and the text "return" are clickable to go back
                 .padding(4.dp),
             verticalAlignment = Alignment.CenterVertically
-        ){
+        ) {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                 contentDescription = "Back"
@@ -128,7 +149,6 @@ fun ProfileTopBar(onBack: () -> Unit) {
         }
     }
 }
-
 
 @Composable
 fun ProfileHeader(username: String, userId: Int) {
