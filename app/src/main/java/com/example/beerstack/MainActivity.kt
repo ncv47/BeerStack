@@ -335,7 +335,8 @@ fun BottomBar(userId: Int, username: String, currentScreenIsHome: Boolean, curre
 
     NavigationBar(
         modifier = modifier
-            .fillMaxWidth()
+            .fillMaxWidth(),
+        containerColor = Color.Transparent
         // background color comes from MaterialTheme by default
     ) {
         // Home button (MainActivity)
