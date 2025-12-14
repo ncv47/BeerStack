@@ -106,7 +106,7 @@ fun Main(userId: Int,username: String, beerViewModel: BeerViewModel = viewModel(
     ) {
         // use Scaffold for top and bottom bars (Handles weight on its own)
         Scaffold(
-
+            containerColor = Color.Transparent,
             topBar = {
                 TopBar(userId = userId, username = username)
             },
