@@ -93,9 +93,10 @@ fun Main(userId: Int,username: String, beerViewModel: BeerViewModel = viewModel(
     }
 
     // Make sure beers are sorted reactively when sort option changes
-    val sortedBeers = remember(selectedSort, beerViewModel.beerList) {
-        sortBeers(beerViewModel.beerList, selectedSort)
-    }
+    val sortedBeers = sortBeers(
+        beers = beerViewModel.beerList,
+        sortOption = selectedSort
+    )
 
     // use Scaffold for top and bottom bars (Handles weight on its own)
     Scaffold(
