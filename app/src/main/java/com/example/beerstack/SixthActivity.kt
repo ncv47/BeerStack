@@ -34,6 +34,8 @@ import com.example.beerstack.ui.theme.BeerGradient
 import com.example.beerstack.ui.theme.BeerStackTheme
 import io.ktor.util.encodeBase64
 
+//---REGISTER SCREEN---
+
 class SixthActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {

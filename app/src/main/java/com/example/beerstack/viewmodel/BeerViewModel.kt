@@ -40,8 +40,8 @@ class BeerViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 eurPerUsd = fetchEurPerUsd()
-            } catch (_: Exception) {
-                // optional: handle error
+            } catch (e: Exception) {
+                println("ERROR: ${e.message}")
             }
         }
     }
@@ -93,12 +93,13 @@ class BeerViewModel : ViewModel() {
         lastAddedBeerName = null
         lastAddedBeerError = null
     }
+
+    // Fetch EUR/USD rate from currency API (See CurrencyApiService.kt)
+    private suspend fun fetchEurPerUsd(): Double {
+        // 1 EUR -> X USD
+        val response = CurrencyApi.retrofitService.getEurRates()
+        val eurToUsd = response.eur.usd
+        return 1.0 / eurToUsd      // store 1 USD -> X EUR (same logic as before)
+    }
 }
 
-// Fetch EUR/USD rate from currency API (See CurrencyApiService.kt)
-private suspend fun fetchEurPerUsd(): Double {
-    // 1 EUR -> X USD
-    val response = CurrencyApi.retrofitService.getEurRates()
-    val eurToUsd = response.eur.usd
-    return 1.0 / eurToUsd      // store 1 USD -> X EUR (same logic as before)
-}

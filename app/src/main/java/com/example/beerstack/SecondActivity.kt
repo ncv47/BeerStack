@@ -22,6 +22,8 @@ import com.example.beerstack.data.remote.UserBeerDto
 import com.example.beerstack.ui.theme.BeerGradient
 import com.example.beerstack.ui.theme.BeerStackTheme
 
+//---STACK SCREEN (COLLECTION)---
+
 class SecondActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {

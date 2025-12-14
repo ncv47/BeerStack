@@ -27,6 +27,8 @@ import com.example.beerstack.data.remote.UserBeerDto
 import com.example.beerstack.ui.theme.BeerGradient
 import com.example.beerstack.ui.theme.BeerStackTheme
 
+//---INDIVIDUAL BEERS IN STACK---
+
 class EighthActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {

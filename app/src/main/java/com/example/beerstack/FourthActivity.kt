@@ -41,6 +41,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import com.example.beerstack.ui.theme.BeerGradient
 
+//---ADD TO STACK (BEER TO COLLECTION)----
+
 class FourthActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {

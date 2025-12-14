@@ -9,46 +9,28 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.ui.window.Dialog
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.automirrored.filled.List
+import androidx.compose.material.icons.filled.Home
+import com.example.beerstack.viewmodel.BeerViewModel
 import com.example.beerstack.model.Beer
 import com.example.beerstack.model.Currency
-import com.example.beerstack.viewmodel.BeerViewModel
-import com.example.beerstack.ui.theme.BeerGradient
-import com.example.beerstack.ui.theme.BeerStackTheme
 //Util Imports (Helper Functions)
 import com.example.beerstack.utils.sortBeers
 import com.example.beerstack.utils.BeerList
-import com.example.beerstack.utils.SortDropdown
-import com.example.beerstack.utils.SearchBar
-import com.example.beerstack.utils.CurrencyToggle
-import com.example.beerstack.utils.SortOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.List
-import androidx.compose.material.icons.filled.AccountCircle
+import com.example.beerstack.components.SortDropdown
+import com.example.beerstack.components.SearchBar
+import com.example.beerstack.components.CurrencyToggle
+import com.example.beerstack.components.SortOptions
 import androidx.compose.material.icons.filled.AutoGraph
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.ui.window.Dialog
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationBarItemDefaults
-import androidx.compose.runtime.mutableIntStateOf
+
+//---MAIN SCREEN---
 
 class MainActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
-
 
         enableEdgeToEdge()
         val userId = intent.getIntExtra("USER_ID", -1)
@@ -72,7 +54,7 @@ fun Main(userId: Int,username: String, beerViewModel: BeerViewModel = viewModel(
     //For the search function
     var searchText by remember { mutableStateOf("") }
 
-    // Request the API when main() is loaded or search changes
+    // Request the API when main() is loaded or search changes (on every key press)
     LaunchedEffect(searchText) {
         beerViewModel.getBeers(searchText)
     }
@@ -83,54 +65,42 @@ fun Main(userId: Int,username: String, beerViewModel: BeerViewModel = viewModel(
     }
 
     // Make sure beers are sorted reactively when sort option changes
-    val sortedBeers by remember(selectedSort, beerViewModel.beerList) {
-        mutableStateOf(sortBeers(beerViewModel.beerList, selectedSort))
-    }
+    val sortedBeers = sortBeers(
+        beers = beerViewModel.beerList,
+        sortOption = selectedSort
+    )
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(BeerGradient)
-    ) {
+    // use Scaffold for top and bottom bars (Handles weight on its own)
+    Scaffold(
 
-        // use Scaffold for top and bottom bars (Handles weight on its own)
-        Scaffold(
-            containerColor = Color.Transparent,
-            topBar = {
-                TopBar(userId = userId, username = username)
-            },
-            bottomBar = {
-                BottomBar(
-                    userId = userId,
-                    username = username,
-                    currentScreenIsHome = true,
-                    currentScreenIsStack = false,
-                    currentScreenIsLeaderboard = false
-                )
-            }
-        ) { innerPadding ->
-            Body(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding),
-                //Pass the viewmodel data down to the body composable
-                beerViewModel = beerViewModel,
-                beers = sortedBeers,
-                error = beerViewModel.error,
-                //For te sort functionalities
-                selectedSort = selectedSort,
-                onSortChange = { selectedSort = it },
-                //For the search functionalities
-                searchText = searchText,
-                onSearchTextChange = { searchText = it },
-                //For Currency Conversion
-                currency = beerViewModel.currency,
-                eurPerUsd = beerViewModel.eurPerUsd,
-                userId = userId,
-                // Loading flag from VM
-                isLoading = beerViewModel.isLoading
+        topBar = {
+            TopBar(userId = userId, username = username)
+        },
+        bottomBar = {
+            BottomBar(userId = userId, username = username, currentScreenIsHome = true, currentScreenIsStack = false, currentScreenIsLeaderboard = false
             )
         }
+    ) { innerPadding ->
+        Body(
+
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding),
+            //Pass the viewmodel data down to the body composable
+            beerViewModel = beerViewModel,
+            beers = sortedBeers,
+            error = beerViewModel.error,
+            //For te sort functionalities
+            selectedSort = selectedSort,
+            onSortChange = { selectedSort = it },
+            //For the search functionalities
+            searchText = searchText,
+            onSearchTextChange = { searchText = it },
+            //For Currency Conversion
+            currency = beerViewModel.currency,
+            eurPerUsd = beerViewModel.eurPerUsd,
+            userId = userId
+        )
     }
 }
 
@@ -141,7 +111,7 @@ fun TopBar(userId: Int, username: String, modifier: Modifier = Modifier){
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .background(Color.Transparent)
+            .background(MaterialTheme.colorScheme.primary)
             //Increase overall top bar height
             .height(100.dp)
             .padding(
@@ -158,11 +128,10 @@ fun TopBar(userId: Int, username: String, modifier: Modifier = Modifier){
         ) {
             // App logo on the left, bigger and centered vertically
             Image(
-                painter = painterResource(R.drawable.beerstacklogotransparent),
+                painter = painterResource(R.drawable.beerstacklogo),
                 contentDescription = "BeerStack Logo",
                 modifier = Modifier
-                    .height(48.dp),
-                contentScale = ContentScale.Fit
+                    .height(48.dp)
             )
 
             // Take up remaining space between logo and button
@@ -214,8 +183,8 @@ fun Body(
     val context = LocalContext.current
     Column(
         modifier = modifier
-            .fillMaxWidth(),
-        //.background(MaterialTheme.colorScheme.surfaceVariant), // Slightly darker background so cards pop more
+            .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.surfaceVariant), // Slightly darker background so cards pop more
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
@@ -223,7 +192,7 @@ fun Body(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 8.dp, vertical = 8.dp) ,
+                .padding(horizontal = 8.dp, vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             // Large search box on the left
@@ -333,8 +302,7 @@ fun Body(
 }
 
 @Composable
-fun BottomBar(userId: Int, username: String, currentScreenIsHome: Boolean, currentScreenIsStack: Boolean, currentScreenIsLeaderboard: Boolean, modifier: Modifier = Modifier){
-    val context = LocalContext.current
+fun BottomBar(userId: Int, username: String, currentScreenIsHome: Boolean, currentScreenIsStack: Boolean, currentScreenIsLeaderboard: Boolean, modifier: Modifier = Modifier){    val context = LocalContext.current
 
     //keep state which item is selected
     var selectedItem by remember {
@@ -349,8 +317,8 @@ fun BottomBar(userId: Int, username: String, currentScreenIsHome: Boolean, curre
     }
 
     NavigationBar(
-        modifier = modifier.fillMaxWidth(),
-        containerColor = Color.Transparent
+        modifier = modifier
+            .fillMaxWidth()
         // background color comes from MaterialTheme by default
     ) {
         // Home button (MainActivity)
@@ -402,7 +370,6 @@ fun BottomBar(userId: Int, username: String, currentScreenIsHome: Boolean, curre
             )
         )
 
-        // Leaderboard button
         NavigationBarItem(
             selected = selectedItem == 2,
             onClick = {
@@ -425,13 +392,5 @@ fun BottomBar(userId: Int, username: String, currentScreenIsHome: Boolean, curre
                 indicatorColor = Color.Transparent  // no blue background when selected
             )
         )
-    }
-}
-
-@Preview(showBackground = true, widthDp = 320, heightDp = 320)
-@Composable
-fun MainPreview() {
-    BeerStackTheme(dynamicColor = false) {
-        Main(userId = 3,username = "password", beerViewModel = viewModel())
     }
 }
