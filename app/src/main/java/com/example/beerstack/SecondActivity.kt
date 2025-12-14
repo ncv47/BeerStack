@@ -17,6 +17,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.example.beerstack.components.UserBeerItemCard
 import com.example.beerstack.data.remote.SupabaseCollectionRepository
 import com.example.beerstack.data.remote.UserBeerDto
 import com.example.beerstack.ui.theme.BeerGradient
@@ -119,6 +120,7 @@ class SecondActivity : BaseActivity() {
                                                 if (beersWithSameName.size == 1) {
                                                     val beer = beersWithSameName.first()
 
+<<<<<<< HEAD
                                                     Row(
                                                         modifier = Modifier
                                                             .fillMaxWidth()
@@ -161,6 +163,26 @@ class SecondActivity : BaseActivity() {
                                                     Text(text = "Average: %.1f".format(beer.apiaverage))
                                                 }
                                             }
+=======
+                                    // 1. Grouped, expandable list
+                                    items(groupedItems) { (name, beersWithSameName) ->
+
+                                        if (beersWithSameName.size == 1) {
+                                            val beer = beersWithSameName.first()
+
+                                            UserBeerItemCard(
+                                                beer = beer,
+                                                onClick = {
+                                                    val intent = Intent(
+                                                        this@SecondActivity,
+                                                        EighthActivity::class.java
+                                                    ).apply {
+                                                        putExtra("beer_entry", beer)
+                                                    }
+                                                    startActivity(intent)
+                                                }
+                                            )
+>>>>>>> 434f8e6 (Made it so when there is only 1 they already use the itemcard)
                                         } else {
                                             val representative = beersWithSameName.first()
                                             var expanded by remember { mutableStateOf(false) }
