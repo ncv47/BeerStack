@@ -1,13 +1,40 @@
 package com.example.beerstack
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.Image
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.painterResource
+import androidx.compose.material3.Text
+import androidx.compose.material3.Button
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import com.example.beerstack.ui.theme.BeerStackTheme
+import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import android.content.Intent
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.material3.*
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.foundation.layout.width
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.runtime.*
 import androidx.compose.ui.window.Dialog
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -48,6 +75,7 @@ class MainActivity : BaseActivity() {
 
 @Composable
 fun Main(userId: Int,username: String, beerViewModel: BeerViewModel = viewModel()){
+
 
     //For the Sort Function of the scrollable List
     var selectedSort by remember { mutableStateOf(SortOptions.NAME) }
@@ -173,12 +201,10 @@ fun Body(
     //Search
     searchText: String,
     onSearchTextChange: (String) -> Unit,
-    //Currency conversion
+    //Currency COnversion
     currency: Currency,
     eurPerUsd: Double,
-    userId: Int,
-    // Loading flag
-    isLoading: Boolean
+    userId: Int
 ) {
     val context = LocalContext.current
     Column(
@@ -188,7 +214,7 @@ fun Body(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
-        // TOP: Search on the left, sort currency converter & sort dropdown menu on the right
+        // TOP: Search on the left, sort currency converter & sort dropdownmenu on the right
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -226,15 +252,6 @@ fun Body(
         Spacer(modifier = Modifier.padding(4.dp))
 
         when {
-            isLoading -> {
-                // Show loading while beers are being fetched
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator()
-                }
-            }
             error != null -> Text(text = error, color = Color.Red) // Show error if loading failed
             beers.isNotEmpty() -> BeerList(
                 items = beers,
@@ -307,11 +324,11 @@ fun BottomBar(userId: Int, username: String, currentScreenIsHome: Boolean, curre
     //keep state which item is selected
     var selectedItem by remember {
         mutableIntStateOf(
-            when{
-                currentScreenIsHome -> 0
-                currentScreenIsStack -> 1
-                currentScreenIsLeaderboard -> 2
-                else -> 0
+        when{
+            currentScreenIsHome -> 0
+            currentScreenIsStack -> 1
+            currentScreenIsLeaderboard -> 2
+            else -> 0
             }
         )
     }

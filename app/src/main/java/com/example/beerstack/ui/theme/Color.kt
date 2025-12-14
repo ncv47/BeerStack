@@ -13,6 +13,7 @@ val ChipBg = Color(0xFFC2B9B7).copy(alpha = 0.5f) // Background of the buttons
 val Black = Color(0xFF000000)
 
 val PrimaryColor = Color(0xFFF1B42F)
+val SecondaryColor = Color(0xFFFF7700)
 
 
 
@@ -21,4 +22,5 @@ val BeerFoamDark    = Color(0xFF121212)   // overall background
 val CardBgDark      = Color(0xFF262018)   // dark “wood” for cards
 val ChipBgDark      = Color(0xFF3A3028)   // darker pill buttons
 val TextOnSurfaceDark = Color(0xFFFDFBF5) // near‑white text
+val TextSecondaryDark = Color(0xFFE0D0B0) // warm secondary text
 val PrimaryColorDark = Color(0xFFFFC043)  // golden accent
