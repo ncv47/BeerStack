@@ -20,6 +20,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.material3.Text
 import androidx.compose.material3.Button
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.Modifier
 import com.example.beerstack.ui.theme.BeerStackTheme
 import androidx.compose.ui.graphics.Color
@@ -51,6 +52,7 @@ import com.example.beerstack.components.SearchBar
 import com.example.beerstack.components.CurrencyToggle
 import com.example.beerstack.components.SortOptions
 import androidx.compose.material.icons.filled.AutoGraph
+import com.example.beerstack.ui.theme.BeerGradient
 
 //---MAIN SCREEN---
 
@@ -97,38 +99,43 @@ fun Main(userId: Int,username: String, beerViewModel: BeerViewModel = viewModel(
         beers = beerViewModel.beerList,
         sortOption = selectedSort
     )
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(BeerGradient)
+    ) {
+        // use Scaffold for top and bottom bars (Handles weight on its own)
+        Scaffold(
+            containerColor = Color.Transparent,
+            topBar = {
+                TopBar(userId = userId, username = username)
+            },
+            bottomBar = {
+                BottomBar(userId = userId, username = username, currentScreenIsHome = true, currentScreenIsStack = false, currentScreenIsLeaderboard = false
+                )
+            }
+        ) { innerPadding ->
+            Body(
 
-    // use Scaffold for top and bottom bars (Handles weight on its own)
-    Scaffold(
-
-        topBar = {
-            TopBar(userId = userId, username = username)
-        },
-        bottomBar = {
-            BottomBar(userId = userId, username = username, currentScreenIsHome = true, currentScreenIsStack = false, currentScreenIsLeaderboard = false
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding),
+                //Pass the viewmodel data down to the body composable
+                beerViewModel = beerViewModel,
+                beers = sortedBeers,
+                error = beerViewModel.error,
+                //For te sort functionalities
+                selectedSort = selectedSort,
+                onSortChange = { selectedSort = it },
+                //For the search functionalities
+                searchText = searchText,
+                onSearchTextChange = { searchText = it },
+                //For Currency Conversion
+                currency = beerViewModel.currency,
+                eurPerUsd = beerViewModel.eurPerUsd,
+                userId = userId
             )
         }
-    ) { innerPadding ->
-        Body(
-
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding),
-            //Pass the viewmodel data down to the body composable
-            beerViewModel = beerViewModel,
-            beers = sortedBeers,
-            error = beerViewModel.error,
-            //For te sort functionalities
-            selectedSort = selectedSort,
-            onSortChange = { selectedSort = it },
-            //For the search functionalities
-            searchText = searchText,
-            onSearchTextChange = { searchText = it },
-            //For Currency Conversion
-            currency = beerViewModel.currency,
-            eurPerUsd = beerViewModel.eurPerUsd,
-            userId = userId
-        )
     }
 }
 
@@ -139,7 +146,7 @@ fun TopBar(userId: Int, username: String, modifier: Modifier = Modifier){
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.primary)
+            .background(Color.Transparent)
             //Increase overall top bar height
             .height(100.dp)
             .padding(
@@ -156,7 +163,7 @@ fun TopBar(userId: Int, username: String, modifier: Modifier = Modifier){
         ) {
             // App logo on the left, bigger and centered vertically
             Image(
-                painter = painterResource(R.drawable.beerstacklogo),
+                painter = painterResource(R.drawable.beerstacklogotransparent),
                 contentDescription = "BeerStack Logo",
                 modifier = Modifier
                     .height(48.dp)
@@ -209,8 +216,8 @@ fun Body(
     val context = LocalContext.current
     Column(
         modifier = modifier
-            .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.surfaceVariant), // Slightly darker background so cards pop more
+            .fillMaxWidth(),
+            //.background(MaterialTheme.colorScheme.surfaceVariant), // Slightly darker background so cards pop more
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
@@ -335,7 +342,8 @@ fun BottomBar(userId: Int, username: String, currentScreenIsHome: Boolean, curre
 
     NavigationBar(
         modifier = modifier
-            .fillMaxWidth()
+            .fillMaxWidth(),
+        containerColor = Color.Transparent
         // background color comes from MaterialTheme by default
     ) {
         // Home button (MainActivity)
@@ -409,5 +417,13 @@ fun BottomBar(userId: Int, username: String, currentScreenIsHome: Boolean, curre
                 indicatorColor = Color.Transparent  // no blue background when selected
             )
         )
+    }
+}
+
+@Preview(showBackground = true, widthDp = 320, heightDp = 320)
+@Composable
+fun MainPreview() {
+    BeerStackTheme(dynamicColor = false) {
+        Main(userId = 3,username = "password", beerViewModel = viewModel())
     }
 }

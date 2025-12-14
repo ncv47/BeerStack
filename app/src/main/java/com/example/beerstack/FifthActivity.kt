@@ -18,6 +18,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.beerstack.data.remote.SupabaseCollectionRepository
@@ -192,8 +193,17 @@ fun ProfileInfoRow(label: String, value: String) {
             .padding(vertical = 8.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Text(label, fontWeight = FontWeight.SemiBold)
-        Text(value, color = Color.Gray)
+        Text(
+            label,
+            fontWeight = FontWeight.SemiBold
+        )
+        Text(
+            value,
+            color = MaterialTheme.colorScheme.onSecondary,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.widthIn(max = 90.dp)
+            )
     }
 }
 
