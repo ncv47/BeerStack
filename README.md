@@ -18,20 +18,20 @@ ZUIPPPEN
 - :x: = Not implemented
 - :hourglass: = Work in progress
  
-| Status             | Description                         | Details                     |     |
-| ------------------ | ----------------------------------- | --------------------------- | --- |
-|                    | **Application**                     |                             |     |
-| :heavy_check_mark: | 2 UI screens                        | Just need to make it pretty |     |
-| :heavy_check_mark: | Secure API request                  |                             |     |
-| :hourglass:        | API request with IDOR               |                             |     |
-| :heavy_check_mark: | Connection to room database         |                             |     |
-| :heavy_check_mark: | Secure storage                      |                             |     |
-|                    |                                     |                             |     |
-|                    | **Security**                        |                             |     |
-| :heavy_check_mark: | Unsafe storage                      |                             |     |
-| :hourglass:        | Malware                             |                             |     |
-| :heavy_check_mark: | Frida functionality                 |                             |     |
-| :heavy_check_mark: | Detect root and block functionality |                             |     |
+| Status             | Description                         | Details                           |     |
+| ------------------ | ----------------------------------- |-----------------------------------| --- |
+|                    | **Application**                     |                                   |     |
+| :heavy_check_mark: | 2 UI screens                        | Just need to make it pretty       |     |
+| :heavy_check_mark: | Secure API request                  |                                   |     |
+| :heavy_check_mark: | API request with IDOR               |                                   |     |
+| :heavy_check_mark: | Connection to room database         |                                   |     |
+| :heavy_check_mark: | Secure storage                      |                                   |     |
+|                    |                                     |                                   |     |
+|                    | **Security**                        |                                   |     |
+| :heavy_check_mark: | Unsafe storage                      |                                   |     |
+| :heavy_check_mark: | Malware                             | Look at Readme in group39/malware |     |
+| :heavy_check_mark: | Frida functionality                 |                                   |     |
+| :heavy_check_mark: | Detect root and block functionality |                                   |     |
 
 # Overview app
 Describe the implementation of the following topics.
