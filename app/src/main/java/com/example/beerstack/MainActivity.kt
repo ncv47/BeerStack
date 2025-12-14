@@ -1,52 +1,29 @@
 package com.example.beerstack
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.Image
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.res.painterResource
-import androidx.compose.material3.Text
-import androidx.compose.material3.Button
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import com.example.beerstack.ui.theme.BeerStackTheme
-import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.background
-import android.content.Intent
-import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.foundation.layout.width
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.runtime.*
-import androidx.compose.ui.window.Dialog
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.automirrored.filled.List
-import androidx.compose.material.icons.filled.AutoGraph
-import androidx.compose.material.icons.filled.Home
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.beerstack.ui.BeerViewModel
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.beerstack.model.Beer
 import com.example.beerstack.model.Currency
+import com.example.beerstack.viewmodel.BeerViewModel
 import com.example.beerstack.ui.theme.BeerGradient
+import com.example.beerstack.ui.theme.BeerStackTheme
 //Util Imports (Helper Functions)
 import com.example.beerstack.utils.sortBeers
 import com.example.beerstack.utils.BeerList
@@ -54,6 +31,17 @@ import com.example.beerstack.utils.SortDropdown
 import com.example.beerstack.utils.SearchBar
 import com.example.beerstack.utils.CurrencyToggle
 import com.example.beerstack.utils.SortOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.List
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.AutoGraph
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.window.Dialog
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
+import androidx.compose.runtime.mutableIntStateOf
 
 class MainActivity : BaseActivity() {
 
@@ -78,7 +66,6 @@ class MainActivity : BaseActivity() {
 
 @Composable
 fun Main(userId: Int,username: String, beerViewModel: BeerViewModel = viewModel()){
-
 
     //For the Sort Function of the scrollable List
     var selectedSort by remember { mutableStateOf(SortOptions.NAME) }
@@ -113,9 +100,13 @@ fun Main(userId: Int,username: String, beerViewModel: BeerViewModel = viewModel(
                 TopBar(userId = userId, username = username)
             },
             bottomBar = {
-                BottomBar(userId = userId, username = username, currentScreenIsHome = true, currentScreenIsStack = false, currentScreenIsLeaderboard = false
-
-                    )
+                BottomBar(
+                    userId = userId,
+                    username = username,
+                    currentScreenIsHome = true,
+                    currentScreenIsStack = false,
+                    currentScreenIsLeaderboard = false
+                )
             }
         ) { innerPadding ->
             Body(
@@ -135,7 +126,9 @@ fun Main(userId: Int,username: String, beerViewModel: BeerViewModel = viewModel(
                 //For Currency Conversion
                 currency = beerViewModel.currency,
                 eurPerUsd = beerViewModel.eurPerUsd,
-                userId = userId
+                userId = userId,
+                // Loading flag from VM
+                isLoading = beerViewModel.isLoading
             )
         }
     }
@@ -214,13 +207,15 @@ fun Body(
     //Currency conversion
     currency: Currency,
     eurPerUsd: Double,
-    userId: Int
+    userId: Int,
+    // Loading flag
+    isLoading: Boolean
 ) {
     val context = LocalContext.current
     Column(
         modifier = modifier
             .fillMaxWidth(),
-            //.background(MaterialTheme.colorScheme.surfaceVariant), // Slightly darker background so cards pop more
+        //.background(MaterialTheme.colorScheme.surfaceVariant), // Slightly darker background so cards pop more
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
@@ -262,6 +257,15 @@ fun Body(
         Spacer(modifier = Modifier.padding(4.dp))
 
         when {
+            isLoading -> {
+                // Show loading while beers are being fetched
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
+            }
             error != null -> Text(text = error, color = Color.Red) // Show error if loading failed
             beers.isNotEmpty() -> BeerList(
                 items = beers,
@@ -335,11 +339,11 @@ fun BottomBar(userId: Int, username: String, currentScreenIsHome: Boolean, curre
     //keep state which item is selected
     var selectedItem by remember {
         mutableIntStateOf(
-        when{
-            currentScreenIsHome -> 0
-            currentScreenIsStack -> 1
-            currentScreenIsLeaderboard -> 2
-            else -> 0
+            when{
+                currentScreenIsHome -> 0
+                currentScreenIsStack -> 1
+                currentScreenIsLeaderboard -> 2
+                else -> 0
             }
         )
     }
@@ -423,7 +427,6 @@ fun BottomBar(userId: Int, username: String, currentScreenIsHome: Boolean, curre
         )
     }
 }
-
 
 @Preview(showBackground = true, widthDp = 320, heightDp = 320)
 @Composable
