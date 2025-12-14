@@ -148,7 +148,51 @@ class SecondActivity : BaseActivity() {
                                                             )
                                                         }
 
+<<<<<<< HEAD
                                                         Column(
+=======
+                                                Column(
+                                                    modifier = Modifier
+                                                        .fillMaxWidth()
+                                                        .padding(8.dp)
+                                                ) {
+                                                    Text(text = "Name: ${beer.name}")
+                                                    Text(text = "My Rating: %.1f".format(beer.myrating))
+                                                    Text(text = "Average: %.1f".format(beer.apiaverage))
+                                                }
+                                            }
+                                        } else {
+                                            val representative = beersWithSameName.first()
+                                            var expanded by remember { mutableStateOf(false) }
+
+                                            Column(
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .clickable { expanded = !expanded }
+                                                    .padding(8.dp)
+                                            ) {
+                                                // Header row per name
+
+                                                representative.imageurl?.let { url ->
+                                                    AsyncImage(
+                                                        model = url,
+                                                        contentDescription = "Beer image",
+                                                        modifier = Modifier
+                                                            .size(72.dp)
+                                                            .padding(end = 12.dp),
+                                                        contentScale = ContentScale.Crop,
+                                                        placeholder = painterResource(R.drawable.beerpicture_placeholder),
+                                                        error = painterResource(R.drawable.beerpicture_placeholder)
+                                                    )
+                                                }
+
+                                                Text(text = "Name: $name")
+                                                Text(text = "Entries: ${beersWithSameName.size}")
+
+                                                if (expanded) {
+                                                    beersWithSameName.forEach { beer ->
+                                                        Row(
+>>>>>>> a38ce3e (Added the picture to the clickable list too so ow you also see pictures there)
                                                             modifier = Modifier
                                                                 .fillMaxWidth()
                                                                 .padding(8.dp)
