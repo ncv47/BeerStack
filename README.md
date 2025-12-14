@@ -262,7 +262,8 @@ Started off with just an alert popping up that told you to do an atje but this w
 
 Then we heard from the teachers that someone changed all the pictures by intercepting the api so we just stole this idea and did this too.
 
-Started off by looking at which things i needed for the api in the app.
+Started off by looking at which things i needed for the api in the app. 
+
 ![[image21.png]](readme-resources/image21.png)
 
 In BeerDto.kt you can see what comes out of the api and we need the imageurl
