@@ -37,6 +37,11 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.beerstack.data.remote.UserBeerDto
 import com.example.beerstack.R
+import androidx.compose.runtime.*
+import java.io.File
+import android.os.Environment
+import android.net.Uri
+import androidx.compose.ui.platform.LocalContext
 
 
 
@@ -195,14 +200,49 @@ fun UserBeerGroupCard(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Column {
-                            Text(
-                                text = "My Rating: %.1f".format(beer.myrating),
-                                style = MaterialTheme.typography.bodyMedium
-                            )
-                            Text(
-                                text = "Average: %.1f".format(beer.apiaverage),
-                                style = MaterialTheme.typography.bodyMedium
-                            )
+
+                            val context = LocalContext.current
+                            val headerModel = remember(beer.myphoto) {
+                                beer.myphoto?.let { relative ->
+                                    val picturesDir: File ?=
+                                        context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+                                    val fileName = relative.substringAfterLast('/')
+                                    val file = File(picturesDir, fileName)
+                                    if (file.exists()) Uri.fromFile(file) else null
+                                }
+                            }
+
+
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(12.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                AsyncImage(
+                                    model = headerModel,
+                                    contentDescription = "My beer photo",
+                                    modifier = Modifier
+                                        .size(80.dp)
+                                        .padding(end = 12.dp),
+                                    contentScale = ContentScale.Crop,
+                                    placeholder = painterResource(R.drawable.beerpicture_placeholder),
+                                    error = painterResource(R.drawable.beerpicture_placeholder)
+                                )
+
+                                Column(
+                                    modifier = Modifier.weight(1f)
+                                ) {
+                                    Text(
+                                        text = "My Rating: %.1f".format(beer.myrating),
+                                        style = MaterialTheme.typography.bodyMedium
+                                    )
+                                    Text(
+                                        text = "Average: %.1f".format(beer.apiaverage),
+                                        style = MaterialTheme.typography.bodyMedium
+                                    )
+                                }
+                            }
                         }
                     }
                 }
