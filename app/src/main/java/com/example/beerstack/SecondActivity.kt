@@ -56,6 +56,20 @@ class SecondActivity : BaseActivity() {
                     }
                 }
 
+                // Collect the collection and filter items by ownerId
+                LaunchedEffect(userId) {
+                    if (userId == -1) return@LaunchedEffect
+                    try {
+                        isLoading = true
+                        error = null
+                        items = supabaseRepo.getCollection(userId)
+                    } catch (e: Exception) {
+                        error = "Failed to load collection: ${e.message}"
+                    } finally {
+                        isLoading = false
+                    }
+                }
+
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
@@ -110,12 +124,16 @@ class SecondActivity : BaseActivity() {
                                                 .fillMaxWidth()
                                                 .padding(top = 48.dp)
                                         ) {
-                                            items(items) { beer ->
-                                                Row(
-                                                    modifier = Modifier
-                                                        .fillMaxWidth()
-                                                        .padding(8.dp)
-                                                        .clickable {
+
+                                            // 1. Grouped, expandable list
+                                            items(groupedItems) { (name, beersWithSameName) ->
+
+                                                if (beersWithSameName.size == 1) {
+                                                    val beer = beersWithSameName.first()
+
+                                                    UserBeerItemCard(
+                                                        beer = beer,
+                                                        onClick = {
                                                             val intent = Intent(
                                                                 this@SecondActivity,
                                                                 EighthActivity::class.java
@@ -123,44 +141,20 @@ class SecondActivity : BaseActivity() {
                                                                 putExtra("beer_entry", beer)
                                                             }
                                                             startActivity(intent)
-                                                        },
-                                                    verticalAlignment = Alignment.CenterVertically
-                                                ) {
-                                                    // Stock image on the left
-                                                    beer.imageurl?.let { url ->
-                                                        AsyncImage(
-                                                            model = url,
-                                                            contentDescription = "Beer image",
-                                                            modifier = Modifier
-                                                                .size(72.dp)
-                                                                .padding(end = 12.dp),
-                                                            contentScale = ContentScale.Crop,
-                                                            placeholder = painterResource(R.drawable.beerpicture_placeholder),
-                                                            error = painterResource(R.drawable.beerpicture_placeholder)
-                                                        )
-                                                    }
+                                                        }
+                                                    )
+                                                } else {
 
-                                                    Column(
-                                                        modifier = Modifier
-                                                            .fillMaxWidth()
-                                                            .padding(8.dp)
-                                                    ) {
-                                                        Text(text = "Name: ${beer.name}")
-                                                        Text(
-                                                            text = "My Rating: %.1f".format(
-                                                                beer.myrating
-                                                            )
-                                                        )
-                                                        Text(
-                                                            text = "Average: %.1f".format(
-                                                                beer.apiaverage
-                                                            )
-                                                        )
-                                                    }
-                                                    HorizontalDivider(
-                                                        modifier = Modifier.padding(
-                                                            vertical = 4.dp
-                                                        )
+                                                    UserBeerGroupCard(
+                                                        name = name,
+                                                        beersWithSameName = beersWithSameName,
+                                                        onBeerClick = { beer ->
+                                                            val intent = Intent(
+                                                                this@SecondActivity,
+                                                                EighthActivity::class.java
+                                                            ).apply { putExtra("beer_entry", beer) }
+                                                            startActivity(intent)
+                                                        }
                                                     )
                                                 }
                                             }

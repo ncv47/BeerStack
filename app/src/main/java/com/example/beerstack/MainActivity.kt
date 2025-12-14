@@ -87,7 +87,6 @@ class MainActivity : BaseActivity() {
 fun Main(userId: Int,username: String, beerViewModel: BeerViewModel = viewModel()){
     // BeerViewModel:... is a class that processes all the beer activities, here it is declared
 
-
     //For the Sort Function of the scrollable List
     var selectedSort by remember { mutableStateOf(SortOptions.NAME) }
     //For the search function
@@ -148,7 +147,7 @@ fun Main(userId: Int,username: String, beerViewModel: BeerViewModel = viewModel(
                 currency = beerViewModel.currency,
                 eurPerUsd = beerViewModel.eurPerUsd,
                 userId = userId,
-                // Loading flag from ViewModel
+                // NEW: loading flag from ViewModel
                 isLoading = beerViewModel.isLoading
             )
         }
@@ -234,7 +233,7 @@ fun Body(
     currency: Currency,
     eurPerUsd: Double,
     userId: Int,
-    // Check if API is loading or not
+    // NEW: loading flag
     isLoading: Boolean
 ) {
     val context = LocalContext.current
