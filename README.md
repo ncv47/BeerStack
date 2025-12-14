@@ -449,12 +449,16 @@ After installation it works
 
 ## ![](readme-resources/Frida.png) Frida
 Detail implementation of Frida
-### What to do
+### What to do 
+
 ![image.png](readme-resources/image12.png)
+
 We will be bypassing this function that checks if the phone is rooted or not so that we will still be able to run the app even though we have a rooted device.
 
-### Starting point
+### Starting point 
+
 ![image.png](readme-resources/11.png)
+
 I started of with the code from the slides and tested just this but with some tweaks so it fits our app and not the one from the slides
 
 ```Javascript
@@ -496,8 +500,10 @@ Java.perform(function () {
 ```
 
 We changed the this.isRooted(); to return false;
-so now we don't just call the normal isRooted() function but we just always return a false so that it always looks like the device is not rooted.
+so now we don't just call the normal isRooted() function but we just always return a false so that it always looks like the device is not rooted. 
+
 ![image.png](readme-resources/image12.png)
+
 Now we see it got called and there are no more errors and the app just starts up even though we have a rooted device
 
 ## ![](readme-resources/Root.png) Root
