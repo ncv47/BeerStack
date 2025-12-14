@@ -131,17 +131,16 @@ fun UserBeerGroupCard(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(12.dp)
+                .animateContentSize(
+                    animationSpec = spring(
+                        dampingRatio = Spring.DampingRatioMediumBouncy,
+                        stiffness = Spring.StiffnessLow
+                    )
+                )
         ) {
             // HEADER: image | name + entries | expand icon
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .animateContentSize(
-                        animationSpec = spring(
-                            dampingRatio = Spring.DampingRatioMediumBouncy,
-                            stiffness = Spring.StiffnessLow
-                        )
-                    ),
+                modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 representative.imageurl?.let { url ->
