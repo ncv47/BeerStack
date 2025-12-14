@@ -9,7 +9,6 @@ import okhttp3.OkHttpClient
 import okhttp3.Response
 import retrofit2.Retrofit
 import retrofit2.http.GET
-import retrofit2.http.Query
 
 // --- Supabase settings ---
 private const val SUPABASE_URL = "https://dqkpzojnslcyeluzzyhi.supabase.co/"
