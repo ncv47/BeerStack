@@ -23,7 +23,7 @@ data class UserBeerDto(
 
 @Parcelize
 @Serializable
-data class BeerDto(
+data class SupabaseBeerDto(
     val id: Long? = null,
     val name: String,
     val currency: String,

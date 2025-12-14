@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
-import com.example.beerstack.data.remote.BeerDto
+import com.example.beerstack.data.remote.SupabaseBeerDto
 import com.example.beerstack.data.remote.SupabaseCollectionRepository
 import com.example.beerstack.ui.theme.BeerStackTheme
 import kotlinx.coroutines.launch
@@ -47,7 +47,7 @@ class SeventhActivity : BaseActivity() {
 
 @Composable
 fun AddOwnBeerScreen(
-    onSave: (BeerDto) -> Unit
+    onSave: (SupabaseBeerDto) -> Unit
 ) {
     var name by remember { mutableStateOf("") }
     var priceText by remember { mutableStateOf("") }
@@ -154,7 +154,7 @@ fun AddOwnBeerScreen(
                 val apiAvg = apiAverageText.toDoubleOrNull() ?: 0.0
                 val totalReviews = totalReviewsText.toIntOrNull() ?: 0
 
-                val dto = BeerDto(
+                val dto = SupabaseBeerDto(
                     id = null,            // API generates ID
                     name = name,
                     currency = selectedCurrency,
