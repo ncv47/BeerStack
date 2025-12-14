@@ -6,6 +6,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
@@ -19,9 +20,11 @@ import com.example.beerstack.data.UserDB.OfflineUsersRepository
 import com.example.beerstack.data.UserDB.UsersRepository
 import com.example.beerstack.data.remote.SupabaseCollectionRepository
 import com.example.beerstack.data.remote.UserBeerCount
+import com.example.beerstack.data.remote.UserBeerDto
 import com.example.beerstack.ui.theme.BeerGradient
 import com.example.beerstack.ui.theme.BeerStackTheme
 import kotlinx.coroutines.flow.first
+import java.util.Calendar
 
 //---LEADERBOARD---
 
@@ -74,6 +77,15 @@ fun LeaderboardScreen(
     var rows by remember { mutableStateOf<List<UserBeerCount>>(emptyList()) }
     var isLoading by remember { mutableStateOf(true) }
     var error by remember { mutableStateOf<String?>(null) }
+    var userBeers by remember { mutableStateOf<List<UserBeerDto>>(emptyList()) }
+
+    LaunchedEffect(userId) {
+        try {
+            userBeers = supabaseRepo.getCollection(userId)
+        } catch (e: Exception) {
+            // handle error if needed
+        }
+    }
 
     LaunchedEffect(localUserMap) {
         // Only loads the body once all users are gotten
@@ -160,7 +172,7 @@ fun LeaderboardScreen(
                     }
                     else -> {
                         LazyColumn(
-                            modifier = Modifier.fillMaxSize(),
+                            modifier = Modifier.weight(1f),
                             verticalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
                             items(rows) { entry ->
@@ -171,7 +183,15 @@ fun LeaderboardScreen(
                                 )
                             }
                         }
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        DrinksGraphCard(
+                            userBeers = userBeers,
+                            modifier = Modifier.padding(16.dp)
+                        )
                     }
+
                 }
             }
         }
@@ -230,3 +250,95 @@ fun LeaderboardRow(
         }
     }
 }
+fun formatDate(timestamp: Long?): String {
+    if (timestamp == null) return "Unknown"
+    val cal = Calendar.getInstance()
+    cal.timeInMillis = timestamp
+    val day = cal.get(Calendar.DAY_OF_MONTH)
+    val month = cal.get(Calendar.MONTH) + 1
+    val year = cal.get(Calendar.YEAR)
+    return "$day/$month/$year"
+}
+@Composable
+fun DrinksGraphCard(
+    userBeers: List<UserBeerDto>,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(260.dp),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.Transparent)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+        ) {
+
+            // ---------- HEADER ----------
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "DRINKS >",
+                    style = MaterialTheme.typography.titleSmall,
+                    color = Color.White
+                )
+
+                Text(
+                    text = "SEE ALL",
+                    style = MaterialTheme.typography.titleSmall,
+                    color = Color(0xFF5DA9FF)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // ---------- GRAPH ----------
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(120.dp)
+            ) {
+                // Placeholder dots for each beer
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    userBeers.forEach { _ ->
+                        Box(
+                            modifier = Modifier
+                                .size(10.dp)
+                                .background(
+                                    Color(0xFF4A90E2),
+                                    shape = RoundedCornerShape(50)
+                                )
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // ---------- DATES UNDER GRAPH ----------
+            val sortedBeers = userBeers.sortedBy { it.date } // or timestamp
+            LazyRow(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(sortedBeers) { beer ->
+                    Text(
+                        text = beer.date ?: "Unknown",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = Color.White
+                    )
+                }
+            }
+        }
+    }
+}
+
