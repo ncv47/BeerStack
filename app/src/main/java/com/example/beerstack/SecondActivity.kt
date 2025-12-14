@@ -56,6 +56,10 @@ class SecondActivity : BaseActivity() {
                     }
                 }
 
+                val groupedItems: List<Pair<String, List<UserBeerDto>>> by remember(items) {
+                    mutableStateOf(items.groupBy { it.name }.toList())
+                }
+
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
