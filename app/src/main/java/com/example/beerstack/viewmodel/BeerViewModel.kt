@@ -1,4 +1,4 @@
-package com.example.beerstack.ui
+package com.example.beerstack.viewmodel
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -36,7 +36,7 @@ class BeerViewModel : ViewModel() {
             try {
                 eurPerUsd = fetchEurPerUsd()
             } catch (e: Exception) {
-                // optional: handle error
+                println("ERROR: ${e.message}")
             }
         }
     }
@@ -85,12 +85,13 @@ class BeerViewModel : ViewModel() {
         lastAddedBeerName = null
         lastAddedBeerError = null
     }
+
+    // Fetch EUR/USD rate from currency API (See CurrencyApiService.kt)
+    private suspend fun fetchEurPerUsd(): Double {
+        // 1 EUR -> X USD
+        val response = CurrencyApi.retrofitService.getEurRates()
+        val eurToUsd = response.eur.usd
+        return 1.0 / eurToUsd      // store 1 USD -> X EUR (same logic as before)
+    }
 }
 
-// Fetch EUR/USD rate from currency API (See CurrencyApiService.kt)
-private suspend fun fetchEurPerUsd(): Double {
-    // 1 EUR -> X USD
-    val response = CurrencyApi.retrofitService.getEurRates()
-    val eurToUsd = response.eur.usd
-    return 1.0 / eurToUsd      // store 1 USD -> X EUR (same logic as before)
-}

@@ -24,6 +24,8 @@ import com.example.beerstack.data.remote.SupabaseCollectionRepository
 import com.example.beerstack.ui.theme.BeerStackTheme
 import com.example.beerstack.ui.theme.BeerGradient
 
+//---PROFILE---
+
 class FifthActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {

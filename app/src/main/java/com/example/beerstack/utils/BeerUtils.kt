@@ -4,6 +4,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import com.example.beerstack.components.BeerItemCard
+import com.example.beerstack.components.SortOptions
 import com.example.beerstack.model.Beer
 import com.example.beerstack.model.Currency
 

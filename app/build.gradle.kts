@@ -71,9 +71,6 @@ dependencies {
     implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:1.0.0")
     implementation("com.squareup.okhttp3:okhttp:5.3.2")
 
-    //For Secure Sockets Layer (via OpenSSL/with OKHttp)
-    implementation("com.squareup.okhttp3:okhttp:5.3.2")
-
     //For Star Ratings
     implementation("androidx.compose.material:material-icons-extended:1.7.8")
 
