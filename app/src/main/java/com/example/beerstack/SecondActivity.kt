@@ -17,6 +17,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.example.beerstack.components.UserBeerGroupCard
 import com.example.beerstack.components.UserBeerItemCard
 import com.example.beerstack.data.remote.SupabaseCollectionRepository
 import com.example.beerstack.data.remote.UserBeerDto
@@ -113,90 +114,18 @@ class SecondActivity : BaseActivity() {
                                                 }
                                             )
                                         } else {
-                                            val representative = beersWithSameName.first()
-                                            var expanded by remember { mutableStateOf(false) }
 
-                                            Column(
-                                                modifier = Modifier
-                                                    .fillMaxWidth()
-                                                    .clickable { expanded = !expanded }
-                                                    .padding(8.dp)
-                                            ) {
-                                                // Header row per name
-
-                                                representative.imageurl?.let { url ->
-                                                    AsyncImage(
-                                                        model = url,
-                                                        contentDescription = "Beer image",
-                                                        modifier = Modifier
-                                                            .size(72.dp)
-                                                            .padding(end = 12.dp),
-                                                        contentScale = ContentScale.Crop,
-                                                        placeholder = painterResource(R.drawable.beerpicture_placeholder),
-                                                        error = painterResource(R.drawable.beerpicture_placeholder)
-                                                    )
+                                            UserBeerGroupCard(
+                                                name = name,
+                                                beersWithSameName = beersWithSameName,
+                                                onBeerClick = { beer ->
+                                                    val intent = Intent(
+                                                        this@SecondActivity,
+                                                        EighthActivity::class.java
+                                                    ).apply { putExtra("beer_entry", beer) }
+                                                    startActivity(intent)
                                                 }
-
-                                                Text(text = "Name: $name")
-                                                Text(text = "Entries: ${beersWithSameName.size}")
-
-                                                if (expanded) {
-                                                    beersWithSameName.forEach { beer ->
-                                                        Row(
-                                                            modifier = Modifier
-                                                                .fillMaxWidth()
-                                                                .padding(8.dp)
-                                                                .clickable {
-                                                                    val intent = Intent(
-                                                                        this@SecondActivity,
-                                                                        EighthActivity::class.java
-                                                                    ).apply {
-                                                                        putExtra("beer_entry", beer)
-                                                                    }
-                                                                    startActivity(intent)
-                                                                },
-                                                            verticalAlignment = Alignment.CenterVertically
-                                                        ) {
-                                                            // Stock image on the left
-                                                            beer.imageurl?.let { url ->
-                                                                AsyncImage(
-                                                                    model = url,
-                                                                    contentDescription = "Beer image",
-                                                                    modifier = Modifier
-                                                                        .size(72.dp)
-                                                                        .padding(end = 12.dp),
-                                                                    contentScale = ContentScale.Crop,
-                                                                    placeholder = painterResource(R.drawable.beerpicture_placeholder),
-                                                                    error = painterResource(R.drawable.beerpicture_placeholder)
-                                                                )
-                                                            }
-
-                                                            Column(
-                                                                modifier = Modifier
-                                                                    .fillMaxWidth()
-                                                                    .padding(8.dp)
-                                                            ) {
-                                                                Text(text = "Name: ${beer.name}")
-                                                                Text(
-                                                                    text = "My Rating: %.1f".format(
-                                                                        beer.myrating
-                                                                    )
-                                                                )
-                                                                Text(
-                                                                    text = "Average: %.1f".format(
-                                                                        beer.apiaverage
-                                                                    )
-                                                                )
-                                                            }
-                                                            HorizontalDivider(
-                                                                modifier = Modifier.padding(
-                                                                    vertical = 4.dp
-                                                                )
-                                                            )
-                                                        }
-                                                    }
-                                                }
-                                            }
+                                            )
                                         }
                                     }
                                 }
