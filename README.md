@@ -52,6 +52,7 @@ Give screenshots for every screen in the application. Give each screen an unique
 ![img.png](readme-resources/profilePage.png)
 
 #### Stack Page
+![img.png](readme-resources/stackPage.png)
 
 #### Leaderbord
 ![img.png](readme-resources/leaderbord.png)
@@ -61,6 +62,9 @@ Give screenshots for every screen in the application. Give each screen an unique
 
 #### Beer details
 ![img.png](readme-resources/beerDetails.png)
+
+#### Add own beer
+![img.png](readme-resources/addOwnBeer.png)
 
 ---
 
