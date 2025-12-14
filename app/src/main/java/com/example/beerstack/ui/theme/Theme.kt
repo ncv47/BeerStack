@@ -15,10 +15,10 @@ import androidx.compose.ui.platform.LocalContext
 private val DarkColorScheme = darkColorScheme(
     primary = Color.Black,
     onPrimary = Color.Black,
-    background = BeerFoamDark,
-    surface = CardBgDark,
-    onSurface = BeerFoamDark,
-    secondary = PrimaryColorDark,
+    background = TextOnSurfaceDark,
+    surface = ChipBgDark,
+    onSurface = TextOnSurfaceDark,
+    secondary = SecondaryColorDark,
     onSecondary = Color.Black,
     secondaryContainer = ChipBgDark,
     onSecondaryContainer = TextOnSurfaceDark
