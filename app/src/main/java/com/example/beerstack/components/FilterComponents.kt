@@ -31,7 +31,7 @@ fun SortDropdown(
     selectedSort: SortOptions,
     onSortChange: (SortOptions) -> Unit
 ) {
-    var expanded by remember { mutableStateOf(false) }
+    var expanded by remember { mutableStateOf(false) }  // track dropdown open/closed
 
     Box {
         // Small pill-shaped button showing current sort
@@ -41,19 +41,19 @@ fun SortDropdown(
             contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
             modifier = Modifier.height(40.dp) // close to searchbar height but smaller
         ) {
-            Text("Sort: ${selectedSort.label}")
+            Text("Sort: ${selectedSort.label}") // show current selection
         }
 
         DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false }
+            expanded = expanded,                    // open state
+            onDismissRequest = { expanded = false } // close when clicked outside
         ) {
             SortOptions.entries.forEach { option ->
                 DropdownMenuItem(
-                    text = { Text(option.label) },
+                    text = { Text(option.label) }, // label for each option
                     onClick = {
-                        onSortChange(option)
-                        expanded = false
+                        onSortChange(option)    // update selection
+                        expanded = false        // close menu
                     }
                 )
             }
@@ -65,14 +65,14 @@ fun SortDropdown(
 //Searchbar functionality
 @Composable
 fun SearchBar(
-    value: String,
-    onValueChange: (String) -> Unit,
-    onSearch: () -> Unit,
+    value: String,                      // current search text
+    onValueChange: (String) -> Unit,    // called when text changes
+    onSearch: () -> Unit,               // called when search action is triggered
     modifier: Modifier = Modifier
 ) {
     OutlinedTextField(
         value = value,
-        onValueChange = onValueChange,
+        onValueChange = onValueChange, // update state on typing
         placeholder = { Text("Search beers...") },
         modifier = modifier
             .height(56.dp)
@@ -85,16 +85,16 @@ fun SearchBar(
             focusedBorderColor = MaterialTheme.colorScheme.primary,
             unfocusedBorderColor = MaterialTheme.colorScheme.outline
         ),
-        keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Search),
-        keyboardActions = KeyboardActions(onSearch = { onSearch() })
+        keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Search),   // shows "Search" button on keyboard for the user
+        keyboardActions = KeyboardActions(onSearch = { onSearch() })                    // trigger on search
     )
 }
 
 //For the DOLLAR to EURO conversion with API
 @Composable
 fun CurrencyToggle(
-    currency: Currency,
-    onToggleAndRefresh: () -> Unit
+    currency: Currency,             // current currency
+    onToggleAndRefresh: () -> Unit  // called when toggled
 ) {
     FilledTonalButton(
         onClick = onToggleAndRefresh,

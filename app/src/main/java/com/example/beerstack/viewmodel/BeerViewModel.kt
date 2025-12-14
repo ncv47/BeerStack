@@ -1,6 +1,7 @@
 package com.example.beerstack.viewmodel
 
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -16,25 +17,31 @@ import com.example.beerstack.model.toBeer
 class BeerViewModel : ViewModel() {
     // Start with empty list
     var beerList by mutableStateOf<List<Beer>>(emptyList())
-    // Errorhandeling while loading
+    // Error handling while loading
     var error by mutableStateOf<String?>(null)
+
+    // Loading flag for API calls
+    var isLoading by mutableStateOf(false)
+        private set
 
     // Currency state (start with euro)
     var currency by mutableStateOf(Currency.EUR)
         private set
 
     // How many EUR for 1 USD (used for conversion)
-    var eurPerUsd by mutableStateOf(1.0)
+    var eurPerUsd by mutableDoubleStateOf(1.0)
         private set
 
+    // Toggle between EUR and USD currency
     fun toggleCurrency() {
         currency = if (currency == Currency.USD) Currency.EUR else Currency.USD
     }
 
-    fun refreshRate() {
+    // Refresh currency conversion rate from the API
+    fun refreshConversionRate() {
         viewModelScope.launch {
             try {
-                eurPerUsd = fetchEurPerUsd()
+                eurPerUsd = fetchEurPerUsd() // Calls API and updates rate
             } catch (e: Exception) {
                 println("ERROR: ${e.message}")
             }
@@ -44,6 +51,7 @@ class BeerViewModel : ViewModel() {
     fun getBeers(query: String = "") {
         viewModelScope.launch {
             try {
+                isLoading = true
                 // 1. Fetch from Supabase (list of BeerDto)
                 //If ok, update beer list and clear any error
                 val dtoList = SupabaseApi.retrofitService.getBeers()
@@ -52,38 +60,17 @@ class BeerViewModel : ViewModel() {
                 val fetchedBeers = dtoList.map { it.toBeer() }
 
                 // 3. Filter and search
-                beerList = filterValidBeers(fetchedBeers)
-                    .filter { it.name.contains(query, ignoreCase = true) }
+                beerList = fetchedBeers.filter { it.name.contains(query, ignoreCase = true) }
 
                 error = null
             } catch (e: Exception) { //Catch the error
                 // if not ok, reset list and show error
                 beerList = emptyList()
                 error = "Failed to load beers: ${e.message}"
+            } finally {
+                isLoading = false
             }
         }
-    }
-
-    // Filter out test data or invalid beers
-    private fun filterValidBeers(beers: List<Beer>): List<Beer> =
-        // THere is some test/invalid date in the API, to not show this filter them like so
-        // ALso filter out beers with no price and beer names shouldn't have { in there name
-        beers.filter { beer ->
-            !beer.name.contains("{") &&
-                    !beer.name.contains("random") &&
-                    beer.price != null &&
-                    beer.price != "{{price}}" &&
-                    !beer.name.equals("Hi", ignoreCase = true)
-        }
-
-    //All this is for the collectoin, specific beer fetch from api (2nd request)
-    var lastAddedBeerName by mutableStateOf<String?>(null)
-    var lastAddedBeerError by mutableStateOf<String?>(null)
-
-    // Call this to clear popup after dismiss
-    fun clearLastBeerInfo() {
-        lastAddedBeerName = null
-        lastAddedBeerError = null
     }
 
     // Fetch EUR/USD rate from currency API (See CurrencyApiService.kt)
@@ -94,4 +81,3 @@ class BeerViewModel : ViewModel() {
         return 1.0 / eurToUsd      // store 1 USD -> X EUR (same logic as before)
     }
 }
-

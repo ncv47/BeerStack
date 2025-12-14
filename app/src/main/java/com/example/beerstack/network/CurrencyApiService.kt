@@ -10,19 +10,23 @@ import com.example.beerstack.model.EurRatesResponse
 private const val CURRENCY_BASE_URL =
     "https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/"
 
+// Create Retrofit instance for network requests
 private val currencyRetrofit: Retrofit = Retrofit.Builder()
     .baseUrl(CURRENCY_BASE_URL)
+    // JSON serializer/deserializer for responses
     .addConverterFactory(jsonConfig.asConverterFactory("application/json".toMediaType()))
     .build()
 
+// Define API endpoints
 interface CurrencyApiService {
-    @GET("eur.json")
+    @GET("eur.json") // GET request to fetch EUR conversion rates
     suspend fun getEurRates(): EurRatesResponse   // from the model
 }
 
+// object to access the API service
 object CurrencyApi {
     val retrofitService: CurrencyApiService by lazy {
-        currencyRetrofit.create(CurrencyApiService::class.java)
+        currencyRetrofit.create(CurrencyApiService::class.java) //Create sesrvice
     }
 }
 

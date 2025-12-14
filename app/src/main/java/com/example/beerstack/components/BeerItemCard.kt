@@ -1,6 +1,5 @@
 package com.example.beerstack.components
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -22,13 +21,10 @@ import com.example.beerstack.R
 //For Star Rating
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.StarHalf
 import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material.icons.outlined.StarBorder
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import com.example.beerstack.ui.theme.BeerStackTheme
 import kotlin.math.floor
 import kotlin.math.roundToInt
 //Util Imports (Helper Functions)
@@ -42,6 +38,7 @@ fun BeerItemCard(
     eurPerUsd: Double,
     modifier: Modifier = Modifier
 ) {
+    // Card that will be used x amount of times (for the beers) (used in utils, where the logic happens)
     Card(
         //Spacing
         modifier = modifier
@@ -54,6 +51,7 @@ fun BeerItemCard(
         elevation = CardDefaults.elevatedCardElevation(defaultElevation = 6.dp),
         shape = RoundedCornerShape(20.dp)
     ) {
+        // Row to align image (left) and text/button column (right)
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -63,7 +61,7 @@ fun BeerItemCard(
             // Left side: ID above image in the same column, stuck to top-left
             Column(
                 horizontalAlignment = Alignment.Start
-            ) {
+            ) { // Beer ID displayed above image
                 Text(
                     text = "ID: ${beer.id}",
                     fontSize = 10.sp,
@@ -130,11 +128,12 @@ fun BeerItemCard(
                         beer.rating?.let {
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 StarRating(
-                                    rating = beer.rating?.average   //
+                                    rating = beer.rating.average
                                 )
                                 Spacer(modifier = Modifier.width(4.dp))
                                 Text(
-                                    text = beer.rating?.average?.let { "%.1f/5".format(it) } ?: "N/A",
+                                    //format: rouned to 1 decimal behind the comma, append out of 5 (/5)
+                                    text = beer.rating.average.let { "%.1f/5".format(it) },
                                     style = MaterialTheme.typography.bodySmall
                                 )
                             }
@@ -166,17 +165,18 @@ fun BeerItemCard(
 @Composable
 fun StarRating(
     rating: Double?,
-    stars: Int = 5,
     modifier: Modifier = Modifier,
+    stars: Int = 5, // total number of stars
     starColor: Color = MaterialTheme.colorScheme.primary
 ) {
     val safeRating = (rating ?: 0.0).coerceIn(0.0, stars.toDouble())
     // Round to nearest 0.5
     val roundedToHalf = (safeRating * 2).roundToInt() / 2.0
 
-    val fullStars = floor(roundedToHalf).toInt()
-    val hasHalf = roundedToHalf % 1.0 >= 0.5
+    val fullStars = floor(roundedToHalf).toInt()    // number of full stars
+    val hasHalf = roundedToHalf % 1.0 >= 0.5            // whether to show a half star
     val emptyStars = (stars - fullStars - if (hasHalf) 1 else 0).coerceAtLeast(0)
+    // Logic for example: 3.5/5 = 5 stars - 3 full stars - 1 half star)
 
     Row(modifier = modifier) {
         // Full stars

@@ -9,14 +9,13 @@ import okhttp3.OkHttpClient
 import okhttp3.Response
 import retrofit2.Retrofit
 import retrofit2.http.GET
-import retrofit2.http.Query
 
-// --- Supabase settings ---
 private const val SUPABASE_URL = "https://dqkpzojnslcyeluzzyhi.supabase.co/"
 private const val SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRxa3B6b2puc2xjeWVsdXp6eWhpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU0NTYzODgsImV4cCI6MjA4MTAzMjM4OH0.wh3Id22_gXhKNzjIVbyZRUHnU4zhSayxXykxxQNS0WM"   // put anon key here
 
 // Add headers for every request
 class SupabaseAuthInterceptor : Interceptor {
+    // Create a new request with the authorization headers
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request().newBuilder()
             .addHeader("apikey", SUPABASE_ANON_KEY)
@@ -26,6 +25,7 @@ class SupabaseAuthInterceptor : Interceptor {
     }
 }
 
+// OkHttp client configured with the interceptor
 private val okHttpClient: OkHttpClient = OkHttpClient.Builder()
     .addInterceptor(SupabaseAuthInterceptor())
     .build()
@@ -36,12 +36,15 @@ private val json = Json {
     isLenient = true
 }
 
+// Retrofit is used to define and call REST APIs easily
 private val retrofit = Retrofit.Builder()
     .baseUrl(SUPABASE_URL)
     .client(okHttpClient)
     .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
+    // Use Kotlinx Serialization to convert JSON <-> Kotlin objects
     .build()
 
+// Define the endpoints we want to use from Supabase
 interface SupabaseBeersApiService {
     // GET /rest/v1/Beers?select=*
     @GET("rest/v1/Beers")

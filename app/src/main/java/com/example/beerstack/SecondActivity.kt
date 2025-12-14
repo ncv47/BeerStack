@@ -17,8 +17,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.example.beerstack.components.UserBeerGroupCard
-import com.example.beerstack.components.UserBeerItemCard
 import com.example.beerstack.data.remote.SupabaseCollectionRepository
 import com.example.beerstack.data.remote.UserBeerDto
 import com.example.beerstack.ui.theme.BeerGradient
@@ -41,9 +39,21 @@ class SecondActivity : BaseActivity() {
         setContent {
             BeerStackTheme(dynamicColor = false) {
                 var items by remember { mutableStateOf<List<UserBeerDto>>(emptyList()) }
+                var isLoading by remember { mutableStateOf(true) }
+                var error by remember { mutableStateOf<String?>(null) }
 
-                val groupedItems: List<Pair<String, List<UserBeerDto>>> by remember(items) {
-                    mutableStateOf(items.groupBy { it.name }.toList())
+                // Collect the collection and filter items by ownerId
+                LaunchedEffect(userId) {
+                    if (userId == -1) return@LaunchedEffect
+                    try {
+                        isLoading = true
+                        error = null
+                        items = supabaseRepo.getCollection(userId)
+                    } catch (e: Exception) {
+                        error = "Failed to load collection: ${e.message}"
+                    } finally {
+                        isLoading = false
+                    }
                 }
 
                 Box(
@@ -73,67 +83,89 @@ class SecondActivity : BaseActivity() {
                                 .padding(innerPadding),
                             contentAlignment = Alignment.Center   // center child
                         ) {
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .padding(16.dp),
-                                horizontalAlignment = Alignment.CenterHorizontally
-                            ) {
-                                // Show the logged-in user
-                                /*Text(
-                                    text = "Logged in User: $username",
-                                    style = MaterialTheme.typography.titleMedium,
-                                    modifier = Modifier.padding(bottom = 16.dp)
-                                )
-                                 */
-
-                                // Item list
-                                LazyColumn(
-                                    modifier = Modifier
-                                        .weight(1f)
-                                        .fillMaxWidth()
-                                        .padding(top = 48.dp)
-                                ) {
-
-                                    // 1. Grouped, expandable list
-                                    items(groupedItems) { (name, beersWithSameName) ->
-
-                                        if (beersWithSameName.size == 1) {
-                                            val beer = beersWithSameName.first()
-
-                                            UserBeerItemCard(
-                                                beer = beer,
-                                                onClick = {
-                                                    val intent = Intent(
-                                                        this@SecondActivity,
-                                                        EighthActivity::class.java
-                                                    ).apply {
-                                                        putExtra("beer_entry", beer)
+                            when {
+                                isLoading -> {
+                                    CircularProgressIndicator()
+                                }
+                                error != null -> {
+                                    Text(
+                                        text = error ?: "Unknown error",
+                                        color = MaterialTheme.colorScheme.error
+                                    )
+                                }
+                                items.isEmpty() -> {
+                                    Text(text = "Your stack is empty.")
+                                }
+                                else -> {
+                                    Column(
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .padding(16.dp),
+                                        horizontalAlignment = Alignment.CenterHorizontally
+                                    ) {
+                                        // Item list
+                                        LazyColumn(
+                                            modifier = Modifier
+                                                .weight(1f)
+                                                .fillMaxWidth()
+                                                .padding(top = 48.dp)
+                                        ) {
+                                            items(items) { beer ->
+                                                Row(
+                                                    modifier = Modifier
+                                                        .fillMaxWidth()
+                                                        .padding(8.dp)
+                                                        .clickable {
+                                                            val intent = Intent(
+                                                                this@SecondActivity,
+                                                                EighthActivity::class.java
+                                                            ).apply {
+                                                                putExtra("beer_entry", beer)
+                                                            }
+                                                            startActivity(intent)
+                                                        },
+                                                    verticalAlignment = Alignment.CenterVertically
+                                                ) {
+                                                    // Stock image on the left
+                                                    beer.imageurl?.let { url ->
+                                                        AsyncImage(
+                                                            model = url,
+                                                            contentDescription = "Beer image",
+                                                            modifier = Modifier
+                                                                .size(72.dp)
+                                                                .padding(end = 12.dp),
+                                                            contentScale = ContentScale.Crop,
+                                                            placeholder = painterResource(R.drawable.beerpicture_placeholder),
+                                                            error = painterResource(R.drawable.beerpicture_placeholder)
+                                                        )
                                                     }
-                                                    startActivity(intent)
-                                                }
-                                            )
-                                        } else {
 
-                                            UserBeerGroupCard(
-                                                name = name,
-                                                beersWithSameName = beersWithSameName,
-                                                onBeerClick = { beer ->
-                                                    val intent = Intent(
-                                                        this@SecondActivity,
-                                                        EighthActivity::class.java
-                                                    ).apply { putExtra("beer_entry", beer) }
-                                                    startActivity(intent)
+                                                    Column(
+                                                        modifier = Modifier
+                                                            .fillMaxWidth()
+                                                            .padding(8.dp)
+                                                    ) {
+                                                        Text(text = "Name: ${beer.name}")
+                                                        Text(
+                                                            text = "My Rating: %.1f".format(
+                                                                beer.myrating
+                                                            )
+                                                        )
+                                                        Text(
+                                                            text = "Average: %.1f".format(
+                                                                beer.apiaverage
+                                                            )
+                                                        )
+                                                    }
+                                                    HorizontalDivider(
+                                                        modifier = Modifier.padding(
+                                                            vertical = 4.dp
+                                                        )
+                                                    )
                                                 }
-                                            )
+                                            }
                                         }
                                     }
-                                }
-                            }
-                            // Collect the Flow and filter items by ownerId
-                            LaunchedEffect(userId) {
-                                if (userId != -1) {
-                                    items = supabaseRepo.getCollection(userId)
                                 }
                             }
                         }

@@ -44,28 +44,36 @@ import androidx.compose.material.icons.filled.Home
 import com.example.beerstack.viewmodel.BeerViewModel
 import com.example.beerstack.model.Beer
 import com.example.beerstack.model.Currency
-//Util Imports (Helper Functions)
+import androidx.compose.material.icons.filled.AutoGraph
+import com.example.beerstack.ui.theme.BeerGradient
+//Utility Imports (Helper/Components Functions)
 import com.example.beerstack.utils.sortBeers
 import com.example.beerstack.utils.BeerList
 import com.example.beerstack.components.SortDropdown
 import com.example.beerstack.components.SearchBar
 import com.example.beerstack.components.CurrencyToggle
 import com.example.beerstack.components.SortOptions
-import androidx.compose.material.icons.filled.AutoGraph
-import com.example.beerstack.ui.theme.BeerGradient
 
 //---MAIN SCREEN---
 
+// Consult BaseActivity for root check
 class MainActivity : BaseActivity() {
 
+    // Called when the activity is created
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        enableEdgeToEdge()
+        enableEdgeToEdge() //for layout/UI
+        // Get user ID passed from the previous activity (Login Screen)
         val userId = intent.getIntExtra("USER_ID", -1)
+        // Get username
         val username = intent.getStringExtra("USER_NAME") ?: "Unknown"
+
+        // Set the UI using Jetpack Compose
         setContent {
+            // Apply won theme, not automatically from android
             BeerStackTheme(dynamicColor = false) {
+                // Show the main screen and pass user data
                 Main(
                     userId = userId,
                     username = username
@@ -77,12 +85,15 @@ class MainActivity : BaseActivity() {
 
 @Composable
 fun Main(userId: Int,username: String, beerViewModel: BeerViewModel = viewModel()){
+    // BeerViewModel:... is a class that processes all the beer activities, here it is declared
 
 
     //For the Sort Function of the scrollable List
     var selectedSort by remember { mutableStateOf(SortOptions.NAME) }
     //For the search function
     var searchText by remember { mutableStateOf("") }
+    //mutableStateOf: creates a state holder, if the value is changed, Compose will redraw the parts that use this
+    // For example: the beer cards will ble updated when searched for something and API is refetched
 
     // Request the API when main() is loaded or search changes (on every key press)
     LaunchedEffect(searchText) {
@@ -90,31 +101,34 @@ fun Main(userId: Int,username: String, beerViewModel: BeerViewModel = viewModel(
     }
 
     //Refresh conversion Rate on load
-    LaunchedEffect(Unit) {
-        beerViewModel.refreshRate()
+    LaunchedEffect(Unit) { //Unit: no real meaning, run once at beginning then do nothing
+        beerViewModel.refreshConversionRate()
     }
 
     // Make sure beers are sorted reactively when sort option changes
     val sortedBeers = sortBeers(
         beers = beerViewModel.beerList,
         sortOption = selectedSort
+
     )
-    Box(
+    Box( //Used to stack elements on top of each other
         modifier = Modifier
-            .fillMaxSize()
+            .fillMaxSize() //Over entire screen
             .background(BeerGradient)
     ) {
-        // use Scaffold for top and bottom bars (Handles weight on its own)
-        Scaffold(
+        // use Scaffold for top and bottom bars (Handles weight on its own, weight = how much space a composable takes relative to others)
+        Scaffold( //Layout Structure, draws the top/bottom bar and body, but doesn't put them there yet
             containerColor = Color.Transparent,
             topBar = {
+                //Values given trough with the TopBar
                 TopBar(userId = userId, username = username)
             },
             bottomBar = {
+                //Also values, including on which screen the user is currently on (true/false)
                 BottomBar(userId = userId, username = username, currentScreenIsHome = true, currentScreenIsStack = false, currentScreenIsLeaderboard = false
                 )
             }
-        ) { innerPadding ->
+        ) { innerPadding -> //automatically calculates padding
             Body(
 
                 modifier = Modifier
@@ -133,14 +147,19 @@ fun Main(userId: Int,username: String, beerViewModel: BeerViewModel = viewModel(
                 //For Currency Conversion
                 currency = beerViewModel.currency,
                 eurPerUsd = beerViewModel.eurPerUsd,
-                userId = userId
+                userId = userId,
+                // Loading flag from ViewModel
+                isLoading = beerViewModel.isLoading
             )
         }
     }
 }
 
+//Now the different bars and boy are being actually composed = made
+
 @Composable
 fun TopBar(userId: Int, username: String, modifier: Modifier = Modifier){
+    // Get the current Android context
     val context = LocalContext.current
 
     Box(
@@ -156,12 +175,13 @@ fun TopBar(userId: Int, username: String, modifier: Modifier = Modifier){
                 end = 16.dp
             )
     ) {
+        // Horizontal layout for logo and button
         Row(
             modifier = Modifier
                 .fillMaxSize(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // App logo on the left, bigger and centered vertically
+            // App logo displayed on the left side
             Image(
                 painter = painterResource(R.drawable.beerstacklogotransparent),
                 contentDescription = "BeerStack Logo",
@@ -169,27 +189,29 @@ fun TopBar(userId: Int, username: String, modifier: Modifier = Modifier){
                     .height(48.dp)
             )
 
-            // Take up remaining space between logo and button
+            // pushes the button to the far right
             Spacer(modifier = Modifier.weight(1f))
 
             // Login page button to the right
             FilledTonalButton(
                 onClick = {
+                    // Create intent to open FifthActivity (profile page)
                     val intent = Intent(context, FifthActivity::class.java)
                     intent.putExtra("USER_ID", userId)        // pass logged-in user ID
                     intent.putExtra("USER_NAME", username)    // pass logged-in username
-                    context.startActivity(intent)
+                    context.startActivity(intent)                           // Start the activity
 
                 },
                 // Round pill-shaped button
                 shape = RoundedCornerShape(50)
             ) {
+                // Profile icon inside the button
                 Icon(
                     imageVector = Icons.Filled.AccountCircle,
                     contentDescription = stringResource(R.string.profile_page)
                 )
-                Spacer(modifier = Modifier.width(4.dp))
-                Text(stringResource(R.string.profile_page))
+                Spacer(modifier = Modifier.width(4.dp))             //SMall space between icon and text
+                Text(stringResource(R.string.profile_page))     //Button text
             }
         }
     }
@@ -208,20 +230,22 @@ fun Body(
     //Search
     searchText: String,
     onSearchTextChange: (String) -> Unit,
-    //Currency COnversion
+    //Currency conversion
     currency: Currency,
     eurPerUsd: Double,
-    userId: Int
+    userId: Int,
+    // Check if API is loading or not
+    isLoading: Boolean
 ) {
     val context = LocalContext.current
     Column(
         modifier = modifier
             .fillMaxWidth(),
-            //.background(MaterialTheme.colorScheme.surfaceVariant), // Slightly darker background so cards pop more
+        //.background(MaterialTheme.colorScheme.surfaceVariant), // Slightly darker background so cards pop more
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
-        // TOP: Search on the left, sort currency converter & sort dropdownmenu on the right
+        // TOP: Search on the left, sort currency converter & sort dropdown menu on the right
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -232,7 +256,7 @@ fun Body(
             SearchBar(
                 value = searchText,
                 onValueChange = onSearchTextChange,
-                onSearch = { beerViewModel.getBeers(searchText) },
+                onSearch = { beerViewModel.getBeers(searchText) }, //When something is typed, get beers again (fetch API) with text
                 modifier = Modifier.weight(1f)
             )
 
@@ -243,7 +267,7 @@ fun Body(
                 currency = currency,
                 onToggleAndRefresh = {
                     beerViewModel.toggleCurrency()
-                    beerViewModel.refreshRate()
+                    beerViewModel.refreshConversionRate()
                 }
             )
 
@@ -258,13 +282,24 @@ fun Body(
 
         Spacer(modifier = Modifier.padding(4.dp))
 
+        // Show loading, error, beer list, or "add beer" button
         when {
+            isLoading -> {
+                // Show loading while beers are being fetched
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
+            }
             error != null -> Text(text = error, color = Color.Red) // Show error if loading failed
             beers.isNotEmpty() -> BeerList(
                 items = beers,
                 onAddBeerClick = { beer ->
+                    // Navigate to detail page for selected beer
                     val intent = Intent(context, FourthActivity::class.java)
-                    intent.putExtra("beer_extra", beer) //must be parcelable
+                    intent.putExtra("beer_extra", beer) //must be parcelable object (@Parcelize)
                     intent.putExtra("USER_ID", userId)
 
                     context.startActivity(intent)
@@ -277,6 +312,7 @@ fun Body(
                 // Button to add your own beer
                 Button(
                     onClick = {
+                        // Go to screen with own beer
                         val intent = Intent(context, SeventhActivity::class.java)
                         intent.putExtra("USER_ID", userId)
                         context.startActivity(intent)
@@ -288,71 +324,39 @@ fun Body(
                 }
             }
         }
-
-        //Get last successful fetched beer & last error message
-        val lastAddedBeerName = beerViewModel.lastAddedBeerName
-        val lastAddedBeerError = beerViewModel.lastAddedBeerError
-
-        if (lastAddedBeerName != null || lastAddedBeerError != null) {
-            Dialog(onDismissRequest = { beerViewModel.clearLastBeerInfo() }) { //Dialog = pop up
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth(0.85f)
-                        .padding(24.dp)
-                        .background(Color.White, shape = RoundedCornerShape(18.dp)),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(
-                            //Show message on message depending on success or error
-                            text = lastAddedBeerName?.let {
-                                "Added '$it' to Stack!"
-                            } ?: lastAddedBeerError.orEmpty(),
-                            color = if (lastAddedBeerError != null) Color.Red else Color.Black,
-                            modifier = Modifier.padding(20.dp)
-                        )
-                        Button(
-                            onClick = { beerViewModel.clearLastBeerInfo() },
-                            shape = RoundedCornerShape(14.dp),
-                            modifier = Modifier.padding(bottom = 8.dp)
-                        ) {
-                            Text("OK")
-                        }
-                    }
-                }
-            }
-        }
     }
 }
 
 @Composable
-fun BottomBar(userId: Int, username: String, currentScreenIsHome: Boolean, currentScreenIsStack: Boolean, currentScreenIsLeaderboard: Boolean, modifier: Modifier = Modifier){    val context = LocalContext.current
+fun BottomBar(userId: Int, username: String, currentScreenIsHome: Boolean, currentScreenIsStack: Boolean, currentScreenIsLeaderboard: Boolean, modifier: Modifier = Modifier){
+    val context = LocalContext.current
 
     //keep state which item is selected
     var selectedItem by remember {
         mutableIntStateOf(
-        when{
-            currentScreenIsHome -> 0
-            currentScreenIsStack -> 1
-            currentScreenIsLeaderboard -> 2
-            else -> 0
+            when{
+                currentScreenIsHome -> 0
+                currentScreenIsStack -> 1
+                currentScreenIsLeaderboard -> 2
+                else -> 0
             }
         )
     }
 
+    // Bottom navigation bar container
     NavigationBar(
         modifier = modifier
             .fillMaxWidth(),
         containerColor = Color.Transparent
         // background color comes from MaterialTheme by default
     ) {
-        // Home button (MainActivity)
+        // -----Home button (MainActivity)-----
         NavigationBarItem(
             selected = selectedItem == 0,
             onClick = {
                 selectedItem = 0
                 val intent = Intent(context, MainActivity::class.java)
-                if (!currentScreenIsHome) {
+                if (!currentScreenIsHome) { // Navigate to MainActivity only if not already there
                     intent.putExtra("USER_ID", userId)
                     intent.putExtra("USER_NAME", username)
                     context.startActivity(intent)
@@ -370,9 +374,9 @@ fun BottomBar(userId: Int, username: String, currentScreenIsHome: Boolean, curre
             )
         )
 
-        //Button to the second page with the database of beer collection
+        //-----Stack/Collection Button-----
         NavigationBarItem(
-            selected = selectedItem == 1,
+            selected = selectedItem == 1,  // Highlight if currently selected
             onClick = {
                 selectedItem = 1
                 if(!currentScreenIsStack) {
@@ -395,6 +399,7 @@ fun BottomBar(userId: Int, username: String, currentScreenIsHome: Boolean, curre
             )
         )
 
+        // ----- Leaderboard Button -----
         NavigationBarItem(
             selected = selectedItem == 2,
             onClick = {
@@ -420,9 +425,11 @@ fun BottomBar(userId: Int, username: String, currentScreenIsHome: Boolean, curre
     }
 }
 
+//Lets you see what main look like without running the app, for in android studio
 @Preview(showBackground = true, widthDp = 320, heightDp = 320)
 @Composable
 fun MainPreview() {
+    // Apply the app's theme, not automatically
     BeerStackTheme(dynamicColor = false) {
         Main(userId = 3,username = "password", beerViewModel = viewModel())
     }
