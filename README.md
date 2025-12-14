@@ -39,6 +39,32 @@ Describe the implementation of the following topics.
 ### ![](readme-resources/Screenshot.png) Screenshots
 Give screenshots for every screen in the application. Give each screen an unique name.
 
+#### Login Page
+![img.png](readme-resources/loginPage.png)
+
+#### Register Page
+![img.png](readme-resources/registerPage.png)
+
+#### Main Screen
+![img.png](readme-resources/mainScreen.png)
+
+#### Profile Page
+![img.png](readme-resources/profilePage.png)
+
+#### Stack Page
+
+#### Leaderbord
+![img.png](readme-resources/leaderbord.png)
+
+#### Add to Stack
+![img.png](readme-resources/addToStack.png)
+
+#### Beer details
+![img.png](readme-resources/beerDetails.png)
+
+---
+
+
 ## ![](readme-resources/API.png) Secure API request/Intercept & Modify Request (Secure)
 
 ### Setup
