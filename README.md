@@ -264,6 +264,7 @@ Then we heard from the teachers that someone changed all the pictures by interce
 
 Started off by looking at which things i needed for the api in the app.
 ![[image21.png]](readme-resources/image21.png)
+
 In BeerDto.kt you can see what comes out of the api and we need the imageurl
 
 ![[image22.png]](readme-resources/image22.png)
@@ -328,6 +329,7 @@ I did this using android studio
 In Build > Generate App Bundle or APKs > Generate APKs
 It will build the app and generate an APK inside app/build/outputs/apk/debug/app-debug.apk
 ![[image27.png]](readme-resources/image27.png)
+
 Now you can use this apk for whatever you want
 
 We needed it to get the smali from our class out of it and copy it inside our legitimate app
@@ -383,6 +385,7 @@ The second time is the screenshot above and that was an updated version of the a
 
 you need you need a line inside some smali file that says something like this
 ![[image31.png]](readme-resources/image31.png)
+
 and some time later
 ![[image32.png]](readme-resources/image32.png)
 But you don't know the number so here it was 0
