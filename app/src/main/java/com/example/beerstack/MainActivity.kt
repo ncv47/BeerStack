@@ -50,6 +50,7 @@ import com.example.beerstack.components.SortDropdown
 import com.example.beerstack.components.SearchBar
 import com.example.beerstack.components.CurrencyToggle
 import com.example.beerstack.components.SortOptions
+import androidx.compose.material.icons.filled.AutoGraph
 
 //---MAIN SCREEN---
 
@@ -103,7 +104,7 @@ fun Main(userId: Int,username: String, beerViewModel: BeerViewModel = viewModel(
             TopBar(userId = userId, username = username)
         },
         bottomBar = {
-            BottomBar(userId = userId, username = username, currentScreenIsHome = true, currentScreenIsStack = false
+            BottomBar(userId = userId, username = username, currentScreenIsHome = true, currentScreenIsStack = false, currentScreenIsLeaderboard = false
             )
         }
     ) { innerPadding ->
@@ -317,8 +318,7 @@ fun Body(
 }
 
 @Composable
-fun BottomBar(userId: Int, username: String, currentScreenIsHome: Boolean, currentScreenIsStack: Boolean, modifier: Modifier = Modifier){
-    val context = LocalContext.current
+fun BottomBar(userId: Int, username: String, currentScreenIsHome: Boolean, currentScreenIsStack: Boolean, currentScreenIsLeaderboard: Boolean, modifier: Modifier = Modifier){    val context = LocalContext.current
 
     //keep state which item is selected
     var selectedItem by remember {
@@ -326,6 +326,7 @@ fun BottomBar(userId: Int, username: String, currentScreenIsHome: Boolean, curre
         when{
             currentScreenIsHome -> 0
             currentScreenIsStack -> 1
+            currentScreenIsLeaderboard -> 2
             else -> 0
             }
         )
@@ -380,6 +381,29 @@ fun BottomBar(userId: Int, username: String, currentScreenIsHome: Boolean, curre
                 )
             },
             label = { Text(stringResource(R.string.collection_page)) },
+            colors = NavigationBarItemDefaults.colors(
+                indicatorColor = Color.Transparent  // no blue background when selected
+            )
+        )
+
+        NavigationBarItem(
+            selected = selectedItem == 2,
+            onClick = {
+                if (!currentScreenIsLeaderboard) {
+                    selectedItem = 2
+                    val intent = Intent(context, NinthActivity::class.java)
+                    intent.putExtra("USER_ID", userId)
+                    intent.putExtra("USER_NAME", username)
+                    context.startActivity(intent)
+                }
+            },
+            icon = {
+                Icon(
+                    imageVector = Icons.Filled.AutoGraph,
+                    contentDescription = "Leaderboard"
+                )
+            },
+            label = { Text("Leaderboard") },
             colors = NavigationBarItemDefaults.colors(
                 indicatorColor = Color.Transparent  // no blue background when selected
             )
