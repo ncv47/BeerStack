@@ -20,6 +20,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.material3.Text
 import androidx.compose.material3.Button
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.Modifier
 import com.example.beerstack.ui.theme.BeerStackTheme
 import androidx.compose.ui.graphics.Color
@@ -215,8 +216,8 @@ fun Body(
     val context = LocalContext.current
     Column(
         modifier = modifier
-            .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.surfaceVariant), // Slightly darker background so cards pop more
+            .fillMaxWidth(),
+            //.background(MaterialTheme.colorScheme.surfaceVariant), // Slightly darker background so cards pop more
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
@@ -416,5 +417,13 @@ fun BottomBar(userId: Int, username: String, currentScreenIsHome: Boolean, curre
                 indicatorColor = Color.Transparent  // no blue background when selected
             )
         )
+    }
+}
+
+@Preview(showBackground = true, widthDp = 320, heightDp = 320)
+@Composable
+fun MainPreview() {
+    BeerStackTheme(dynamicColor = false) {
+        Main(userId = 3,username = "password", beerViewModel = viewModel())
     }
 }
