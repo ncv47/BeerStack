@@ -94,7 +94,7 @@ fun ProfileScreen(
         Scaffold(
             containerColor = Color.Transparent,
             topBar = {
-                ProfileTopBar(onBack = onBack)
+                GeneralTopBar(onBack = onBack)
             }
         ) { innerPadding ->
             Column(
@@ -122,7 +122,7 @@ fun ProfileScreen(
 }
 
 @Composable
-fun ProfileTopBar(onBack: () -> Unit) {
+fun GeneralTopBar(onBack: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
