@@ -81,7 +81,7 @@ fun Main(userId: Int,username: String, beerViewModel: BeerViewModel = viewModel(
     //For the search function
     var searchText by remember { mutableStateOf("") }
 
-    // Request the API when main() is loaded or search changes
+    // Request the API when main() is loaded or search changes (on every key press)
     LaunchedEffect(searchText) {
         beerViewModel.getBeers(searchText)
     }
@@ -92,8 +92,8 @@ fun Main(userId: Int,username: String, beerViewModel: BeerViewModel = viewModel(
     }
 
     // Make sure beers are sorted reactively when sort option changes
-    val sortedBeers by remember(selectedSort, beerViewModel.beerList) {
-        mutableStateOf(sortBeers(beerViewModel.beerList, selectedSort))
+    val sortedBeers = remember(selectedSort, beerViewModel.beerList) {
+        sortBeers(beerViewModel.beerList, selectedSort)
     }
 
     // use Scaffold for top and bottom bars (Handles weight on its own)
