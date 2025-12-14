@@ -17,6 +17,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.example.beerstack.components.UserBeerGroupCard
+import com.example.beerstack.components.UserBeerItemCard
 import com.example.beerstack.data.remote.SupabaseCollectionRepository
 import com.example.beerstack.data.remote.UserBeerDto
 import com.example.beerstack.ui.theme.BeerGradient
@@ -42,19 +44,6 @@ class SecondActivity : BaseActivity() {
                 var isLoading by remember { mutableStateOf(true) }
                 var error by remember { mutableStateOf<String?>(null) }
 
-                // Collect the collection and filter items by ownerId
-                LaunchedEffect(userId) {
-                    if (userId == -1) return@LaunchedEffect
-                    try {
-                        isLoading = true
-                        error = null
-                        items = supabaseRepo.getCollection(userId)
-                    } catch (e: Exception) {
-                        error = "Failed to load collection: ${e.message}"
-                    } finally {
-                        isLoading = false
-                    }
-                }
 
                 // Collect the collection and filter items by ownerId
                 LaunchedEffect(userId) {
@@ -69,6 +58,11 @@ class SecondActivity : BaseActivity() {
                         isLoading = false
                     }
                 }
+
+                val groupedItems: List<Pair<String, List<UserBeerDto>>> by remember(items) {
+                    mutableStateOf(items.groupBy { it.name }.toList())
+                }
+
 
                 Box(
                     modifier = Modifier

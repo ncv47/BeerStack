@@ -315,12 +315,12 @@ private fun StarIcon(
             .size(32.dp)
             .combinedClickable(
                 onClick = {
-                    // single tap → full star (1,2,3,...)
-                    onRatingChange(starValue)
-                },
-                onDoubleClick = {
                     // long press → half star (0.5,1.5,2.5,...)
                     onRatingChange(starValue - 0.5f)
+                },
+                onDoubleClick = {
+                    // single tap → full star (1,2,3,...)
+                    onRatingChange(starValue)
                 }
             )
     )
