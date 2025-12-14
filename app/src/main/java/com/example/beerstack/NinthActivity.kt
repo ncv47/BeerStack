@@ -90,10 +90,11 @@ fun LeaderboardScreen(
                 val existing = countMap[uid]
                 UserBeerCount(
                     userId = uid,
-                    // Shows all users even if they don't have any beers yet
-                    count = existing?.count ?: 0
+                    count = existing?.count ?: 0,
+                    lastBeerDate = existing?.lastBeerDate
                 )
             }
+
             // Orders the users
             rows = allRows.sortedWith(
                 compareByDescending<UserBeerCount> { it.count }
