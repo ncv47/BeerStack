@@ -116,175 +116,40 @@ class SecondActivity : BaseActivity() {
                                                 .fillMaxWidth()
                                                 .padding(top = 48.dp)
                                         ) {
+
+                                            // 1. Grouped, expandable list
                                             items(groupedItems) { (name, beersWithSameName) ->
 
                                                 if (beersWithSameName.size == 1) {
                                                     val beer = beersWithSameName.first()
 
-<<<<<<< HEAD
-                                                    Row(
-                                                        modifier = Modifier
-                                                            .fillMaxWidth()
-                                                            .padding(8.dp)
-                                                            .clickable {
-                                                                val intent = Intent(
-                                                                    this@SecondActivity,
-                                                                    EighthActivity::class.java
-                                                                ).apply {
-                                                                    putExtra("beer_entry", beer)
-                                                                }
-                                                                startActivity(intent)
-                                                            },
-                                                        verticalAlignment = Alignment.CenterVertically
-                                                    ) {
-                                                        // Stock image on the left
-                                                        beer.imageurl?.let { url ->
-                                                            AsyncImage(
-                                                                model = url,
-                                                                contentDescription = "Beer image",
-                                                                modifier = Modifier
-                                                                    .size(72.dp)
-                                                                    .padding(end = 12.dp),
-                                                                contentScale = ContentScale.Crop,
-                                                                placeholder = painterResource(R.drawable.beerpicture_placeholder),
-                                                                error = painterResource(R.drawable.beerpicture_placeholder)
-                                                            )
+                                                    UserBeerItemCard(
+                                                        beer = beer,
+                                                        onClick = {
+                                                            val intent = Intent(
+                                                                this@SecondActivity,
+                                                                EighthActivity::class.java
+                                                            ).apply {
+                                                                putExtra("beer_entry", beer)
+                                                            }
+                                                            startActivity(intent)
                                                         }
-
-<<<<<<< HEAD
-                                                        Column(
-=======
-                                                Column(
-                                                    modifier = Modifier
-                                                        .fillMaxWidth()
-                                                        .padding(8.dp)
-                                                ) {
-                                                    Text(text = "Name: ${beer.name}")
-                                                    Text(text = "My Rating: %.1f".format(beer.myrating))
-                                                    Text(text = "Average: %.1f".format(beer.apiaverage))
-                                                }
-                                            }
-=======
-                                    // 1. Grouped, expandable list
-                                    items(groupedItems) { (name, beersWithSameName) ->
-
-                                        if (beersWithSameName.size == 1) {
-                                            val beer = beersWithSameName.first()
-
-                                            UserBeerItemCard(
-                                                beer = beer,
-                                                onClick = {
-                                                    val intent = Intent(
-                                                        this@SecondActivity,
-                                                        EighthActivity::class.java
-                                                    ).apply {
-                                                        putExtra("beer_entry", beer)
-                                                    }
-                                                    startActivity(intent)
-                                                }
-                                            )
->>>>>>> 434f8e6 (Made it so when there is only 1 they already use the itemcard)
-                                        } else {
-
-                                            UserBeerGroupCard(
-                                                name = name,
-                                                beersWithSameName = beersWithSameName,
-                                                onBeerClick = { beer ->
-                                                    val intent = Intent(
-                                                        this@SecondActivity,
-                                                        EighthActivity::class.java
-                                                    ).apply { putExtra("beer_entry", beer) }
-                                                    startActivity(intent)
-                                                }
-<<<<<<< HEAD
-
-                                                Text(text = "Name: $name")
-                                                Text(text = "Entries: ${beersWithSameName.size}")
-
-                                                if (expanded) {
-                                                    beersWithSameName.forEach { beer ->
-                                                        Row(
->>>>>>> a38ce3e (Added the picture to the clickable list too so ow you also see pictures there)
-                                                            modifier = Modifier
-                                                                .fillMaxWidth()
-                                                                .padding(8.dp)
-                                                        ) {
-                                                            Text(text = "Name: ${beer.name}")
-                                                            Text(text = "My Rating: %.1f".format(beer.myrating))
-                                                            Text(text = "Average: %.1f".format(beer.apiaverage))
-                                                        }
-                                                    }
+                                                    )
                                                 } else {
-                                                    var expanded by remember { mutableStateOf(false) }
 
-                                                    Column(
-                                                        modifier = Modifier
-                                                            .fillMaxWidth()
-                                                            .clickable { expanded = !expanded }
-                                                            .padding(8.dp)
-                                                    ) {
-                                                        // Header row per name
-                                                        Text(text = "Name: $name")
-                                                        Text(text = "Entries: ${beersWithSameName.size}")
-
-                                                        if (expanded) {
-                                                            beersWithSameName.forEach { beer ->
-                                                                Row(
-                                                                    modifier = Modifier
-                                                                        .fillMaxWidth()
-                                                                        .padding(8.dp)
-                                                                        .clickable {
-                                                                            val intent = Intent(
-                                                                                this@SecondActivity,
-                                                                                EighthActivity::class.java
-                                                                            ).apply {
-                                                                                putExtra("beer_entry", beer)
-                                                                            }
-                                                                            startActivity(intent)
-                                                                        },
-                                                                    verticalAlignment = Alignment.CenterVertically
-                                                                ) {
-                                                                    // Stock image on the left
-                                                                    beer.imageurl?.let { url ->
-                                                                        AsyncImage(
-                                                                            model = url,
-                                                                            contentDescription = "Beer image",
-                                                                            modifier = Modifier
-                                                                                .size(72.dp)
-                                                                                .padding(end = 12.dp),
-                                                                            contentScale = ContentScale.Crop,
-                                                                            placeholder = painterResource(R.drawable.beerpicture_placeholder),
-                                                                            error = painterResource(R.drawable.beerpicture_placeholder)
-                                                                        )
-                                                                    }
-
-                                                            Column(
-                                                                modifier = Modifier
-                                                                    .fillMaxWidth()
-                                                                    .padding(8.dp)
-                                                            ) {
-                                                                Text(text = "Name: ${beer.name}")
-                                                                Text(
-                                                                    text = "My Rating: %.1f".format(
-                                                                        beer.myrating
-                                                                    )
-                                                                )
-                                                                Text(text = "Average: %.1f".format(beer.apiaverage))
-                                                            }
-                                                            HorizontalDivider(
-                                                                modifier = Modifier.padding(
-                                                                    vertical = 4.dp
-                                                                )
-                                                            )
-                                                                }
-                                                            }
+                                                    UserBeerGroupCard(
+                                                        name = name,
+                                                        beersWithSameName = beersWithSameName,
+                                                        onBeerClick = { beer ->
+                                                            val intent = Intent(
+                                                                this@SecondActivity,
+                                                                EighthActivity::class.java
+                                                            ).apply { putExtra("beer_entry", beer) }
+                                                            startActivity(intent)
                                                         }
-                                                    }
+                                                    )
                                                 }
                                             }
-=======
-                                            )
->>>>>>> d55ae03 (made use of the grouped card one for the groups to make it look nicer)
                                         }
                                     }
                                 }
