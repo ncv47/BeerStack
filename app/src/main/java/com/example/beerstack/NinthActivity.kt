@@ -1,5 +1,7 @@
 package com.example.beerstack
 
+import java.text.SimpleDateFormat
+import java.util.Locale
 import android.os.Bundle
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -11,6 +13,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.graphics.Color
+import androidx.compose.runtime.*
+import kotlin.math.roundToInt
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
@@ -286,7 +290,17 @@ fun LeaderboardRow(
         }
     }
 }
-
+fun last7DayLabels(): List<String> {
+    val cal = Calendar.getInstance()
+    val sdf = SimpleDateFormat("E", Locale.getDefault()) // short day name, e.g., Mon
+    val labels = mutableListOf<String>()
+    for (i in 6 downTo 0) { // 6 days ago -> today
+        val tempCal = cal.clone() as Calendar
+        tempCal.add(Calendar.DAY_OF_YEAR, -i)
+        labels.add(sdf.format(tempCal.time))
+    }
+    return labels
+}
 
 @Composable
 fun DrinksGraphCard(
@@ -299,22 +313,17 @@ fun DrinksGraphCard(
     val circleRadius = 6.dp
     val lineColor = Color(0xFF4A90E2)
     val fillColor = lineColor.copy(alpha = 0.3f)
-    val days = listOf("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
+    val days = last7DayLabels()
+
 
     Card(
-        modifier = modifier.fillMaxWidth().height(260.dp),
+        modifier = modifier
+            .fillMaxWidth()
+            .height(260.dp),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = Color.Transparent)
     ) {
         Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text("DRINKS >", style = MaterialTheme.typography.titleSmall, color = Color.White)
-                Text("SEE ALL", style = MaterialTheme.typography.titleSmall, color = Color(0xFF5DA9FF))
-            }
-
             Spacer(Modifier.height(12.dp))
 
             Box(modifier = Modifier.fillMaxWidth().height(120.dp)) {
@@ -322,12 +331,27 @@ fun DrinksGraphCard(
                     val spacing = size.width / (drinksPerDay.size - 1)
                     val baseline = size.height * 0.75f
                     val points = drinksPerDay.mapIndexed { i, count ->
-                        Offset(i * spacing, baseline - if (maxDrinks > 0) (count / maxDrinks.toFloat()) * baseline * 0.7f else 0f)
+                        Offset(
+                            x = i * spacing,
+                            y = baseline - if (maxDrinks > 0) (count / maxDrinks.toFloat()) * baseline * 0.7f else 0f
+                        )
                     }
 
-                    // Draw line and filled area
-                    for (i in 0 until points.lastIndex) drawLine(lineColor, points[i], points[i + 1], 3f, StrokeCap.Round)
-                    drawPath(Path().apply { moveTo(points.first().x, baseline); points.forEach { lineTo(it.x, it.y) }; lineTo(points.last().x, baseline); close() }, fillColor)
+                    // Draw line
+                    for (i in 0 until points.lastIndex) {
+                        drawLine(lineColor, points[i], points[i + 1], 3f)
+                    }
+
+                    // Draw filled area
+                    drawPath(
+                        path = androidx.compose.ui.graphics.Path().apply {
+                            moveTo(points.first().x, baseline)
+                            points.forEach { lineTo(it.x, it.y) }
+                            lineTo(points.last().x, baseline)
+                            close()
+                        },
+                        color = fillColor
+                    )
 
                     // Draw circles
                     val pxRadius = circleRadius.toPx()
@@ -335,10 +359,32 @@ fun DrinksGraphCard(
                 }
             }
 
-            Spacer(Modifier.height(12.dp))
+            // Row with counts
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                drinksPerDay.forEach { count ->
+                    Text(
+                        text = "$count",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = Color.Blue
+                    )
+                }
+            }
 
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                days.forEach { Text(it, style = MaterialTheme.typography.bodySmall, color = Color.White) }
+            // Row with day labels
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                days.forEach { day ->
+                    Text(
+                        text = day,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = Color.White
+                    )
+                }
             }
         }
     }
