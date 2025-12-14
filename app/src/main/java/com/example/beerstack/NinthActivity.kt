@@ -1,19 +1,28 @@
 package com.example.beerstack
 
 import android.os.Bundle
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.*
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.beerstack.data.AppDatabase
 import com.example.beerstack.data.UserDB.OfflineUsersRepository
@@ -25,6 +34,8 @@ import com.example.beerstack.ui.theme.BeerGradient
 import com.example.beerstack.ui.theme.BeerStackTheme
 import kotlinx.coroutines.flow.first
 import java.util.Calendar
+import kotlin.io.path.Path
+import kotlin.io.path.moveTo
 
 //---LEADERBOARD---
 
@@ -78,6 +89,7 @@ fun LeaderboardScreen(
     var isLoading by remember { mutableStateOf(true) }
     var error by remember { mutableStateOf<String?>(null) }
     var userBeers by remember { mutableStateOf<List<UserBeerDto>>(emptyList()) }
+    val sampleData = listOf(1, 2, 3, 4, 5, 6, 700)
 
     LaunchedEffect(userId) {
         try {
@@ -187,7 +199,8 @@ fun LeaderboardScreen(
                         Spacer(modifier = Modifier.height(16.dp))
 
                         DrinksGraphCard(
-                            userBeers = userBeers,
+
+                            drinksPerDay  = (sampleData),
                             modifier = Modifier.padding(16.dp)
                         )
                     }
@@ -250,20 +263,20 @@ fun LeaderboardRow(
         }
     }
 }
-fun formatDate(timestamp: Long?): String {
-    if (timestamp == null) return "Unknown"
-    val cal = Calendar.getInstance()
-    cal.timeInMillis = timestamp
-    val day = cal.get(Calendar.DAY_OF_MONTH)
-    val month = cal.get(Calendar.MONTH) + 1
-    val year = cal.get(Calendar.YEAR)
-    return "$day/$month/$year"
-}
+
+
 @Composable
 fun DrinksGraphCard(
-    userBeers: List<UserBeerDto>,
+    drinksPerDay: List<Int>, // should have exactly 7 items
     modifier: Modifier = Modifier
 ) {
+    require(drinksPerDay.size == 7) { "drinksPerDay must have 7 items" }
+
+    val maxDrinks = drinksPerDay.maxOrNull() ?: 0
+    val circleRadius = 6.dp
+    val lineColor = Color(0xFF4A90E2)
+    val fillColor = Color(0xFF4A90E2).copy(alpha = 0.3f)
+
     Card(
         modifier = modifier
             .fillMaxWidth()
@@ -276,19 +289,15 @@ fun DrinksGraphCard(
                 .fillMaxSize()
                 .padding(16.dp)
         ) {
-
-            // ---------- HEADER ----------
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
                     text = "DRINKS >",
                     style = MaterialTheme.typography.titleSmall,
                     color = Color.White
                 )
-
                 Text(
                     text = "SEE ALL",
                     style = MaterialTheme.typography.titleSmall,
@@ -298,25 +307,54 @@ fun DrinksGraphCard(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // ---------- GRAPH ----------
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(120.dp)
             ) {
-                // Placeholder dots for each beer
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    userBeers.forEach { _ ->
-                        Box(
-                            modifier = Modifier
-                                .size(10.dp)
-                                .background(
-                                    Color(0xFF4A90E2),
-                                    shape = RoundedCornerShape(50)
-                                )
+                Canvas(modifier = Modifier.fillMaxSize()) {
+                    val width = size.width
+                    val height = size.height
+                    val spacing = width / (drinksPerDay.size - 1)
+                    val baseline = height * 0.75f
+
+                    // Calculate points for graph line
+                    val points = drinksPerDay.mapIndexed { index, count ->
+                        val x = index * spacing
+                        val y = if (maxDrinks > 0)
+                            baseline - (count.toFloat() / maxDrinks) * (baseline * 0.7f)
+                        else
+                            baseline
+                        Offset(x, y)
+                    }
+
+                    // Draw line connecting dots
+                    for (i in 0 until points.lastIndex) {
+                        drawLine(
+                            color = lineColor,
+                            start = points[i],
+                            end = points[i + 1],
+                            strokeWidth = 3f,
+                            cap = StrokeCap.Round
+                        )
+                    }
+
+                    // Draw filled area below line
+                    val path = Path().apply {
+                        moveTo(points.first().x, baseline)
+                        points.forEach { lineTo(it.x, it.y) }
+                        lineTo(points.last().x, baseline)
+                        close()
+                    }
+                    drawPath(path, fillColor)
+
+                    // Draw circles for each point
+                    val pxRadius = circleRadius.toPx() // convert Dp to pixels
+                    points.forEach { point ->
+                        drawCircle(
+                            color = lineColor,
+                            radius = pxRadius,
+                            center = point
                         )
                     }
                 }
@@ -324,15 +362,15 @@ fun DrinksGraphCard(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // ---------- DATES UNDER GRAPH ----------
-            val sortedBeers = userBeers.sortedBy { it.date } // or timestamp
-            LazyRow(
+            // Days below graph
+            Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                items(sortedBeers) { beer ->
+                val days = listOf("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
+                days.forEach { day ->
                     Text(
-                        text = beer.date ?: "Unknown",
+                        text = day,
                         style = MaterialTheme.typography.bodySmall,
                         color = Color.White
                     )
@@ -341,4 +379,3 @@ fun DrinksGraphCard(
         }
     }
 }
-
