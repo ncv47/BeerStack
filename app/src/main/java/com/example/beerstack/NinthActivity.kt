@@ -84,7 +84,9 @@ fun LeaderboardScreen(
     var isLoading by remember { mutableStateOf(true) }
     var error by remember { mutableStateOf<String?>(null) }
     var userBeers by remember { mutableStateOf<List<UserBeerDto>>(emptyList()) }
-    val drinksPerDay = userBeers.drinksLast7Days()
+    val drinksPerDay = userBeers.drinksThisWeek()
+
+
 
     LaunchedEffect(userId) {
         try {
@@ -292,6 +294,42 @@ fun last7DayLabels(): List<String> {
     }
     return labels
 }
+fun getStartOfWeek(): Calendar {
+    val cal = Calendar.getInstance()
+    cal.set(Calendar.HOUR_OF_DAY, 0)
+    cal.set(Calendar.MINUTE, 0)
+    cal.set(Calendar.SECOND, 0)
+    cal.set(Calendar.MILLISECOND, 0)
+    cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY)
+    return cal
+}
+fun List<UserBeerDto>.drinksThisWeek(): List<Int> {
+    val startOfWeek = getStartOfWeek()
+    val today = Calendar.getInstance()
+    val counts = MutableList(7) { 0 }
+
+    forEach { beer ->
+        val beerDate = beer.date?.let {
+            try {
+                val parts = it.split("T")[0].split("-").map { p -> p.toInt() }
+                val cal = Calendar.getInstance()
+                cal.set(parts[0], parts[1] - 1, parts[2], 0, 0, 0)
+                cal
+            } catch (e: Exception) { null }
+        } ?: return@forEach
+
+        if (beerDate.before(startOfWeek)) return@forEach // ignore beers from previous weeks
+
+        val diff = ((beerDate.timeInMillis - startOfWeek.timeInMillis) / (1000 * 60 * 60 * 24)).toInt()
+        if (diff in 0..6) {
+            counts[diff] += 1 // index 0 = Monday
+        }
+    }
+
+    return counts
+}
+
+
 
 @Composable
 fun DrinksGraphCard(
