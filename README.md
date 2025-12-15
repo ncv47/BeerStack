@@ -524,6 +524,31 @@ So we needed to decompile the APK file of the malware. I did this using the foll
 
 `apktool d -f -o .\malware app-debug.apk`
 
+Then i went to the strings.xml file and did
+
+`notepad strings.xml`
+
+i changed the value from:
+```
+<resources>
+    <string name="app_name">BeerStack</string>
+    <string name="add_beer">Add Own Beer</string>
+    <string name="collection_page">Stack</string>
+    <string name="profile_page">Profile</string>
+    <string name="home_page">Home</string>
+</resources>
+```
+
+too:
+```
+<resources>
+    <string name="app_name">Changed Value</string>
+    <string name="add_beer">Changed Value</string>
+    <string name="collection_page">Changed Value</string>
+    <string name="profile_page">Changed Value</string>
+    <string name="home_page">Changed Value</string>
+</resources>
+```
 ---
 
 ## ![](readme-resources/Frida.png) Frida
