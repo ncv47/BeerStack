@@ -357,11 +357,6 @@ But then Perplexity gave me the okhttp3 function of intercept
 So with the help of Perplexity I came up with this code
 
 ```kotlin
-package com.example.malware  
-  
-import okhttp3.Interceptor  
-import okhttp3.Response  
-import okhttp3.ResponseBody.Companion.toResponseBody  
   
 class ImageRewriteInterceptor : Interceptor {  
   
