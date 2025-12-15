@@ -259,17 +259,6 @@ fun LeaderboardRow(
         }
     }
 }
-fun last7DayLabels(): List<String> {
-    val cal = Calendar.getInstance()
-    val sdf = SimpleDateFormat("E", Locale.getDefault()) // short day name, e.g., Mon
-    val labels = mutableListOf<String>()
-    for (i in 6 downTo 0) { // 6 days ago -> today
-        val tempCal = cal.clone() as Calendar
-        tempCal.add(Calendar.DAY_OF_YEAR, -i)
-        labels.add(sdf.format(tempCal.time))
-    }
-    return labels
-}
 fun getStartOfWeek(): Calendar {
     val cal = Calendar.getInstance()
     cal.firstDayOfWeek = Calendar.MONDAY
@@ -281,118 +270,56 @@ fun getStartOfWeek(): Calendar {
     return cal
 }
 fun List<UserBeerDto>.drinksThisWeek(): List<Int> {
-    val startOfWeek = getStartOfWeek() // Monday 00:00
+    val start = getStartOfWeek()
     val counts = MutableList(7) { 0 }
-
     forEach { beer ->
-        val beerDate = beer.date?.let {
-            try {
-                val parts = it.split("T")[0].split("-").map { p -> p.toInt() }
-                val cal = Calendar.getInstance()
-                cal.set(parts[0], parts[1] - 1, parts[2], 0, 0, 0)
-                cal.set(Calendar.MILLISECOND, 0)
-                cal
-            } catch (e: Exception) { null }
-        } ?: return@forEach
-
-        if (beerDate.before(startOfWeek)) return@forEach
-
-        val diffDays = ((beerDate.timeInMillis - startOfWeek.timeInMillis) / (24 * 60 * 60 * 1000)).toInt()
-        if (diffDays in 0..6) {
-            counts[diffDays] += 1
+        beer.date?.split("T")?.get(0)?.split("-")?.map { it.toInt() }?.let { (y, m, d) ->
+            Calendar.getInstance().apply { set(y, m-1, d, 0,0,0); set(Calendar.MILLISECOND,0) }
+        }?.takeIf { !it.before(start) }?.let {
+            val diff = ((it.timeInMillis - start.timeInMillis)/(24*60*60*1000)).toInt()
+            if(diff in 0..6) counts[diff]++
         }
     }
-
-    return counts // 0 = Monday, 6 = Sunday
+    return counts
 }
 
 
 
-
 @Composable
-fun DrinksGraphCard(
-    drinksPerDay: List<Int>, // must have exactly 7 items
-    modifier: Modifier = Modifier
-) {
-    require(drinksPerDay.size == 7) { "drinksPerDay must have 7 items" }
-
-    val maxDrinks = drinksPerDay.maxOrNull() ?: 0
-    val circleRadius = 6.dp
+fun DrinksGraphCard(drinksPerDay: List<Int>, modifier: Modifier = Modifier) {
+    require(drinksPerDay.size == 7)
+    val max = drinksPerDay.maxOrNull() ?: 0
     val lineColor = Color(0xFF4A90E2)
     val fillColor = lineColor.copy(alpha = 0.3f)
-    val days = listOf("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
+    val days = listOf("Mon","Tue","Wed","Thu","Fri","Sat","Sun")
 
-
-
-    Card(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(260.dp),
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.Transparent)
-    ) {
+    Card(modifier.fillMaxWidth().height(260.dp), shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.Transparent)) {
         Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-            Spacer(Modifier.height(12.dp))
 
             Box(modifier = Modifier.fillMaxWidth().height(120.dp)) {
                 Canvas(modifier = Modifier.fillMaxSize()) {
-                    val spacing = size.width / (drinksPerDay.size - 1)
-                    val baseline = size.height * 0.75f
-                    val points = drinksPerDay.mapIndexed { i, count ->
-                        Offset(
-                            x = i * spacing,
-                            y = baseline - if (maxDrinks > 0) (count / maxDrinks.toFloat()) * baseline * 0.7f else 0f
-                        )
+                    val spacing = size.width / (drinksPerDay.size-1)
+                    val baseline = size.height*0.75f
+                    val points = drinksPerDay.mapIndexed { i, c ->
+                        Offset(i*spacing, baseline - if(max>0) c/max.toFloat()*baseline*0.7f else 0f)
                     }
+                    points.windowed(2).forEach { drawLine(lineColor, it[0], it[1], 3f) }
+                    drawPath(androidx.compose.ui.graphics.Path().apply {
+                        moveTo(points.first().x, baseline)
+                        points.forEach { lineTo(it.x,it.y) }
+                        lineTo(points.last().x, baseline); close()
+                    }, fillColor)
 
-                    // Draw line
-                    for (i in 0 until points.lastIndex) {
-                        drawLine(lineColor, points[i], points[i + 1], 3f)
-                    }
-
-                    // Draw filled area
-                    drawPath(
-                        path = androidx.compose.ui.graphics.Path().apply {
-                            moveTo(points.first().x, baseline)
-                            points.forEach { lineTo(it.x, it.y) }
-                            lineTo(points.last().x, baseline)
-                            close()
-                        },
-                        color = fillColor
-                    )
-
-                    // Draw circles
-                    val pxRadius = circleRadius.toPx()
-                    points.forEach { drawCircle(lineColor, pxRadius, it) }
+                    val r = 6.dp.toPx()
+                    points.forEach { drawCircle(lineColor, r, it) }
                 }
             }
-
-            // Row with counts
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                drinksPerDay.forEach { count ->
-                    Text(
-                        text = "$count",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = Color.Blue
-                    )
-                }
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                drinksPerDay.forEach { Text("$it", style=MaterialTheme.typography.bodySmall, color=Color.Blue) }
             }
-
-            // Row with day labels
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                days.forEach { day ->
-                    Text(
-                        text = day,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = Color.White
-                    )
-                }
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                days.forEach { Text(it, style=MaterialTheme.typography.bodySmall, color=Color.White) }
             }
         }
     }
