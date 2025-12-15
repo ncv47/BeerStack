@@ -16,7 +16,7 @@ import kotlinx.serialization.json.*
 data class Beer(
     val id: Int,
     val name: String,
-    val currency: String,
+    val currency: String?, //? = nullable
     val price: Double?,
     val image: String? = null, //sometimes no given input, standard is null value
     val rating: Rating? = null
