@@ -305,7 +305,7 @@ private fun StarIcon(
     starValue: Float,
     icon: ImageVector,
     onRatingChange: (Float) -> Unit,
-    starColor: Color = MaterialTheme.colorScheme.primary
+    starColor: Color = MaterialTheme.colorScheme.background
 ) {
     Icon(
         imageVector = icon,

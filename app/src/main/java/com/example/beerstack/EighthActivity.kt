@@ -140,7 +140,6 @@ fun BeerDetailScreen(
                                 style = MaterialTheme.typography.titleMedium
                             )
                             StarRating(rating = beer.myrating.toFloat())
-                            Text(beer.myrating.toString())
                         }
                     }
                 }
@@ -168,7 +167,7 @@ fun BeerDetailScreen(
 fun StarRating(
     rating: Float,
     maxRating: Int = 5,
-    starColor: Color = MaterialTheme.colorScheme.primary
+    starColor: Color = MaterialTheme.colorScheme.background
 ) {
     Row {
         for (i in 1..maxRating) {
