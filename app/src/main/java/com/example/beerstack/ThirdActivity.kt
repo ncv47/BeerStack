@@ -177,9 +177,12 @@ fun LoginScreen(
 
 @Composable
 fun LoginTextFieldColors() = TextFieldDefaults.colors(
-    focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-    unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-    focusedTextColor = MaterialTheme.colorScheme.onSecondaryContainer,
+    focusedContainerColor = Color.Transparent,
+    unfocusedContainerColor = Color.Transparent,
+    focusedIndicatorColor = Color.Transparent,
+    unfocusedIndicatorColor = Color.Transparent,
+
+    focusedTextColor = Color.Black,
     unfocusedTextColor = MaterialTheme.colorScheme.onSecondaryContainer,
     focusedLabelColor = MaterialTheme.colorScheme.onSecondaryContainer,
     unfocusedLabelColor = MaterialTheme.colorScheme.onSecondaryContainer,
