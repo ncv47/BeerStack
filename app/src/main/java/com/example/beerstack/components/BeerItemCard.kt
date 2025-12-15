@@ -99,7 +99,7 @@ fun BeerItemCard(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = beer.name ?: "Unknown beer", //Fallback to unkown beer
+                        text = beer.name,
                         fontSize = 18.sp,
                         color = MaterialTheme.colorScheme.onSecondary
                     )
