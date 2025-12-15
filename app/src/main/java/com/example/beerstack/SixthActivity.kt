@@ -155,33 +155,36 @@ fun RegisterScreen(
 
                         Text("Register", style = MaterialTheme.typography.titleLarge)
 
-                        OutlinedTextField(
+                        TextField(
                             value = username,
                             onValueChange = { username = it },
                             label = { Text("Username") },
                             singleLine = true,
                             modifier = Modifier.fillMaxWidth(),
-                            shape = RoundedCornerShape(16.dp)
+                            shape = RoundedCornerShape(16.dp),
+                            colors = LoginTextFieldColors()
                         )
 
-                        OutlinedTextField(
+                        TextField(
                             value = password,
                             onValueChange = { password = it },
                             label = { Text("Password") },
                             singleLine = true,
                             visualTransformation = PasswordVisualTransformation(),
                             modifier = Modifier.fillMaxWidth(),
-                            shape = RoundedCornerShape(16.dp)
+                            shape = RoundedCornerShape(16.dp),
+                            colors = LoginTextFieldColors()
                         )
 
-                        OutlinedTextField(
+                        TextField(
                             value = repeatPassword,
                             onValueChange = { repeatPassword = it },
                             label = { Text("Repeat Password") },
                             singleLine = true,
                             visualTransformation = PasswordVisualTransformation(),
                             modifier = Modifier.fillMaxWidth(),
-                            shape = RoundedCornerShape(16.dp)
+                            shape = RoundedCornerShape(16.dp),
+                            colors = LoginTextFieldColors()
                         )
 
                         FilledTonalButton(
