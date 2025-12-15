@@ -57,8 +57,6 @@ fun AddOwnBeerScreen(
 ) {
     var name by remember { mutableStateOf("") }
     var priceText by remember { mutableStateOf("") }
-    var apiAverageText by remember { mutableStateOf("") }
-    var totalReviewsText by remember { mutableStateOf("") }
     var imageUrl by remember { mutableStateOf("") }
     var selectedCurrency by remember { mutableStateOf("USD") }
 
@@ -139,28 +137,6 @@ fun AddOwnBeerScreen(
                 )
 
                 TextField(
-                    value = apiAverageText,
-                    onValueChange = { apiAverageText = it },
-                    label = { Text("API average") },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 8.dp),
-                    colors = AppTextFieldColors()
-                )
-
-                TextField(
-                    value = totalReviewsText,
-                    onValueChange = { totalReviewsText = it },
-                    label = { Text("Total reviews") },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 8.dp),
-                    colors = AppTextFieldColors()
-                )
-
-                TextField(
                     value = imageUrl,
                     onValueChange = { imageUrl = it },
                     label = { Text("Stock image URL") },
@@ -175,16 +151,14 @@ fun AddOwnBeerScreen(
                 FilledTonalButton(
                     onClick = {
                         val price = priceText.ifBlank { "0.00" }
-                        val apiAvg = apiAverageText.toDoubleOrNull() ?: 0.0
-                        val totalReviews = totalReviewsText.toIntOrNull() ?: 0
 
                         val dto = SupabaseBeerDto(
                             id = null,            // API generates ID
                             name = name,
                             currency = selectedCurrency,
                             price = price,
-                            apiaverage = apiAvg,
-                            reviews = totalReviews,
+                            apiaverage = 0.0,
+                            reviews = 0,
                             imageurl = imageUrl
                         )
                         onSave(dto)
