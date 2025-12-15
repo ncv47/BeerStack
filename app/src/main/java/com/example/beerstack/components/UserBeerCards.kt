@@ -96,6 +96,11 @@ fun UserBeerItemCard(
                 )
 
                 Text(
+                    text = "Date: ${beer.date}",
+                    style = MaterialTheme.typography.bodyMedium
+                )
+
+                Text(
                     text = "My Rating: %.1f".format(beer.myrating),
                     fontSize = 14.sp,
                     color = MaterialTheme.colorScheme.onSecondary
