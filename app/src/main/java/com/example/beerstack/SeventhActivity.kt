@@ -29,7 +29,7 @@ class SeventhActivity : BaseActivity() {
         val beerRepo = SupabaseCollectionRepository()
 
         setContent {
-            BeerStackTheme () {
+            BeerStackTheme {
                 AddOwnBeerScreen(
                     onSave = { dto ->
                         lifecycleScope.launch {
