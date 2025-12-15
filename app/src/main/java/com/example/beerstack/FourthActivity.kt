@@ -28,6 +28,8 @@ import androidx.core.content.FileProvider
 import android.Manifest
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.StarHalf
 import androidx.compose.material.icons.filled.Star
@@ -133,127 +135,134 @@ fun RateBeerScreen(
             cameraLauncher.launch(uri)
         }
     }
-    Box(
+
+    Column( // needed to make this page scrollable when the page is too large otherwise you cant save
         modifier = Modifier
             .fillMaxSize()
-            .background(BeerGradient)
-    ){
-        Scaffold(
-            containerColor = Color.Transparent,
-            topBar = {
-                GeneralTopBar (onBack = onBack)
-            }
-        ){ innerPadding ->
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding)
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 12.dp)
-                ) {
-                    beer.image?.let { url ->
-                        AsyncImage(
-                            model = url,
-                            contentDescription = "Beer image",
-                            modifier = Modifier
-                                .size(72.dp)
-                                .padding(end = 12.dp),
-                            contentScale = ContentScale.Crop,
-                            placeholder = painterResource(R.drawable.beerpicture_placeholder),
-                            error = painterResource(R.drawable.beerpicture_placeholder)
-                        )
-                    }
-                    Text(
-                        text = "Beer: ${beer.name}",
-                        style = MaterialTheme.typography.titleMedium
-                    )
+            .verticalScroll(rememberScrollState())
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(BeerGradient)
+        ){
+            Scaffold(
+                containerColor = Color.Transparent,
+                topBar = {
+                    GeneralTopBar (onBack = onBack)
                 }
+            ){ innerPadding ->
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding)
+                        .padding(16.dp),
+                    verticalArrangement = Arrangement.Top,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
 
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Text(
-                    text = "Rating: ${"%.1f".format(myRating)} / 5",
-                    style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier.align(Alignment.Start)
-                )
-
-                StarRatingBar(
-                    rating = myRating,
-                    onRatingChange = { myRating = it }
-                )
-
-                // Preview of the picture
-                myPhotoUri?.let { uri ->
-                    AsyncImage(
-                        model = uri,
-                        contentDescription = "My photo",
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(300.dp)
-                            .padding(vertical = 16.dp),
-                        contentScale = ContentScale.FillWidth,
+                            .padding(bottom = 12.dp)
+                    ) {
+                        beer.image?.let { url ->
+                            AsyncImage(
+                                model = url,
+                                contentDescription = "Beer image",
+                                modifier = Modifier
+                                    .size(72.dp)
+                                    .padding(end = 12.dp),
+                                contentScale = ContentScale.Crop,
+                                placeholder = painterResource(R.drawable.beerpicture_placeholder),
+                                error = painterResource(R.drawable.beerpicture_placeholder)
+                            )
+                        }
+                        Text(
+                            text = "Beer: ${beer.name}",
+                            style = MaterialTheme.typography.titleMedium
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Text(
+                        text = "Rating: ${"%.1f".format(myRating)} / 5",
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier.align(Alignment.Start)
                     )
-                }
 
-                TextField(
-                    value = location,
-                    onValueChange = { location = it },
-                    label = { Text("Location") },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 8.dp),
-                    colors = AppTextFieldColors()
-                )
+                    StarRatingBar(
+                        rating = myRating,
+                        onRatingChange = { myRating = it }
+                    )
 
-                TextField(
-                    value = notes,
-                    onValueChange = { notes = it },
-                    label = { Text("Notes") },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .heightIn(min = 120.dp)
-                        .padding(top = 8.dp),
-                    colors = AppTextFieldColors()
-                )
+                    // Preview of the picture
+                    myPhotoUri?.let { uri ->
+                        AsyncImage(
+                            model = uri,
+                            contentDescription = "My photo",
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(300.dp)
+                                .padding(vertical = 16.dp),
+                            contentScale = ContentScale.FillWidth,
+                        )
+                    }
 
-                Spacer(modifier = Modifier.height(12.dp))
+                    TextField(
+                        value = location,
+                        onValueChange = { location = it },
+                        label = { Text("Location") },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 8.dp),
+                        colors = AppTextFieldColors()
+                    )
 
-                FilledTonalButton(
-                    onClick = {
-                        // App specific Pictures directory
-                        val dir = context.getExternalFilesDir(android.os.Environment.DIRECTORY_PICTURES)
-                        val file = File.createTempFile("mybeer_${beer.id}_", ".jpg", dir)
-                        val uri = FileProvider.getUriForFile(context, "${context.packageName}.provider", file)
+                    TextField(
+                        value = notes,
+                        onValueChange = { notes = it },
+                        label = { Text("Notes") },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .heightIn(min = 120.dp)
+                            .padding(top = 8.dp),
+                        colors = AppTextFieldColors()
+                    )
 
-                        pendingUri = uri
+                    Spacer(modifier = Modifier.height(12.dp))
 
-                        //First ask camera permission
-                        permissionLauncher.launch(Manifest.permission.CAMERA)
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 4.dp)
-                ) {
-                    Text("Take picture")
-                }
+                    FilledTonalButton(
+                        onClick = {
+                            // App specific Pictures directory
+                            val dir = context.getExternalFilesDir(android.os.Environment.DIRECTORY_PICTURES)
+                            val file = File.createTempFile("mybeer_${beer.id}_", ".jpg", dir)
+                            val uri = FileProvider.getUriForFile(context, "${context.packageName}.provider", file)
 
-                Spacer(modifier = Modifier.height(8.dp))
+                            pendingUri = uri
 
-                FilledTonalButton(
-                    onClick = {
-                        onDone(myRating, location, notes, myPhotoUri?.path)
-                    },
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text("Save")
+                            //First ask camera permission
+                            permissionLauncher.launch(Manifest.permission.CAMERA)
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 4.dp)
+                    ) {
+                        Text("Take picture")
+                    }
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    FilledTonalButton(
+                        onClick = {
+                            onDone(myRating, location, notes, myPhotoUri?.path)
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text("Save")
+                    }
                 }
             }
         }
