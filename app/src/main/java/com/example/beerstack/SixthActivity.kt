@@ -14,8 +14,10 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
@@ -110,21 +112,21 @@ fun RegisterScreen(
                 GeneralTopBar(onBack = onBack)
             }
         ) { innerPadding ->
-            // Pretty complicated looking for what it actually is
-            // This is so the card for registering is centered with the whole screen and not just from whats left after adding the topbar
-            val top = innerPadding.calculateTopPadding()
+            // calculates the bottom padding from innerpadding
             val bottom = innerPadding.calculateBottomPadding()
 
-            Box(
+            Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(
-                        top = top / 2 - 10.dp, // Making it half and subtracting it with 10 makes it the same as the first login screen
-                        bottom = bottom,        // keep bottom as is
-                    ),
-                contentAlignment = Alignment.Center   // center child
+                    .verticalScroll(rememberScrollState())
+                    .padding(bottom = bottom), // ignores the top padding from innerpadding and just centers from the bottom so its the same as login screen
+                horizontalAlignment = Alignment.CenterHorizontally   // center child
             ) {
+                Spacer(Modifier.weight(1f)) // pushes content to vertical center
+
                 RegisterCard(onRegister)
+
+                Spacer(Modifier.weight(1f)) // keeps it centered but allows scroll
             }
         }
     }
