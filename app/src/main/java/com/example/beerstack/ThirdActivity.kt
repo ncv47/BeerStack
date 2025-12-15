@@ -39,7 +39,7 @@ class ThirdActivity : BaseActivity() {
 
         // Compose UI for nicer, centered login screen
         setContent {
-            BeerStackTheme(dynamicColor = false) {
+            BeerStackTheme() {
                 LoginScreen(
                     onLogin = { username, password ->
                         lifecycleScope.launch {
@@ -88,88 +88,94 @@ class ThirdActivity : BaseActivity() {
 fun LoginScreen(
     onLogin: (String, String) -> Unit
 ) {
-    val context = LocalContext.current
-    var username by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(BeerGradient),
         contentAlignment = Alignment.Center
     ) {
-        Card(
-            shape = RoundedCornerShape(24.dp),
-            elevation = CardDefaults.elevatedCardElevation(defaultElevation = 8.dp),
+        LoginCard(onLogin)
+    }
+}
+
+@Composable
+fun LoginCard(onLogin: (String, String) -> Unit){
+
+    val context = LocalContext.current
+    var username by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+
+    Card(
+        shape = RoundedCornerShape(24.dp),
+        elevation = CardDefaults.elevatedCardElevation(defaultElevation = 8.dp),
+        modifier = Modifier
+            .padding(24.dp)
+            .fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.secondary
+        )
+    ) {
+        Column(
             modifier = Modifier
-                .padding(24.dp)
-                .fillMaxWidth(),
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.secondary
-            )
+                .padding(24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Column(
+            // Big logo at the top
+            Image(
+                painter = painterResource(R.drawable.beerstacklogo),
+                contentDescription = "BeerStack Logo",
                 modifier = Modifier
-                    .padding(24.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+                    .size(96.dp)
+                    .clip(CircleShape) // Makes the image have a circle form
+            )
+
+            Text(
+                text = "Login",
+                style = MaterialTheme.typography.titleLarge
+            )
+
+            TextField(
+                value = username,
+                onValueChange = { username = it },
+                label = { Text("Username") },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(16.dp),
+                colors = LoginTextFieldColors()
+            )
+
+            TextField(
+                value = password,
+                onValueChange = { password = it },
+                label = { Text("Password") },
+                singleLine = true,
+                visualTransformation = PasswordVisualTransformation(),
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(16.dp),
+                colors = LoginTextFieldColors()
+            )
+
+            FilledTonalButton(
+                onClick = { onLogin(username, password) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp),
+                shape = RoundedCornerShape(24.dp)
             ) {
-                // Big logo at the top
-                Image(
-                    painter = painterResource(R.drawable.beerstacklogo),
-                    contentDescription = "BeerStack Logo",
-                    modifier = Modifier
-                        .size(96.dp)
-                        .clip(CircleShape) // Makes the image have a circle form
-                )
-
-                Text(
-                    text = "Login",
-                    style = MaterialTheme.typography.titleLarge
-                )
-
-                TextField(
-                    value = username,
-                    onValueChange = { username = it },
-                    label = { Text("Username") },
-                    singleLine = true,
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(16.dp),
-                    colors = LoginTextFieldColors()
-                )
-
-                TextField(
-                    value = password,
-                    onValueChange = { password = it },
-                    label = { Text("Password") },
-                    singleLine = true,
-                    visualTransformation = PasswordVisualTransformation(),
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(16.dp),
-                    colors = LoginTextFieldColors()
-                )
-
-                FilledTonalButton(
-                    onClick = { onLogin(username, password) },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(48.dp),
-                    shape = RoundedCornerShape(24.dp)
-                ) {
-                    Text("Login")
-                }
-                FilledTonalButton(
-                    onClick = {
-                        val intent2 = Intent(context, SixthActivity::class.java)
-                        context.startActivity(intent2)
-                              },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(48.dp),
-                    shape = RoundedCornerShape(24.dp)
-                ) {
-                    Text("Register")
-                }
+                Text("Login")
+            }
+            FilledTonalButton(
+                onClick = {
+                    val intent2 = Intent(context, SixthActivity::class.java)
+                    context.startActivity(intent2)
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp),
+                shape = RoundedCornerShape(24.dp)
+            ) {
+                Text("Register")
             }
         }
     }

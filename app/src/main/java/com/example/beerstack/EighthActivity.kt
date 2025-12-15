@@ -3,11 +3,8 @@ package com.example.beerstack
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.StarHalf
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.StarBorder
@@ -15,11 +12,9 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.beerstack.data.remote.UserBeerDto
@@ -43,7 +38,7 @@ class EighthActivity : BaseActivity() {
         }
 
         setContent {
-            BeerStackTheme(dynamicColor = false) {
+            BeerStackTheme() {
                 if (beer != null) {
                     BeerDetailScreen(
                         beer = beer,
@@ -70,7 +65,7 @@ fun BeerDetailScreen(
         Scaffold(
             containerColor = Color.Transparent,
             topBar = {
-                DetailTopBar(onBack = onBack)
+                GeneralTopBar(onBack = onBack)
             }
         ) { innerPadding ->
             Column(
@@ -153,6 +148,9 @@ fun BeerDetailScreen(
     }
 }
 
+
+//Again same starrating principle as the other page
+//Did not reuse that when because now we can just do the icon immediatly in here instead of needing another function now we dont need to change them
 @Composable
 fun StarRating(
     rating: Float,
@@ -173,39 +171,6 @@ fun StarRating(
                 imageVector = icon,
                 contentDescription = null,
                 tint = starColor
-            )
-        }
-    }
-}
-
-
-@Composable
-fun DetailTopBar(onBack: () -> Unit) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 48.dp, start = 16.dp, end = 16.dp, bottom = 12.dp)
-            .background(Color.Transparent),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Row ( // This extra row is so that the arrow and the return text acts like on button
-            modifier = Modifier
-                .clip(RoundedCornerShape(50)) // Makes it so that when you click it the shadow doesn't look like one big block but is an actual nice rounded shape that just fits
-                .clickable{ onBack() } // Makes it so that the arrow and the text "return" are clickable to go back
-                .padding(4.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ){
-            Icon(
-                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = "Back"
-            )
-
-            Spacer(modifier = Modifier.width(8.dp))
-
-            Text(
-                text = "Return",
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.SemiBold
             )
         }
     }

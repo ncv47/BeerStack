@@ -39,7 +39,7 @@ class FifthActivity : BaseActivity() {
         val supabaseRepo = SupabaseCollectionRepository()
 
         setContent {
-            BeerStackTheme(dynamicColor = false) {
+            BeerStackTheme() {
                 val context = LocalContext.current
 
                 ProfileScreen(
@@ -57,6 +57,7 @@ class FifthActivity : BaseActivity() {
     }
 }
 
+//The main function that calls the rest
 @Composable
 fun ProfileScreen(
     username: String,
@@ -121,6 +122,7 @@ fun ProfileScreen(
     }
 }
 
+//Made the generaltopbar here because it was the first place where we needed it but it it used more now then just here and this is beter then just copy pasting this everytime
 @Composable
 fun GeneralTopBar(onBack: () -> Unit) {
     Row(
@@ -153,13 +155,14 @@ fun GeneralTopBar(onBack: () -> Unit) {
     }
 }
 
+//Made it reusable
 @Composable
 fun ProfileHeader(username: String, userId: Int) {
     Box(
         modifier = Modifier
             .size(110.dp)
-            .clip(CircleShape)
-            .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.3f)),
+            .clip(CircleShape) // Makes the profile 'picture' a circular shape
+            .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.3f)), // Makes itso the background is the primary color but its more seethrough
         contentAlignment = Alignment.Center
     ) {
         Text(
@@ -185,6 +188,7 @@ fun ProfileHeader(username: String, userId: Int) {
     )
 }
 
+//Made it reusable
 @Composable
 fun ProfileInfoRow(label: String, value: String) {
     Row(
@@ -194,11 +198,11 @@ fun ProfileInfoRow(label: String, value: String) {
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
-            label,
+            text = label,
             fontWeight = FontWeight.SemiBold
         )
         Text(
-            value,
+            text = value,
             color = MaterialTheme.colorScheme.onSecondary,
             maxLines = 2,
             overflow = TextOverflow.Ellipsis,

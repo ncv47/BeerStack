@@ -27,18 +27,15 @@ import java.io.File
 import androidx.core.content.FileProvider
 import android.Manifest
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.StarHalf
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.StarBorder
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.text.font.FontWeight
 import com.example.beerstack.ui.theme.BeerGradient
 
 //---ADD TO STACK (BEER TO COLLECTION)----
@@ -61,7 +58,7 @@ class FourthActivity : BaseActivity() {
         val supabaseRepo = SupabaseCollectionRepository()
 
         setContent {
-            BeerStackTheme (dynamicColor = false) {
+            BeerStackTheme () {
                 if (beer != null && userId != -1) {
                     RateBeerScreen(
                         beer = beer,
@@ -89,8 +86,6 @@ class FourthActivity : BaseActivity() {
 
                                     supabaseRepo.addBeerToCollection(dto)
 
-                                    // tijdelijke debug
-                                    println("SUPABASE INSERT OK: $dto")
                                     finish()
                                 } catch (e: Exception) {
                                     println("SUPABASE INSERT ERROR: ${e.message}")
@@ -141,6 +136,7 @@ fun RateBeerScreen(
             cameraLauncher.launch(uri)
         }
     }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -149,12 +145,13 @@ fun RateBeerScreen(
         Scaffold(
             containerColor = Color.Transparent,
             topBar = {
-                AddingTopBar(onBack = onBack)
+                GeneralTopBar (onBack = onBack)
             }
         ){ innerPadding ->
             Column(
                 modifier = Modifier
                     .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
                     .padding(innerPadding)
                     .padding(16.dp),
                 verticalArrangement = Arrangement.Top,
@@ -198,15 +195,6 @@ fun RateBeerScreen(
                     onRatingChange = { myRating = it }
                 )
 
-                /* To be replaced with actual stars
-                Slider(
-                    value = rating,
-                    onValueChange = { rating = it },
-                    valueRange = 0f..5f,
-                    steps = 9    // 0, 0,5 1 1,5...
-                )
-                */
-
                 // Preview of the picture
                 myPhotoUri?.let { uri ->
                     AsyncImage(
@@ -220,23 +208,25 @@ fun RateBeerScreen(
                     )
                 }
 
-                OutlinedTextField(
+                TextField(
                     value = location,
                     onValueChange = { location = it },
                     label = { Text("Location") },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 8.dp)
+                        .padding(top = 8.dp),
+                    colors = AppTextFieldColors()
                 )
 
-                OutlinedTextField(
+                TextField(
                     value = notes,
                     onValueChange = { notes = it },
                     label = { Text("Notes") },
                     modifier = Modifier
                         .fillMaxWidth()
                         .heightIn(min = 120.dp)
-                        .padding(top = 8.dp)
+                        .padding(top = 8.dp),
+                    colors = AppTextFieldColors()
                 )
 
                 Spacer(modifier = Modifier.height(12.dp))
@@ -275,6 +265,7 @@ fun RateBeerScreen(
     }
 }
 
+//This is the 'starrating slider' its not actually a slider
 @Composable
 fun StarRatingBar(
     rating: Float,
@@ -282,17 +273,18 @@ fun StarRatingBar(
     maxRating: Int = 5
 ) {
     Row {
-        for (i in 1..maxRating) {
-            val starValue = i.toFloat()
+        for (i in 1..maxRating) { //makes 5 stars
+            val starValue = i.toFloat() // keeps track of on which star we are working on now from 1 to 5 first 1
 
             // choose icon for display
             val icon = when {
-                rating >= starValue       -> Icons.Filled.Star        // full
-                rating >= starValue - 0.5f -> Icons.AutoMirrored.Filled.StarHalf   // half
-                else                       -> Icons.Outlined.StarBorder    // empty
+                rating >= starValue       -> Icons.Filled.Star        // gives a full star if the rating is bigger or eq to the star we are on now
+                rating >= starValue - 0.5f -> Icons.AutoMirrored.Filled.StarHalf   // Gives a half star if the rating is bigger or eq to the star we are on now - .5
+                else                       -> Icons.Outlined.StarBorder    // gives an empty star in all other cases
             }
+            //For example rating is 3.5 it goes to the first star 1 the rating 3.5 > 1 so give a full star second star 3.5 > 2 so full star third star 3.5 > 3 so full star 3.5 !> 4 so next question is 3.5 >= 3.5 yes so half star next and last 3.5 > 5 no next 3.5 >= 4.5 no so empty star
 
-            StarIcon(
+            StarIcon( // gives the actual stars
                 starValue = starValue,
                 icon = icon,
                 onRatingChange = onRatingChange
@@ -301,6 +293,7 @@ fun StarRatingBar(
     }
 }
 
+//Gives the actual stars you can see
 @Composable
 private fun StarIcon(
     starValue: Float,
@@ -308,54 +301,21 @@ private fun StarIcon(
     onRatingChange: (Float) -> Unit,
     starColor: Color = MaterialTheme.colorScheme.background
 ) {
-    Icon(
-        imageVector = icon,
+    Icon( //uses an icon to create the stars
+        imageVector = icon, // the image is the icon given from above so half full or empty
         contentDescription = null,
-        tint = starColor,
+        tint = starColor, // gives the correct color to the stars so in this case the theme background is not used anywhere else only for stars
         modifier = Modifier
             .size(32.dp)
-            .combinedClickable(
+            .combinedClickable( // makes it so if you click once you get a half star
                 onClick = {
                     // long press → half star (0.5,1.5,2.5,...)
                     onRatingChange(starValue - 0.5f)
                 },
-                onDoubleClick = {
+                onDoubleClick = { // makes it so if you double click you get a full star
                     // single tap → full star (1,2,3,...)
                     onRatingChange(starValue)
                 }
             )
     )
-}
-
-
-@Composable
-fun AddingTopBar(onBack: () -> Unit) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 48.dp, start = 16.dp, end = 16.dp, bottom = 12.dp)
-            .background(Color.Transparent),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Row ( // This extra row is so that the arrow and the return text acts like on button
-            modifier = Modifier
-                .clip(RoundedCornerShape(50)) // Makes it so that when you click it the shadow doesn't look like one big block but is an actual nice rounded shape that just fits
-                .clickable{ onBack() } // Makes it so that the arrow and the text "return" are clickable to go back
-                .padding(4.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ){
-            Icon(
-                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = "Back"
-            )
-
-            Spacer(modifier = Modifier.width(8.dp))
-
-            Text(
-                text = "Return",
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.SemiBold
-            )
-        }
-    }
 }

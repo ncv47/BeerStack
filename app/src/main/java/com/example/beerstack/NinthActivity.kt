@@ -49,7 +49,7 @@ class NinthActivity : BaseActivity() {
 
         enableEdgeToEdge()
         setContent {
-            BeerStackTheme(dynamicColor = false) {
+            BeerStackTheme() {
 
                 var localUserMap by remember { mutableStateOf<Map<Int, String>>(emptyMap()) }
 
@@ -133,11 +133,10 @@ fun LeaderboardScreen(
         Scaffold(
             containerColor = Color.Transparent,
             topBar = {
-                // Reuse your styled TopBar
+                // Reusing the topbar not generaltopbar because thats for returning to the page
                 TopBar(userId = userId, username = username)
             },
             bottomBar = {
-                // Reuse your styled BottomBar with Leaderboard selected
                 BottomBar(
                     userId = userId,
                     username = username,
@@ -256,6 +255,7 @@ fun LeaderboardRow(
         }
     }
 }
+
 // Returns a Calendar instance representing the start of the current week (Monday 00:00:00.000)
 fun getStartOfWeek(): Calendar {
     val cal = Calendar.getInstance() // Get current date and time
@@ -342,12 +342,22 @@ fun DrinksGraphCard(drinksPerDay: List<Int>, modifier: Modifier = Modifier) {
 
             // Row showing numeric counts under each point
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                drinksPerDay.forEach { Text("$it", style = MaterialTheme.typography.bodySmall, color = Color.Blue) }
+                drinksPerDay.forEach {
+                    Text("$it",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSecondary)
+                }
             }
 
             // Row showing day labels
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                days.forEach { Text(it, style = MaterialTheme.typography.bodySmall, color = Color.White) }
+                days.forEach {
+                    Text(
+                        text = it,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                }
             }
         }
     }

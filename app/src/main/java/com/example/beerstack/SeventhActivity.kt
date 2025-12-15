@@ -29,7 +29,7 @@ class SeventhActivity : BaseActivity() {
         val beerRepo = SupabaseCollectionRepository()
 
         setContent {
-            BeerStackTheme (dynamicColor = false) {
+            BeerStackTheme () {
                 AddOwnBeerScreen(
                     onSave = { dto ->
                         lifecycleScope.launch {
@@ -173,6 +173,7 @@ fun AddOwnBeerScreen(
     }
 }
 
+//Made this so you can reuse these same colors everywhere without having to copy paste
 @Composable
 fun appTextFieldColors() = TextFieldDefaults.colors(
     focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,

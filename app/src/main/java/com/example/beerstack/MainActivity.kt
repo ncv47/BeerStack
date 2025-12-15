@@ -18,7 +18,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.painterResource
 import androidx.compose.material3.Text
-import androidx.compose.material3.Button
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.Modifier
@@ -37,7 +36,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.runtime.*
-import androidx.compose.ui.window.Dialog
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Home
@@ -72,7 +70,7 @@ class MainActivity : BaseActivity() {
         // Set the UI using Jetpack Compose
         setContent {
             // Apply won theme, not automatically from android
-            BeerStackTheme(dynamicColor = false) {
+            BeerStackTheme() {
                 // Show the main screen and pass user data
                 Main(
                     userId = userId,
@@ -110,14 +108,14 @@ fun Main(userId: Int,username: String, beerViewModel: BeerViewModel = viewModel(
         sortOption = selectedSort
 
     )
-    Box( //Used to stack elements on top of each other
+    Box( //Used to stack elements on top of each other // wraps every element of the UI in one so the gradient would go over all of them and it is one clean whole
         modifier = Modifier
             .fillMaxSize() //Over entire screen
             .background(BeerGradient)
     ) {
         // use Scaffold for top and bottom bars (Handles weight on its own, weight = how much space a composable takes relative to others)
         Scaffold( //Layout Structure, draws the top/bottom bar and body, but doesn't put them there yet
-            containerColor = Color.Transparent,
+            containerColor = Color.Transparent, // Important that this is here otherwise the BeerGradient will not work
             topBar = {
                 //Values given trough with the TopBar
                 TopBar(userId = userId, username = username)
@@ -164,7 +162,7 @@ fun TopBar(userId: Int, username: String, modifier: Modifier = Modifier){
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .background(Color.Transparent)
+            .background(Color.Transparent) // if not here no gradient on this part
             //Increase overall top bar height
             .height(100.dp)
             .padding(
@@ -182,7 +180,7 @@ fun TopBar(userId: Int, username: String, modifier: Modifier = Modifier){
         ) {
             // App logo displayed on the left side
             Image(
-                painter = painterResource(R.drawable.beerstacklogotransparent),
+                painter = painterResource(R.drawable.beerstacklogotransparent), // logo needs to be transparent so its not an ugly block but actually looks incorporated in the gradient
                 contentDescription = "BeerStack Logo",
                 modifier = Modifier
                     .height(48.dp)
@@ -191,7 +189,7 @@ fun TopBar(userId: Int, username: String, modifier: Modifier = Modifier){
             // pushes the button to the far right
             Spacer(modifier = Modifier.weight(1f))
 
-            // Login page button to the right
+            // Profile page button to the right
             FilledTonalButton(
                 onClick = {
                     // Create intent to open FifthActivity (profile page)
@@ -308,7 +306,7 @@ fun Body(
             )
 
             searchText.isNotBlank() -> {
-                // Button to add your own beer
+                // Button to add your own beer / needs to be FilledTonalButton just like the rest
                 FilledTonalButton(
                     onClick = {
                         // Go to screen with own beer
@@ -346,8 +344,7 @@ fun BottomBar(userId: Int, username: String, currentScreenIsHome: Boolean, curre
     NavigationBar(
         modifier = modifier
             .fillMaxWidth(),
-        containerColor = Color.Transparent
-        // background color comes from MaterialTheme by default
+        containerColor = Color.Transparent // needs to be here so the gradient can be shown
     ) {
         // -----Home button (MainActivity)-----
         NavigationBarItem(
@@ -418,6 +415,7 @@ fun BottomBar(userId: Int, username: String, currentScreenIsHome: Boolean, curre
     }
 }
 
+//makes it so you dont have to copy paste this to every part but can actually reuse it whenever you need
 @Composable
 fun BottomBarColors() = NavigationBarItemDefaults.colors(
     indicatorColor = Color.Transparent,
