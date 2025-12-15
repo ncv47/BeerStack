@@ -29,7 +29,8 @@ private val LightColorScheme = lightColorScheme(
     secondary = CardBg,
     onSecondary = Black,
     secondaryContainer = ChipBg,
-    background = StarLight
+    background = StarLight,
+    onSurface = TextOnSurfaceDark
 
 
     /* Other default colors to override
