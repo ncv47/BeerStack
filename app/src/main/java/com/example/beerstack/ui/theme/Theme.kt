@@ -30,7 +30,7 @@ private val LightColorScheme = lightColorScheme(
     onSecondary = Black,
     secondaryContainer = ChipBg,
     background = StarLight,
-    onSurface = TextOnSurfaceDark
+    onSurface = Color.Black
 
 
     /* Other default colors to override
