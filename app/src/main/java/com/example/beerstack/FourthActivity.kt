@@ -215,7 +215,7 @@ fun RateBeerScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 8.dp),
-                    colors = AppTextFieldColors()
+                    colors = appTextFieldColors()
                 )
 
                 TextField(
@@ -226,7 +226,7 @@ fun RateBeerScreen(
                         .fillMaxWidth()
                         .heightIn(min = 120.dp)
                         .padding(top = 8.dp),
-                    colors = AppTextFieldColors()
+                    colors = appTextFieldColors()
                 )
 
                 Spacer(modifier = Modifier.height(12.dp))

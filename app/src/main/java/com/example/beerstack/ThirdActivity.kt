@@ -183,12 +183,12 @@ fun LoginCard(onLogin: (String, String) -> Unit){
 
 @Composable
 fun LoginTextFieldColors() = TextFieldDefaults.colors(
-    focusedContainerColor = Color.Transparent,
-    unfocusedContainerColor = Color.Transparent,
+    focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f),
+    unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f),
     focusedIndicatorColor = Color.Transparent,
     unfocusedIndicatorColor = Color.Transparent,
 
-    focusedTextColor = Color.Black,
+    focusedTextColor = MaterialTheme.colorScheme.onSecondary,
     unfocusedTextColor = MaterialTheme.colorScheme.onSecondaryContainer,
     focusedLabelColor = MaterialTheme.colorScheme.onSecondaryContainer,
     unfocusedLabelColor = MaterialTheme.colorScheme.onSecondaryContainer,
