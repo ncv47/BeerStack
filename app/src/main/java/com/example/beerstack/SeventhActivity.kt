@@ -10,7 +10,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
@@ -57,8 +56,6 @@ fun AddOwnBeerScreen(
 ) {
     var name by remember { mutableStateOf("") }
     var priceText by remember { mutableStateOf("") }
-    var apiAverageText by remember { mutableStateOf("") }
-    var totalReviewsText by remember { mutableStateOf("") }
     var imageUrl by remember { mutableStateOf("") }
     var selectedCurrency by remember { mutableStateOf("USD") }
 
@@ -97,7 +94,7 @@ fun AddOwnBeerScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 8.dp),
-                    colors = AppTextFieldColors()
+                    colors = appTextFieldColors()
                 )
 
                 // De currency button
@@ -135,29 +132,7 @@ fun AddOwnBeerScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 8.dp),
-                    colors = AppTextFieldColors()
-                )
-
-                TextField(
-                    value = apiAverageText,
-                    onValueChange = { apiAverageText = it },
-                    label = { Text("API average") },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 8.dp),
-                    colors = AppTextFieldColors()
-                )
-
-                TextField(
-                    value = totalReviewsText,
-                    onValueChange = { totalReviewsText = it },
-                    label = { Text("Total reviews") },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 8.dp),
-                    colors = AppTextFieldColors()
+                    colors = appTextFieldColors()
                 )
 
                 TextField(
@@ -167,7 +142,7 @@ fun AddOwnBeerScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 8.dp),
-                    colors = AppTextFieldColors()
+                    colors = appTextFieldColors()
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -175,16 +150,14 @@ fun AddOwnBeerScreen(
                 FilledTonalButton(
                     onClick = {
                         val price = priceText.ifBlank { "0.00" }
-                        val apiAvg = apiAverageText.toDoubleOrNull() ?: 0.0
-                        val totalReviews = totalReviewsText.toIntOrNull() ?: 0
 
                         val dto = SupabaseBeerDto(
                             id = null,            // API generates ID
                             name = name,
                             currency = selectedCurrency,
                             price = price,
-                            apiaverage = apiAvg,
-                            reviews = totalReviews,
+                            apiaverage = 0.0,
+                            reviews = 0,
                             imageurl = imageUrl
                         )
                         onSave(dto)
@@ -201,7 +174,7 @@ fun AddOwnBeerScreen(
 }
 
 @Composable
-fun AppTextFieldColors() = TextFieldDefaults.colors(
+fun appTextFieldColors() = TextFieldDefaults.colors(
     focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
     unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
     focusedTextColor = MaterialTheme.colorScheme.onSecondaryContainer,

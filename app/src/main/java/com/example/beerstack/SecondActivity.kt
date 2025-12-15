@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -13,10 +12,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
 import com.example.beerstack.components.UserBeerGroupCard
 import com.example.beerstack.components.UserBeerItemCard
 import com.example.beerstack.data.remote.SupabaseCollectionRepository
@@ -111,6 +107,13 @@ class SecondActivity : BaseActivity() {
                                             .padding(16.dp),
                                         horizontalAlignment = Alignment.CenterHorizontally
                                     ) {
+
+                                        Text(
+                                            text = "Your Stack",
+                                            style = MaterialTheme.typography.headlineMedium,
+                                            modifier = Modifier.padding(bottom = 16.dp)
+                                        )
+
                                         // Item list
                                         LazyColumn(
                                             modifier = Modifier
