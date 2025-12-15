@@ -18,7 +18,8 @@ data class UserBeerDto(
     val notes: String? = null,
     val location: String? = null,
     val imageurl: String? = null,
-    val myphoto: String? = null
+    val myphoto: String? = null,
+    val date: String? = null
 ) : Parcelable // Implements Parcelable to allow easy passing between Activities/Fragments
 
 @Parcelize
