@@ -329,8 +329,6 @@ The type of files we securely store are images, these images are taken and put i
 They are fully local and the only thing that gets sent to the API is the path to the image.
 Afterwards in the stack, you take the path from the API and get your image
 
-## ![](readme-resources/Database.png) Unsecure storage
-Type of data stored used in screen x and displayed in screen y.
 
 ## ![](readme-resources/Notifications.png) Malware
 Implementation of malware.
