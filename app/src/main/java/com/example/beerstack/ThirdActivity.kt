@@ -27,6 +27,7 @@ import io.ktor.util.encodeBase64
 import kotlinx.coroutines.withContext
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import com.example.beerstack.ui.theme.BeerStackTheme
 
 //--LOGIN SCREEN---
@@ -127,23 +128,25 @@ fun LoginScreen(
                     style = MaterialTheme.typography.titleLarge
                 )
 
-                OutlinedTextField(
+                TextField(
                     value = username,
                     onValueChange = { username = it },
                     label = { Text("Username") },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(16.dp)
+                    shape = RoundedCornerShape(16.dp),
+                    colors = LoginTextFieldColors()
                 )
 
-                OutlinedTextField(
+                TextField(
                     value = password,
                     onValueChange = { password = it },
                     label = { Text("Password") },
                     singleLine = true,
                     visualTransformation = PasswordVisualTransformation(),
                     modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(16.dp)
+                    shape = RoundedCornerShape(16.dp),
+                    colors = LoginTextFieldColors()
                 )
 
                 FilledTonalButton(
@@ -171,3 +174,17 @@ fun LoginScreen(
         }
     }
 }
+
+@Composable
+fun LoginTextFieldColors() = TextFieldDefaults.colors(
+    focusedContainerColor = Color.Transparent,
+    unfocusedContainerColor = Color.Transparent,
+    focusedIndicatorColor = Color.Transparent,
+    unfocusedIndicatorColor = Color.Transparent,
+
+    focusedTextColor = Color.Black,
+    unfocusedTextColor = MaterialTheme.colorScheme.onSecondaryContainer,
+    focusedLabelColor = MaterialTheme.colorScheme.onSecondaryContainer,
+    unfocusedLabelColor = MaterialTheme.colorScheme.onSecondaryContainer,
+    cursorColor = MaterialTheme.colorScheme.onSecondaryContainer
+)

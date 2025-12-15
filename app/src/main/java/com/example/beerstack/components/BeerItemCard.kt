@@ -21,6 +21,7 @@ import com.example.beerstack.R
 //For Star Rating
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.StarHalf
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.StarBorder
 import androidx.compose.material3.Icon
@@ -167,7 +168,7 @@ fun StarRating(
     rating: Double?,
     modifier: Modifier = Modifier,
     stars: Int = 5, // total number of stars
-    starColor: Color = MaterialTheme.colorScheme.primary
+    starColor: Color = MaterialTheme.colorScheme.background
 ) {
     val safeRating = (rating ?: 0.0).coerceIn(0.0, stars.toDouble())
     // Round to nearest 0.5
@@ -192,7 +193,7 @@ fun StarRating(
         // Half star
         if (hasHalf) {
             Icon(
-                painter = painterResource(id = R.drawable.half_star),
+                imageVector = Icons.AutoMirrored.Filled.StarHalf,
                 contentDescription = null,
                 tint = starColor,
                 modifier = Modifier.size(18.dp)

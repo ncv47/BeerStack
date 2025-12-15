@@ -13,12 +13,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Color.Black,
+    primary = PrimaryDark,
     onPrimary = Color.Black,
-    background = BeerFoamDark,
-    surface = CardBgDark,
-    onSurface = BeerFoamDark,
-    secondary = PrimaryColorDark,
+    background = Stars,
+    surface = ChipBgDark,
+    onSurface = TextOnSurfaceDark,
+    secondary = SecondaryColorDark,
     onSecondary = Color.Black,
     secondaryContainer = ChipBgDark,
     onSecondaryContainer = TextOnSurfaceDark
@@ -28,7 +28,8 @@ private val LightColorScheme = lightColorScheme(
     primary = PrimaryColor,
     secondary = CardBg,
     onSecondary = Black,
-    secondaryContainer = ChipBg
+    secondaryContainer = ChipBg,
+    background = StarLight
 
 
     /* Other default colors to override

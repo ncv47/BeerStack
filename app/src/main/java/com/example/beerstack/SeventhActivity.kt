@@ -10,6 +10,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
@@ -65,7 +66,7 @@ fun AddOwnBeerScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(BeerGradient)
-    ){
+    ) {
         Scaffold(
             containerColor = Color.Transparent,
             topBar = {
@@ -89,13 +90,14 @@ fun AddOwnBeerScreen(
                         .padding(bottom = 8.dp)
                 )
 
-                OutlinedTextField(
+                TextField(
                     value = name,
                     onValueChange = { name = it },
                     label = { Text("Beer name") },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 8.dp)
+                        .padding(top = 8.dp),
+                    colors = AppTextFieldColors()
                 )
 
                 // De currency button
@@ -118,11 +120,12 @@ fun AddOwnBeerScreen(
                 //Format for the price
                 fun validatePriceInput(input: String): String {
                     val cleaned = input.replace(",", ".")
-                    val regex = Regex("^\\d{0,7}(\\.\\d{0,2})?$") // max 7 cijfers voor de punt, 2 erna (1 MILLION BEERS)
+                    val regex =
+                        Regex("^\\d{0,7}(\\.\\d{0,2})?$") // max 7 cijfers voor de punt, 2 erna (1 MILLION BEERS)
                     return if (cleaned.isEmpty() || regex.matches(cleaned)) cleaned else priceText
                 }
 
-                OutlinedTextField(
+                TextField(
                     value = priceText,
                     onValueChange = { new ->
                         priceText = validatePriceInput(new)
@@ -131,41 +134,45 @@ fun AddOwnBeerScreen(
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 8.dp)
+                        .padding(top = 8.dp),
+                    colors = AppTextFieldColors()
                 )
 
-                OutlinedTextField(
+                TextField(
                     value = apiAverageText,
                     onValueChange = { apiAverageText = it },
                     label = { Text("API average") },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 8.dp)
+                        .padding(top = 8.dp),
+                    colors = AppTextFieldColors()
                 )
 
-                OutlinedTextField(
+                TextField(
                     value = totalReviewsText,
                     onValueChange = { totalReviewsText = it },
                     label = { Text("Total reviews") },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 8.dp)
+                        .padding(top = 8.dp),
+                    colors = AppTextFieldColors()
                 )
 
-                OutlinedTextField(
+                TextField(
                     value = imageUrl,
                     onValueChange = { imageUrl = it },
                     label = { Text("Stock image URL") },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 8.dp)
+                        .padding(top = 8.dp),
+                    colors = AppTextFieldColors()
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                Button(
+                FilledTonalButton(
                     onClick = {
                         val price = priceText.ifBlank { "0.00" }
                         val apiAvg = apiAverageText.toDoubleOrNull() ?: 0.0
@@ -193,3 +200,13 @@ fun AddOwnBeerScreen(
     }
 }
 
+@Composable
+fun AppTextFieldColors() = TextFieldDefaults.colors(
+    focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+    unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+    focusedTextColor = MaterialTheme.colorScheme.onSecondaryContainer,
+    unfocusedTextColor = MaterialTheme.colorScheme.onSecondaryContainer,
+    focusedLabelColor = MaterialTheme.colorScheme.onSecondaryContainer,
+    unfocusedLabelColor = MaterialTheme.colorScheme.onSecondaryContainer,
+    cursorColor = MaterialTheme.colorScheme.onSecondaryContainer
+)

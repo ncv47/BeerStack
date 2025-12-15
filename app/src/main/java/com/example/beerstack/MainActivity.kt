@@ -309,7 +309,7 @@ fun Body(
 
             searchText.isNotBlank() -> {
                 // Button to add your own beer
-                Button(
+                FilledTonalButton(
                     onClick = {
                         // Go to screen with own beer
                         val intent = Intent(context, SeventhActivity::class.java)
