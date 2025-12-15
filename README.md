@@ -562,7 +562,7 @@ Then i reinstalled the apk:
 `adb install beerstack_patched-unsinged.apk`
 
 And now all the strings are edited:
-![functionchanged.png](readme-resources/functionchanged.png)
+![functionchanged.png](readme-resources/changedfunction.png)
 
 and now all the strings are changed
 ---
