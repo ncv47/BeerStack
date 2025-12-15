@@ -22,4 +22,6 @@ val ChipBgDark      = Color(0xFF3A3028)   // darker pill buttons
 val TextOnSurfaceDark = Color(0xFFFDFBF5) // near‑white text
 val SecondaryColorDark = Color(0xFFFFC043)  // golden accent
 
-val PrimaryDark = Color(0xFF001AFF)
+val PrimaryDark = Color(0xFF000000)
+
+val Stars = Color(0xFF001AFF)
