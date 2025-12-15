@@ -92,19 +92,19 @@ fun UserBeerItemCard(
                 Text(
                     text = beer.name,
                     fontSize = 18.sp,
-                    color = MaterialTheme.colorScheme.onSurface
+                    color = MaterialTheme.colorScheme.onSecondary
                 )
 
                 Text(
                     text = "My Rating: %.1f".format(beer.myrating),
                     fontSize = 14.sp,
-                    color = MaterialTheme.colorScheme.onSurface
+                    color = MaterialTheme.colorScheme.onSecondary
                 )
 
                 Text(
                     text = "Average: %.1f".format(beer.apiaverage),
                     fontSize = 14.sp,
-                    color = MaterialTheme.colorScheme.onSurface
+                    color = MaterialTheme.colorScheme.onSecondary
                 )
             }
         }
@@ -166,12 +166,12 @@ fun UserBeerGroupCard(
                     Text(
                         text = name,
                         style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.onSurface
+                        color = MaterialTheme.colorScheme.onSecondary
                     )
                     Text(
                         text = "Entries: ${beersWithSameName.size}",
                         style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurface
+                        color = MaterialTheme.colorScheme.onSecondary
                     )
                 }
 

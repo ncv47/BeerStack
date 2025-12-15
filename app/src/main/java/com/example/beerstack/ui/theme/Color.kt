@@ -20,7 +20,7 @@ val StarLight = Color(0xFFF1B42F)
 
 // Dark mode
 val CardBgDark      = Color(0xFF262018)   // dark “wood” for cards
-val ChipBgDark      = Color(0xFF3A3028)   // darker pill buttons
+val ChipBgDark      = Color(0xFF3A3028) // darker pill buttons
 val TextOnSurfaceDark = Color(0xFFFDFBF5) // near‑white text
 val SecondaryColorDark = Color(0xFFFFC043)  // golden accent
 
