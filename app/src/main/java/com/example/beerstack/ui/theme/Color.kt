@@ -14,6 +14,8 @@ val Black = Color(0xFF000000)
 
 val PrimaryColor = Color(0xFFF1B42F)
 
+val StarLight = Color(0xFFF1B42F)
+
 
 
 // Dark mode
