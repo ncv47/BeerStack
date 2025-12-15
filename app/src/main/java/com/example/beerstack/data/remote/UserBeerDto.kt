@@ -7,14 +7,14 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 @Serializable
 data class UserBeerDto(
-    val id: Long? = null,
+    val id: Int? = null, //Let ID be decided by API (sequential)
     val userid: Int,
     val beerid: Int,
     val name: String,
     val currency: String? = null,
     val price: Double? = null,
-    val myrating: Double,
-    val apiaverage: Double,
+    val myrating: Double?,
+    val apiaverage: Double?,
     val notes: String? = null,
     val location: String? = null,
     val imageurl: String? = null,

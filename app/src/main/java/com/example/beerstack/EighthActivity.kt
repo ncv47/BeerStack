@@ -129,7 +129,7 @@ fun BeerDetailScreen(
                                 text = "My Rating:",
                                 style = MaterialTheme.typography.titleMedium
                             )
-                            StarRating(rating = beer.myrating.toFloat())
+                            StarRating(rating = beer.myrating!!.toFloat())
                         }
                     }
                 }
