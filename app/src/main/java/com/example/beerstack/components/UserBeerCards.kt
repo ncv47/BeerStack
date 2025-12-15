@@ -175,8 +175,8 @@ fun UserBeerGroupCard(
                     )
                 }
 
-                IconButton(onClick = { expanded = !expanded }) {
-                    Icon(
+                IconButton(onClick = { expanded = !expanded }) { // the arrow button is here
+                    Icon( // with if else it switches direction depending on if the dropdown is opened or closed
                         imageVector = if (expanded)
                             Icons.Filled.ExpandLess
                         else
@@ -190,7 +190,7 @@ fun UserBeerGroupCard(
             if (expanded) {
                 Spacer(Modifier.height(8.dp))
 
-                beersWithSameName.forEach { beer ->
+                beersWithSameName.forEach { beer -> // Makes this for each beer with the same name
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
