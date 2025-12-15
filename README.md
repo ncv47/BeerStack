@@ -549,6 +549,22 @@ too:
     <string name="home_page">Changed Value</string>
 </resources>
 ```
+Now i recompiled it:
+`apktool b beerstack -o beerstack_patched-unsinged.apk`
+
+we still need to sign it so i made a key:
+`keytool -genkeypair -v -keystore mydebug.jks -alias mykey -keyalg RSA -keysize 2048 -validity 10000`
+
+and signed the apk:
+`"C:\Users\haeck\AppData\Local\Android\Sdk\build-tools\36.1.0\apksigner.bat" ^ sign --ks mydebug.jks --ks-key-alias mykey2 beerstack_patched-unsinged.apk`
+
+Then i reinstalled the apk:
+`adb install beerstack_patched-unsinged.apk`
+
+And now all the strings are edited:
+![functionchanged.png](readme-resources/functionchanged.png)
+
+and now all the strings are changed
 ---
 
 ## ![](readme-resources/Frida.png) Frida
