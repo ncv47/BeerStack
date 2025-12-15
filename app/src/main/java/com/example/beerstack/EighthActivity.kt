@@ -38,7 +38,7 @@ class EighthActivity : BaseActivity() {
         }
 
         setContent {
-            BeerStackTheme() {
+            BeerStackTheme {
                 if (beer != null) {
                     BeerDetailScreen(
                         beer = beer,
