@@ -58,7 +58,7 @@ class FourthActivity : BaseActivity() {
         val supabaseRepo = SupabaseCollectionRepository()
 
         setContent {
-            BeerStackTheme () {
+            BeerStackTheme {
                 if (beer != null && userId != -1) {
                     RateBeerScreen(
                         beer = beer,
