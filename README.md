@@ -319,15 +319,16 @@ The Room database is configured in `Appdatabase`.
 - Database version: `1`
 - Uses a **Signleton pattern** to ensure a single database instance
 - `fallbacktoDestructiveMigration()` is enabled for development
+## Unsecure storage
 
+The UserDB is unsecure because all the data is encoded in base64 which can easily be decoded and passwords can be easily revealed
+![unsecurestorage.png](readme-resources/unsecurestorage.png)
 ## ![](readme-resources/Database.png) Secure storage
 
 The type of files we securely store are images, these images are taken and put inside of a repository within the app.
 They are fully local and the only thing that gets sent to the API is the path to the image.
 Afterwards in the stack, you take the path from the API and get your image
 
-## ![](readme-resources/Database.png) Unsecure storage
-Type of data stored used in screen x and displayed in screen y.
 
 ## ![](readme-resources/Notifications.png) Malware
 Implementation of malware.
@@ -356,11 +357,6 @@ But then Perplexity gave me the okhttp3 function of intercept
 So with the help of Perplexity I came up with this code
 
 ```kotlin
-package com.example.malware  
-  
-import okhttp3.Interceptor  
-import okhttp3.Response  
-import okhttp3.ResponseBody.Companion.toResponseBody  
   
 class ImageRewriteInterceptor : Interceptor {  
   
