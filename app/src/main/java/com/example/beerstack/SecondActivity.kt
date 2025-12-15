@@ -39,7 +39,7 @@ class SecondActivity : BaseActivity() {
         val supabaseRepo = SupabaseCollectionRepository()
 
         setContent {
-            BeerStackTheme(dynamicColor = false) {
+            BeerStackTheme() {
                 var items by remember { mutableStateOf<List<UserBeerDto>>(emptyList()) }
                 var isLoading by remember { mutableStateOf(true) }
                 var error by remember { mutableStateOf<String?>(null) }
@@ -61,7 +61,7 @@ class SecondActivity : BaseActivity() {
 
                 val groupedItems: List<Pair<String, List<UserBeerDto>>> by remember(items) {
                     mutableStateOf(items.groupBy { it.name }.toList())
-                }
+                } // Needed to group all items by name and keep them in this list
 
 
                 Box(
@@ -122,9 +122,11 @@ class SecondActivity : BaseActivity() {
                                             // 1. Grouped, expandable list
                                             items(groupedItems) { (name, beersWithSameName) ->
 
+                                                //If there is only 1 item it will not show another dropdownlist for just that one item
                                                 if (beersWithSameName.size == 1) {
                                                     val beer = beersWithSameName.first()
 
+                                                    //Use an itemcard inside UserBeerCards so you dont have this long code in here
                                                     UserBeerItemCard(
                                                         beer = beer,
                                                         onClick = {
@@ -139,6 +141,7 @@ class SecondActivity : BaseActivity() {
                                                     )
                                                 } else {
 
+                                                    //Same thing here uses a card inside UserBeerCards so you dont have the long code here
                                                     UserBeerGroupCard(
                                                         name = name,
                                                         beersWithSameName = beersWithSameName,

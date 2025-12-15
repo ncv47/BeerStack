@@ -110,7 +110,7 @@ fun Main(userId: Int,username: String, beerViewModel: BeerViewModel = viewModel(
         sortOption = selectedSort
 
     )
-    Box( //Used to stack elements on top of each other
+    Box( //Used to stack elements on top of each other // wraps every element of the UI in one so the gradient would go over all of them and it is one clean whole
         modifier = Modifier
             .fillMaxSize() //Over entire screen
             .background(BeerGradient)
@@ -164,7 +164,7 @@ fun TopBar(userId: Int, username: String, modifier: Modifier = Modifier){
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .background(Color.Transparent)
+            .background(Color.Transparent) // if not here no gradient on this part
             //Increase overall top bar height
             .height(100.dp)
             .padding(
@@ -182,7 +182,7 @@ fun TopBar(userId: Int, username: String, modifier: Modifier = Modifier){
         ) {
             // App logo displayed on the left side
             Image(
-                painter = painterResource(R.drawable.beerstacklogotransparent),
+                painter = painterResource(R.drawable.beerstacklogotransparent), // logo needs to be transparent so its not an ugly block but actually looks incorporated in the gradient
                 contentDescription = "BeerStack Logo",
                 modifier = Modifier
                     .height(48.dp)
@@ -191,7 +191,7 @@ fun TopBar(userId: Int, username: String, modifier: Modifier = Modifier){
             // pushes the button to the far right
             Spacer(modifier = Modifier.weight(1f))
 
-            // Login page button to the right
+            // Profile page button to the right
             FilledTonalButton(
                 onClick = {
                     // Create intent to open FifthActivity (profile page)
@@ -417,6 +417,7 @@ fun BottomBar(userId: Int, username: String, currentScreenIsHome: Boolean, curre
     }
 }
 
+//makes it so you dont have to copy paste this to every part but can actually reuse it whenever you need
 @Composable
 fun BottomBarColors() = NavigationBarItemDefaults.colors(
     indicatorColor = Color.Transparent,
