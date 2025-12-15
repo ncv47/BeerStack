@@ -126,20 +126,20 @@ fun BeerItemCard(
                                 color = MaterialTheme.colorScheme.onSecondary
                             )
                         }
-                        beer.rating?.let {
+                        beer.rating?.let { rating ->
                             Row(verticalAlignment = Alignment.CenterVertically) {
-                                StarRating(
-                                    rating = beer.rating.average
-                                )
+                                StarRating(rating = rating.average)
+
                                 Spacer(modifier = Modifier.width(4.dp))
+
                                 Text(
-                                    //format: rouned to 1 decimal behind the comma, append out of 5 (/5)
-                                    text = beer.rating.average.let { "%.1f/5".format(it) },
+                                    text = "%.1f/5".format(rating.average),
                                     style = MaterialTheme.typography.bodySmall
                                 )
                             }
+
                             Text(
-                                text = "Reviews: ${it.reviews}",
+                                text = "Reviews: ${rating.reviews}",
                                 fontSize = 12.sp,
                                 color = MaterialTheme.colorScheme.onSecondary
                             )
