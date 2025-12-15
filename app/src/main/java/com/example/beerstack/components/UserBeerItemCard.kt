@@ -234,6 +234,10 @@ fun UserBeerGroupCard(
                                     modifier = Modifier.weight(1f)
                                 ) {
                                     Text(
+                                        text = "Date: ${beer.date}",
+                                        style = MaterialTheme.typography.bodyMedium
+                                    )
+                                    Text(
                                         text = "My Rating: %.1f".format(beer.myrating),
                                         style = MaterialTheme.typography.bodyMedium
                                     )
@@ -241,10 +245,7 @@ fun UserBeerGroupCard(
                                         text = "Average: %.1f".format(beer.apiaverage),
                                         style = MaterialTheme.typography.bodyMedium
                                     )
-                                    Text(
-                                        text = "Location: ${beer.location}",
-                                        style = MaterialTheme.typography.bodyMedium
-                                    )
+
                                 }
                             }
                         }
