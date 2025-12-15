@@ -206,30 +206,6 @@ fun LeaderboardScreen(
         }
     }
 }
-fun List<UserBeerDto>.drinksLast7Days(): List<Int> {
-    val today = Calendar.getInstance()
-    val counts = MutableList(7) { 0 }
-
-    // For each beer, check which day (0 = 6 days ago, 6 = today)
-    forEach { beer ->
-        val beerDate = beer.date?.let {
-            try {
-                // Parse ISO date (yyyy-MM-dd or yyyy-MM-ddTHH:mm:ss)
-                val parts = it.split("T")[0].split("-").map { p -> p.toInt() }
-                val cal = Calendar.getInstance()
-                cal.set(parts[0], parts[1] - 1, parts[2], 0, 0, 0)
-                cal
-            } catch (e: Exception) { null }
-        } ?: return@forEach
-
-        val diff = ((today.timeInMillis - beerDate.timeInMillis) / (1000 * 60 * 60 * 24)).toInt()
-        if (diff in 0..6) {
-            counts[6 - diff] += 1 // index 6 = today
-        }
-    }
-
-    return counts
-}
 
 @Composable
 fun LeaderboardRow(
@@ -296,16 +272,16 @@ fun last7DayLabels(): List<String> {
 }
 fun getStartOfWeek(): Calendar {
     val cal = Calendar.getInstance()
+    cal.firstDayOfWeek = Calendar.MONDAY
+    cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY)
     cal.set(Calendar.HOUR_OF_DAY, 0)
     cal.set(Calendar.MINUTE, 0)
     cal.set(Calendar.SECOND, 0)
     cal.set(Calendar.MILLISECOND, 0)
-    cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY)
     return cal
 }
 fun List<UserBeerDto>.drinksThisWeek(): List<Int> {
-    val startOfWeek = getStartOfWeek()
-    val today = Calendar.getInstance()
+    val startOfWeek = getStartOfWeek() // Monday 00:00
     val counts = MutableList(7) { 0 }
 
     forEach { beer ->
@@ -314,20 +290,22 @@ fun List<UserBeerDto>.drinksThisWeek(): List<Int> {
                 val parts = it.split("T")[0].split("-").map { p -> p.toInt() }
                 val cal = Calendar.getInstance()
                 cal.set(parts[0], parts[1] - 1, parts[2], 0, 0, 0)
+                cal.set(Calendar.MILLISECOND, 0)
                 cal
             } catch (e: Exception) { null }
         } ?: return@forEach
 
-        if (beerDate.before(startOfWeek)) return@forEach // ignore beers from previous weeks
+        if (beerDate.before(startOfWeek)) return@forEach
 
-        val diff = ((beerDate.timeInMillis - startOfWeek.timeInMillis) / (1000 * 60 * 60 * 24)).toInt()
-        if (diff in 0..6) {
-            counts[diff] += 1 // index 0 = Monday
+        val diffDays = ((beerDate.timeInMillis - startOfWeek.timeInMillis) / (24 * 60 * 60 * 1000)).toInt()
+        if (diffDays in 0..6) {
+            counts[diffDays] += 1
         }
     }
 
-    return counts
+    return counts // 0 = Monday, 6 = Sunday
 }
+
 
 
 
@@ -342,7 +320,8 @@ fun DrinksGraphCard(
     val circleRadius = 6.dp
     val lineColor = Color(0xFF4A90E2)
     val fillColor = lineColor.copy(alpha = 0.3f)
-    val days = last7DayLabels()
+    val days = listOf("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
+
 
 
     Card(
