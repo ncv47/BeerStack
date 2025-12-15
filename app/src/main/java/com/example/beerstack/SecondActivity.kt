@@ -35,7 +35,7 @@ class SecondActivity : BaseActivity() {
         val supabaseRepo = SupabaseCollectionRepository()
 
         setContent {
-            BeerStackTheme() {
+            BeerStackTheme {
                 var items by remember { mutableStateOf<List<UserBeerDto>>(emptyList()) }
                 var isLoading by remember { mutableStateOf(true) }
                 var error by remember { mutableStateOf<String?>(null) }
