@@ -518,6 +518,11 @@ Now we need to install it on the phone again using adb and test if it works
 
 After installation it works
 
+---
+## Decompile & Recompile
+So we needed to decompile the APK file of the malware. I did this using the following command:
+
+`apktool d -f -o .\malware app-debug.apk`
 
 ---
 
