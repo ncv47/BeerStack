@@ -72,7 +72,7 @@ class MainActivity : BaseActivity() {
         // Set the UI using Jetpack Compose
         setContent {
             // Apply won theme, not automatically from android
-            BeerStackTheme(dynamicColor = false) {
+            BeerStackTheme() {
                 // Show the main screen and pass user data
                 Main(
                     userId = userId,
@@ -117,7 +117,7 @@ fun Main(userId: Int,username: String, beerViewModel: BeerViewModel = viewModel(
     ) {
         // use Scaffold for top and bottom bars (Handles weight on its own, weight = how much space a composable takes relative to others)
         Scaffold( //Layout Structure, draws the top/bottom bar and body, but doesn't put them there yet
-            containerColor = Color.Transparent,
+            containerColor = Color.Transparent, // Important that this is here otherwise the BeerGradient will not work
             topBar = {
                 //Values given trough with the TopBar
                 TopBar(userId = userId, username = username)
@@ -308,7 +308,7 @@ fun Body(
             )
 
             searchText.isNotBlank() -> {
-                // Button to add your own beer
+                // Button to add your own beer / needs to be FilledTonalButton just like the rest
                 FilledTonalButton(
                     onClick = {
                         // Go to screen with own beer
@@ -346,8 +346,7 @@ fun BottomBar(userId: Int, username: String, currentScreenIsHome: Boolean, curre
     NavigationBar(
         modifier = modifier
             .fillMaxWidth(),
-        containerColor = Color.Transparent
-        // background color comes from MaterialTheme by default
+        containerColor = Color.Transparent // needs to be here so the gradient can be shown
     ) {
         // -----Home button (MainActivity)-----
         NavigationBarItem(
