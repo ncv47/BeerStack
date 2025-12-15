@@ -10,7 +10,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
@@ -30,7 +29,7 @@ class SeventhActivity : BaseActivity() {
         val beerRepo = SupabaseCollectionRepository()
 
         setContent {
-            BeerStackTheme (dynamicColor = false) {
+            BeerStackTheme () {
                 AddOwnBeerScreen(
                     onSave = { dto ->
                         lifecycleScope.launch {
@@ -200,6 +199,7 @@ fun AddOwnBeerScreen(
     }
 }
 
+//Made this so you can reuse these same colors everywhere without having to copy paste
 @Composable
 fun AppTextFieldColors() = TextFieldDefaults.colors(
     focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
