@@ -18,7 +18,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -26,6 +25,7 @@ import coil.compose.AsyncImage
 import com.example.beerstack.data.remote.UserBeerDto
 import com.example.beerstack.ui.theme.BeerGradient
 import com.example.beerstack.ui.theme.BeerStackTheme
+import androidx.core.net.toUri
 
 //---INDIVIDUAL BEERS IN STACK---
 
@@ -62,8 +62,6 @@ fun BeerDetailScreen(
     beer: UserBeerDto,
     onBack: () -> Unit
 ) {
-    val context = LocalContext.current
-
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -84,15 +82,7 @@ fun BeerDetailScreen(
             ) {
 
                 // Top: self-made picture, Untappd-style header
-                val headerModel = remember(beer.myphoto) {
-                    beer.myphoto?.let { relative ->
-                        val picturesDir =
-                            context.getExternalFilesDir(android.os.Environment.DIRECTORY_PICTURES)
-                        val fileName = relative.substringAfterLast('/')
-                        val file = java.io.File(picturesDir, fileName)
-                        if (file.exists()) android.net.Uri.fromFile(file) else null
-                    }
-                }
+                val headerModel = beer.myphoto?.toUri()
 
                 AsyncImage(
                     model = headerModel,

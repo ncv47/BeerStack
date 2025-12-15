@@ -37,7 +37,6 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.beerstack.data.remote.UserBeerDto
 import com.example.beerstack.R
-import androidx.compose.runtime.*
 import java.io.File
 import android.os.Environment
 import android.net.Uri
@@ -234,6 +233,10 @@ fun UserBeerGroupCard(
                                     modifier = Modifier.weight(1f)
                                 ) {
                                     Text(
+                                        text = "Date: ${beer.date}",
+                                        style = MaterialTheme.typography.bodyMedium
+                                    )
+                                    Text(
                                         text = "My Rating: %.1f".format(beer.myrating),
                                         style = MaterialTheme.typography.bodyMedium
                                     )
@@ -241,10 +244,7 @@ fun UserBeerGroupCard(
                                         text = "Average: %.1f".format(beer.apiaverage),
                                         style = MaterialTheme.typography.bodyMedium
                                     )
-                                    Text(
-                                        text = "Location: ${beer.location}",
-                                        style = MaterialTheme.typography.bodyMedium
-                                    )
+
                                 }
                             }
                         }
