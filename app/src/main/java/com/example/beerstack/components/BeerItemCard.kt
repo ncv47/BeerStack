@@ -99,7 +99,7 @@ fun BeerItemCard(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = beer.name,
+                        text = beer.name ?: "Unknown beer", //Fallback to unkown beer
                         fontSize = 18.sp,
                         color = MaterialTheme.colorScheme.onSurface
                     )
@@ -118,7 +118,7 @@ fun BeerItemCard(
                             Text(
                                 text = "Price: " + formatBeerPrice(
                                     rawPrice = it,
-                                    beerCurrency = beer.currency,
+                                    beerCurrency = beer.currency ?: "€",
                                     appCurrency = currency,
                                     eurPerUsd = eurPerUsd
                                 ),
@@ -170,7 +170,7 @@ fun StarRating(
     stars: Int = 5, // total number of stars
     starColor: Color = MaterialTheme.colorScheme.background
 ) {
-    val safeRating = (rating ?: 0.0).coerceIn(0.0, stars.toDouble())
+    val safeRating = (rating ?: 0.0).coerceIn(0.0, stars.toDouble()) //Check if value is correct for format, prevent errors
     // Round to nearest 0.5
     val roundedToHalf = (safeRating * 2).roundToInt() / 2.0
 

@@ -73,6 +73,7 @@ class FourthActivity : BaseActivity() {
                                     val apiAvg = beer.rating?.average ?: rating.toDouble()
 
                                     val dto = UserBeerDto(
+                                        //ID to be decided by API automatically
                                         userid = userId,
                                         beerid = beer.id,
                                         name = beer.name,
