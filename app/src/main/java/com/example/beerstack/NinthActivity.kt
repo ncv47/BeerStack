@@ -1,7 +1,6 @@
 package com.example.beerstack
 
-import java.text.SimpleDateFormat
-import java.util.Locale
+
 import android.os.Bundle
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -29,8 +28,6 @@ import com.example.beerstack.ui.theme.BeerGradient
 import com.example.beerstack.ui.theme.BeerStackTheme
 import kotlinx.coroutines.flow.first
 import java.util.Calendar
-import kotlin.io.path.Path
-import kotlin.io.path.moveTo
 
 //---LEADERBOARD---
 
