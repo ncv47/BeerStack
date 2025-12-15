@@ -13,10 +13,10 @@ class OfflineUsersRepository(private val userDao: UserDao) : UsersRepository {
     override suspend fun delete(user: User) = userDao.delete(user)
 
     override suspend fun update(user: User) = userDao.update(user)
-
+    //will take username and password and checks if there's a match
     override suspend fun login(username: String, password: String): User? =
         userDao.login(username, password)
-
+    //checks the database to see if the username is already taken
     suspend fun isUsernameTaken(username: String): Boolean {
         return userDao.isUsernameTaken(username)
     }
