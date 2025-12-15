@@ -36,6 +36,8 @@ ZUIPPPEN
 # Overview app
 Describe the implementation of the following topics.
 
+video: https://howest.cloud.panopto.eu/Panopto/Pages/Sessions/List.aspx#folderID=%22f0438ef2-d9ad-49e3-a283-b3b400e78fe8%22
+
 ### ![](readme-resources/Screenshot.png) Screenshots
 Give screenshots for every screen in the application. Give each screen an unique name.
 
@@ -330,7 +332,7 @@ They are fully local and the only thing that gets sent to the API is the path to
 Afterwards in the stack, you take the path from the API and get your image
 
 
-## ![](readme-resources/Notifications.png) Malware
+## ![](readme-resources/Malware.png) Malware
 Implementation of malware.
 # Documentation
 
@@ -466,7 +468,8 @@ But you don't know the number so here it was 0
 
 ![[image33.png]](readme-resources/image33.png)
 
-```smali
+smali
+```
     # --- your injected code start ---
     new-instance v1, Lcom/example/malware/ImageRewriteInterceptor;
     invoke-direct {v1}, Lcom/example/malware/ImageRewriteInterceptor;-><init>()V
