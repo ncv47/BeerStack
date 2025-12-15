@@ -10,7 +10,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
@@ -95,7 +94,7 @@ fun AddOwnBeerScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 8.dp),
-                    colors = AppTextFieldColors()
+                    colors = appTextFieldColors()
                 )
 
                 // De currency button
@@ -133,7 +132,7 @@ fun AddOwnBeerScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 8.dp),
-                    colors = AppTextFieldColors()
+                    colors = appTextFieldColors()
                 )
 
                 TextField(
@@ -143,7 +142,7 @@ fun AddOwnBeerScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 8.dp),
-                    colors = AppTextFieldColors()
+                    colors = appTextFieldColors()
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -175,7 +174,7 @@ fun AddOwnBeerScreen(
 }
 
 @Composable
-fun AppTextFieldColors() = TextFieldDefaults.colors(
+fun appTextFieldColors() = TextFieldDefaults.colors(
     focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
     unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
     focusedTextColor = MaterialTheme.colorScheme.onSecondaryContainer,
