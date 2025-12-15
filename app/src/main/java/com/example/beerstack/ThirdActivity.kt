@@ -13,6 +13,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -26,6 +27,7 @@ import com.example.beerstack.ui.theme.BeerGradient
 import io.ktor.util.encodeBase64
 import kotlinx.coroutines.withContext
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import com.example.beerstack.ui.theme.BeerStackTheme
@@ -94,7 +96,20 @@ fun LoginScreen(
             .background(BeerGradient),
         contentAlignment = Alignment.Center
     ) {
-        LoginCard(onLogin)
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+
+            Spacer(Modifier.weight(1f))   // pushes content to vertical center
+
+            LoginCard(onLogin)
+
+            Spacer(Modifier.weight(1f))   // keeps it centered but allows scroll
+
+        }
     }
 }
 
