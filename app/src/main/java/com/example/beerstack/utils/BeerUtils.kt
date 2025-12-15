@@ -21,7 +21,7 @@ fun BeerList(
         items(items) { beer ->          // loop through each beer in the list
             BeerItemCard(
                 beer = beer,            // pass beer data
-                onAddToCollection = { onAddBeerClick(beer) },   //To add beer to collectoin
+                onAddToCollection = { onAddBeerClick(beer) },   //To add beer to collection
                 currency = currency,    // currency for price display
                 eurPerUsd = eurPerUsd   // exchange rate for conversion
             )
