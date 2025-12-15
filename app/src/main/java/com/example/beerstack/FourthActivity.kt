@@ -27,18 +27,13 @@ import java.io.File
 import androidx.core.content.FileProvider
 import android.Manifest
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.StarHalf
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.StarBorder
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.text.font.FontWeight
 import com.example.beerstack.ui.theme.BeerGradient
 
 //---ADD TO STACK (BEER TO COLLECTION)----
@@ -61,7 +56,7 @@ class FourthActivity : BaseActivity() {
         val supabaseRepo = SupabaseCollectionRepository()
 
         setContent {
-            BeerStackTheme (dynamicColor = false) {
+            BeerStackTheme () {
                 if (beer != null && userId != -1) {
                     RateBeerScreen(
                         beer = beer,
