@@ -25,11 +25,11 @@ interface UserDao {
 
     @Query("SELECT * FROM users WHERE userName = :username AND userPassword = :password LIMIT 1")
     suspend fun login(username: String, password: String): User?
-
+    //if the username is taken it will return the username, if not it will return null
     suspend fun isUsernameTaken(username: String): Boolean {
         return getUserByUsername(username) != null
     }
-
+    //takes an username and matches it against the database
     @Query("SELECT * FROM users WHERE LOWER(userName) = LOWER(:username) LIMIT 1")
     suspend fun getUserByUsername(username: String): User?
 

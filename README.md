@@ -518,7 +518,53 @@ Now we need to install it on the phone again using adb and test if it works
 
 After installation it works
 
+---
+## Decompile & Recompile
+So we needed to decompile the APK file of the malware. I did this using the following command:
 
+`apktool d -f -o .\malware app-debug.apk`
+
+Then i went to the strings.xml file and did
+
+`notepad strings.xml`
+
+i changed the value from:
+```
+<resources>
+    <string name="app_name">BeerStack</string>
+    <string name="add_beer">Add Own Beer</string>
+    <string name="collection_page">Stack</string>
+    <string name="profile_page">Profile</string>
+    <string name="home_page">Home</string>
+</resources>
+```
+
+too:
+```
+<resources>
+    <string name="app_name">Changed Value</string>
+    <string name="add_beer">Changed Value</string>
+    <string name="collection_page">Changed Value</string>
+    <string name="profile_page">Changed Value</string>
+    <string name="home_page">Changed Value</string>
+</resources>
+```
+Now i recompiled it:
+`apktool b beerstack -o beerstack_patched-unsinged.apk`
+
+we still need to sign it so i made a key:
+`keytool -genkeypair -v -keystore mydebug.jks -alias mykey -keyalg RSA -keysize 2048 -validity 10000`
+
+and signed the apk:
+`"C:\Users\haeck\AppData\Local\Android\Sdk\build-tools\36.1.0\apksigner.bat" ^ sign --ks mydebug.jks --ks-key-alias mykey2 beerstack_patched-unsinged.apk`
+
+Then i reinstalled the apk:
+`adb install beerstack_patched-unsinged.apk`
+
+And now all the strings are edited:
+![functionchanged.png](readme-resources/changedfunction.png)
+
+and now all the strings are changed
 ---
 
 ## ![](readme-resources/Frida.png) Frida
