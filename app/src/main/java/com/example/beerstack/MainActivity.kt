@@ -368,9 +368,7 @@ fun BottomBar(userId: Int, username: String, currentScreenIsHome: Boolean, curre
                 )
             },
             label = { Text(stringResource(R.string.home_page)) },
-            colors = NavigationBarItemDefaults.colors(
-                indicatorColor = Color.Transparent  // no blue background when selected
-            )
+            colors = BottomBarColors()
         )
 
         //-----Stack/Collection Button-----
@@ -393,9 +391,7 @@ fun BottomBar(userId: Int, username: String, currentScreenIsHome: Boolean, curre
                 )
             },
             label = { Text(stringResource(R.string.collection_page)) },
-            colors = NavigationBarItemDefaults.colors(
-                indicatorColor = Color.Transparent  // no blue background when selected
-            )
+            colors = BottomBarColors()
         )
 
         // ----- Leaderboard Button -----
@@ -417,12 +413,17 @@ fun BottomBar(userId: Int, username: String, currentScreenIsHome: Boolean, curre
                 )
             },
             label = { Text("Leaderboard") },
-            colors = NavigationBarItemDefaults.colors(
-                indicatorColor = Color.Transparent  // no blue background when selected
-            )
+            colors = BottomBarColors()
         )
     }
 }
+
+@Composable
+fun BottomBarColors() = NavigationBarItemDefaults.colors(
+    indicatorColor = Color.Transparent,
+    unselectedIconColor = MaterialTheme.colorScheme.onSecondary,
+    unselectedTextColor = MaterialTheme.colorScheme.onSecondary
+)
 
 //Lets you see what main look like without running the app, for in android studio
 @Preview(showBackground = true, widthDp = 320, heightDp = 320)
