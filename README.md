@@ -322,7 +322,7 @@ The Room database is configured in `Appdatabase`.
 ## Unsecure storage
 
 The UserDB is unsecure because all the data is encoded in base64 which can easily be decoded and passwords can be easily revealed
-
+![unsecurestorage.png](readme-resources/unsecurestorage.png)
 ## ![](readme-resources/Database.png) Secure storage
 
 The type of files we securely store are images, these images are taken and put inside of a repository within the app.
