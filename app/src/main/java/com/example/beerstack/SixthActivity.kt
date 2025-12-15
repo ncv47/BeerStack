@@ -12,14 +12,11 @@ import kotlinx.coroutines.withContext
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -28,7 +25,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import com.example.beerstack.data.UserDB.OfflineUsersRepository
@@ -46,7 +42,7 @@ class SixthActivity : BaseActivity() {
         val repository = AppDataContainer(this).usersRepository
 
         setContent {
-            BeerStackTheme() {
+            BeerStackTheme {
                 RegisterScreen(
                     onRegister = { username, password ->
                         lifecycleScope.launch {
@@ -177,7 +173,7 @@ fun RegisterCard(onRegister: (String, String) -> Unit) {
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
-                colors = LoginTextFieldColors()
+                colors = loginTextFieldColors()
             )
 
             TextField(
@@ -188,7 +184,7 @@ fun RegisterCard(onRegister: (String, String) -> Unit) {
                 visualTransformation = PasswordVisualTransformation(),
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
-                colors = LoginTextFieldColors()
+                colors = loginTextFieldColors()
             )
 
             TextField(
@@ -199,7 +195,7 @@ fun RegisterCard(onRegister: (String, String) -> Unit) {
                 visualTransformation = PasswordVisualTransformation(),
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
-                colors = LoginTextFieldColors()
+                colors = loginTextFieldColors()
             )
 
             FilledTonalButton(

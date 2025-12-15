@@ -39,7 +39,7 @@ class FifthActivity : BaseActivity() {
         val supabaseRepo = SupabaseCollectionRepository()
 
         setContent {
-            BeerStackTheme() {
+            BeerStackTheme {
                 val context = LocalContext.current
 
                 ProfileScreen(

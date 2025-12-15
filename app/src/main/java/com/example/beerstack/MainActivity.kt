@@ -70,7 +70,7 @@ class MainActivity : BaseActivity() {
         // Set the UI using Jetpack Compose
         setContent {
             // Apply won theme, not automatically from android
-            BeerStackTheme() {
+            BeerStackTheme {
                 // Show the main screen and pass user data
                 Main(
                     userId = userId,
@@ -365,7 +365,7 @@ fun BottomBar(userId: Int, username: String, currentScreenIsHome: Boolean, curre
                 )
             },
             label = { Text(stringResource(R.string.home_page)) },
-            colors = BottomBarColors()
+            colors = bottomBarColors()
         )
 
         //-----Stack/Collection Button-----
@@ -388,7 +388,7 @@ fun BottomBar(userId: Int, username: String, currentScreenIsHome: Boolean, curre
                 )
             },
             label = { Text(stringResource(R.string.collection_page)) },
-            colors = BottomBarColors()
+            colors = bottomBarColors()
         )
 
         // ----- Leaderboard Button -----
@@ -410,14 +410,14 @@ fun BottomBar(userId: Int, username: String, currentScreenIsHome: Boolean, curre
                 )
             },
             label = { Text("Leaderboard") },
-            colors = BottomBarColors()
+            colors = bottomBarColors()
         )
     }
 }
 
 //makes it so you dont have to copy paste this to every part but can actually reuse it whenever you need
 @Composable
-fun BottomBarColors() = NavigationBarItemDefaults.colors(
+fun bottomBarColors() = NavigationBarItemDefaults.colors(
     indicatorColor = Color.Transparent,
     unselectedIconColor = MaterialTheme.colorScheme.onSecondary,
     unselectedTextColor = MaterialTheme.colorScheme.onSecondary

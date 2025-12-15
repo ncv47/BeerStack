@@ -41,7 +41,7 @@ class ThirdActivity : BaseActivity() {
 
         // Compose UI for nicer, centered login screen
         setContent {
-            BeerStackTheme() {
+            BeerStackTheme {
                 LoginScreen(
                     onLogin = { username, password ->
                         lifecycleScope.launch {
@@ -157,7 +157,7 @@ fun LoginCard(onLogin: (String, String) -> Unit){
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
-                colors = LoginTextFieldColors()
+                colors = loginTextFieldColors()
             )
 
             TextField(
@@ -168,7 +168,7 @@ fun LoginCard(onLogin: (String, String) -> Unit){
                 visualTransformation = PasswordVisualTransformation(),
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
-                colors = LoginTextFieldColors()
+                colors = loginTextFieldColors()
             )
 
             FilledTonalButton(
@@ -197,7 +197,7 @@ fun LoginCard(onLogin: (String, String) -> Unit){
 }
 
 @Composable
-fun LoginTextFieldColors() = TextFieldDefaults.colors(
+fun loginTextFieldColors() = TextFieldDefaults.colors(
     focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f),
     unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f),
     focusedIndicatorColor = Color.Transparent,

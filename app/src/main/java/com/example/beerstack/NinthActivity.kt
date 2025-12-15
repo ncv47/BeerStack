@@ -49,7 +49,7 @@ class NinthActivity : BaseActivity() {
 
         enableEdgeToEdge()
         setContent {
-            BeerStackTheme() {
+            BeerStackTheme {
 
                 var localUserMap by remember { mutableStateOf<Map<Int, String>>(emptyMap()) }
 
@@ -88,7 +88,7 @@ fun LeaderboardScreen(
     LaunchedEffect(userId) {
         try {
             userBeers = supabaseRepo.getCollection(userId)
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             // handle error if needed
         }
     }
