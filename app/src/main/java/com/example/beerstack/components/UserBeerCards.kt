@@ -55,7 +55,7 @@ fun UserBeerItemCard(
         modifier = modifier
             .padding(horizontal = 10.dp, vertical = 10.dp)
             .fillMaxWidth()
-            .clickable() { onClick() },
+            .clickable { onClick() },
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.secondary
         ),

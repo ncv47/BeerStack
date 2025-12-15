@@ -26,7 +26,7 @@ interface CurrencyApiService {
 // object to access the API service
 object CurrencyApi {
     val retrofitService: CurrencyApiService by lazy {
-        currencyRetrofit.create(CurrencyApiService::class.java) //Create sesrvice
+        currencyRetrofit.create(CurrencyApiService::class.java) //Create service
     }
 }
 
