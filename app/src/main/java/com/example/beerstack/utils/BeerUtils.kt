@@ -34,8 +34,8 @@ fun sortBeers(beers: List<Beer>, sortOption: SortOptions): List<Beer> {
     return when (sortOption) {
         SortOptions.NAME -> beers.sortedBy { it.name }
         SortOptions.NAME_REVERSE -> beers.sortedByDescending { it.name }
-        SortOptions.PRICE -> beers.sortedBy { it.price?.replace("$", "")?.toDoubleOrNull() ?: Double.MAX_VALUE }
-        SortOptions.PRICE_REVERSE -> beers.sortedByDescending { it.price?.replace("$", "")?.toDoubleOrNull() ?: Double.MIN_VALUE }
+        SortOptions.PRICE -> beers.sortedBy { it.price }
+        SortOptions.PRICE_REVERSE -> beers.sortedByDescending { it.price }
         SortOptions.RATING -> beers.sortedBy { it.rating?.average ?: Double.MIN_VALUE }
         SortOptions.RATING_REVERSE -> beers.sortedByDescending { it.rating?.average ?: Double.MAX_VALUE }
     }
@@ -44,12 +44,12 @@ fun sortBeers(beers: List<Beer>, sortOption: SortOptions): List<Beer> {
 // To show symbol of price (EUR/USD)
 // To convert symbols and currency rates
 fun formatBeerPrice(
-    rawPrice: String,
+    rawPrice: Double,
     beerCurrency: String,
     appCurrency: Currency,   // enum uit je model
     eurPerUsd: Double
 ): String {
-    val base = rawPrice.toDoubleOrNull() ?: return "" // safely parse price
+    val base = rawPrice
 
     // Convert to EUR if original is USD
     val priceInEur = when (beerCurrency.uppercase()) {

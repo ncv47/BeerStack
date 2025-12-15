@@ -7,7 +7,7 @@ data class BeerDto(
     val beerid: Int,
     val name: String,
     val currency: String,
-    val price: String,
+    val price: Double?,
     val apiaverage: Double?,
     val reviews: Int?,
     val imageurl: String?

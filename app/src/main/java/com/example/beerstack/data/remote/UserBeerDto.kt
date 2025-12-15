@@ -12,7 +12,7 @@ data class UserBeerDto(
     val beerid: Int,
     val name: String,
     val currency: String? = null,
-    val price: String? = null,
+    val price: Double? = null,
     val myrating: Double,
     val apiaverage: Double,
     val notes: String? = null,
