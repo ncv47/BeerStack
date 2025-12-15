@@ -164,7 +164,7 @@ fun AddOwnBeerScreen(
                     },
                     modifier = Modifier.fillMaxWidth(),
                     // This field has to be filled in for the button to work
-                    enabled = name.isNotBlank()
+                    enabled = name.isNotBlank() && priceText.isNotBlank()
                 ) {
                     Text("Save")
                 }
