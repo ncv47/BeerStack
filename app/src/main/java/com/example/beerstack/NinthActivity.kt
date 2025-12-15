@@ -234,7 +234,7 @@ fun LeaderboardRow(
                     color = if (isCurrentUser)
                         MaterialTheme.colorScheme.primary
                     else
-                        MaterialTheme.colorScheme.onSurface,
+                        MaterialTheme.colorScheme.onSecondary,
                     fontWeight = if (isCurrentUser)
                         androidx.compose.ui.text.font.FontWeight.Bold
                     else
