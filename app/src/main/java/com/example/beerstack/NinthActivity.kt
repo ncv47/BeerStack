@@ -259,67 +259,98 @@ fun LeaderboardRow(
         }
     }
 }
+// Returns a Calendar instance representing the start of the current week (Monday 00:00:00.000)
 fun getStartOfWeek(): Calendar {
-    val cal = Calendar.getInstance()
-    cal.firstDayOfWeek = Calendar.MONDAY
-    cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY)
-    cal.set(Calendar.HOUR_OF_DAY, 0)
-    cal.set(Calendar.MINUTE, 0)
-    cal.set(Calendar.SECOND, 0)
-    cal.set(Calendar.MILLISECOND, 0)
-    return cal
+    val cal = Calendar.getInstance() // Get current date and time
+    cal.firstDayOfWeek = Calendar.MONDAY // Set Monday as the first day of the week
+    cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY) // Move calendar to this week's Monday
+    cal.set(Calendar.HOUR_OF_DAY, 0) // Reset hour to 0
+    cal.set(Calendar.MINUTE, 0)      // Reset minute to 0
+    cal.set(Calendar.SECOND, 0)      // Reset second to 0
+    cal.set(Calendar.MILLISECOND, 0) // Reset millisecond to 0
+    return cal // Return the calendar pointing to Monday 00:00
 }
+
+// Extension function on a list of UserBeerDto to calculate number of drinks for each day of the current week
 fun List<UserBeerDto>.drinksThisWeek(): List<Int> {
-    val start = getStartOfWeek()
-    val counts = MutableList(7) { 0 }
+    val start = getStartOfWeek() // Get start of the week (Monday 00:00)
+    val counts = MutableList(7) { 0 } // Initialize list to hold counts for 7 days (Monday = 0, Sunday = 6)
+
     forEach { beer ->
+        // Parse the date string of the beer (assumes ISO format like yyyy-MM-dd or yyyy-MM-ddTHH:mm:ss)
         beer.date?.split("T")?.get(0)?.split("-")?.map { it.toInt() }?.let { (y, m, d) ->
-            Calendar.getInstance().apply { set(y, m-1, d, 0,0,0); set(Calendar.MILLISECOND,0) }
-        }?.takeIf { !it.before(start) }?.let {
-            val diff = ((it.timeInMillis - start.timeInMillis)/(24*60*60*1000)).toInt()
-            if(diff in 0..6) counts[diff]++
+            // Create a Calendar for the beer's date at 00:00
+            Calendar.getInstance().apply {
+                set(y, m-1, d, 0, 0, 0)
+                set(Calendar.MILLISECOND, 0)
+            }
         }
+            // Only consider beers that are not before the start of the week
+            ?.takeIf { !it.before(start) }
+            ?.let {
+                // Calculate difference in days from start of the week
+                val diff = ((it.timeInMillis - start.timeInMillis) / (24 * 60 * 60 * 1000)).toInt()
+                // Increment count for the correct day if within 0..6
+                if (diff in 0..6) counts[diff]++
+            }
     }
-    return counts
+
+    return counts // Return list of counts: counts[0] = Monday, counts[6] = Sunday
 }
 
-
-
+// Composable to display a graph of drinks per day
 @Composable
 fun DrinksGraphCard(drinksPerDay: List<Int>, modifier: Modifier = Modifier) {
-    require(drinksPerDay.size == 7)
-    val max = drinksPerDay.maxOrNull() ?: 0
-    val lineColor = Color(0xFF4A90E2)
-    val fillColor = lineColor.copy(alpha = 0.3f)
-    val days = listOf("Mon","Tue","Wed","Thu","Fri","Sat","Sun")
+    require(drinksPerDay.size == 7) { "drinksPerDay must contain exactly 7 items" } // Sanity check
 
-    Card(modifier.fillMaxWidth().height(260.dp), shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.Transparent)) {
+    val max = drinksPerDay.maxOrNull() ?: 0 // Find the maximum drinks in the week
+    val lineColor = Color(0xFF4A90E2)       // Line and circle color
+    val fillColor = lineColor.copy(alpha = 0.3f) // Fill under the curve
+    val days = listOf("Mon","Tue","Wed","Thu","Fri","Sat","Sun") // Day labels
+
+    // Card container for the graph
+    Card(
+        modifier.fillMaxWidth().height(260.dp),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.Transparent)
+    ) {
         Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
 
+            // Box for the line graph
             Box(modifier = Modifier.fillMaxWidth().height(120.dp)) {
                 Canvas(modifier = Modifier.fillMaxSize()) {
-                    val spacing = size.width / (drinksPerDay.size-1)
-                    val baseline = size.height*0.75f
+                    val spacing = size.width / (drinksPerDay.size - 1) // Horizontal spacing between points
+                    val baseline = size.height * 0.75f // Y baseline for zero drinks
                     val points = drinksPerDay.mapIndexed { i, c ->
-                        Offset(i*spacing, baseline - if(max>0) c/max.toFloat()*baseline*0.7f else 0f)
+                        // Calculate y position based on count relative to max
+                        Offset(i * spacing, baseline - if (max > 0) c / max.toFloat() * baseline * 0.7f else 0f)
                     }
+
+                    // Draw straight lines connecting the points
                     points.windowed(2).forEach { drawLine(lineColor, it[0], it[1], 3f) }
+
+                    // Draw filled area under the line
                     drawPath(androidx.compose.ui.graphics.Path().apply {
-                        moveTo(points.first().x, baseline)
-                        points.forEach { lineTo(it.x,it.y) }
-                        lineTo(points.last().x, baseline); close()
+                        moveTo(points.first().x, baseline) // Start at first x at baseline
+                        points.forEach { lineTo(it.x, it.y) } // Line to each point
+                        lineTo(points.last().x, baseline) // Line down to baseline at last point
+                        close() // Close the path
                     }, fillColor)
 
+                    // Draw circles at each point
                     val r = 6.dp.toPx()
                     points.forEach { drawCircle(lineColor, r, it) }
                 }
             }
+
+            // Row showing numeric counts under each point
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                drinksPerDay.forEach { Text("$it", style=MaterialTheme.typography.bodySmall, color=Color.Blue) }
+                drinksPerDay.forEach { Text("$it", style = MaterialTheme.typography.bodySmall, color = Color.Blue) }
             }
+
+            // Row showing day labels
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                days.forEach { Text(it, style=MaterialTheme.typography.bodySmall, color=Color.White) }
+                days.forEach { Text(it, style = MaterialTheme.typography.bodySmall, color = Color.White) }
             }
         }
     }
