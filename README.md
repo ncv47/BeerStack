@@ -319,6 +319,9 @@ The Room database is configured in `Appdatabase`.
 - Database version: `1`
 - Uses a **Signleton pattern** to ensure a single database instance
 - `fallbacktoDestructiveMigration()` is enabled for development
+## Unsecure storage
+
+The UserDB is unsecure because all the data is encoded in base64 which can easily be decoded and passwords can be easily revealed
 
 ## ![](readme-resources/Database.png) Secure storage
 
